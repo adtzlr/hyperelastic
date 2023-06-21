@@ -5,7 +5,7 @@ This package provides spaces on which a given material formulation should be pro
 
 # Example
 ```python
-import hyperelast as hel
+import hyperelastic as hel
 
 class NeoHooke:
     def __init__(self, C10=0):

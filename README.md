@@ -1,2 +1,2 @@
-# felupe-hyperelasticity
+# hyperelastic
 Constitutive hyperelastic material formulations for FElupe.

@@ -1,5 +1,5 @@
 # hyperelastic
-Constitutive hyperelastic material formulations for FElupe.
+Constitutive hyperelastic material formulations for [FElupe](https://github.com/adtzlr/felupe).
 
 This package provides spaces on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. A generalized framework for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor enables a clean coding of these material formulations.
 

@@ -7,7 +7,9 @@ class Framework:
         self.parallel = parallel
         self.material = material
 
-        self.x = [self.material.x[0], self.material.x[-1]]
+        self.x = [np.eye(3), np.zeros(0)]
+        if hasattr(self.material, "x"):
+            self.x = [self.material.x[0], self.material.x[-1]]
 
     def gradient(self, x):
         F, statevars = x[0], x[-1]

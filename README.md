@@ -5,11 +5,33 @@ This package provides spaces on which a given material formulation should be pro
 
 # Example
 ```python
-import hyperelastic as hel
+import hyperelast as hel
+
+class NeoHooke:
+    def __init__(self, C10=0):
+        self.C10 = C10
+
+    def gradient(self, x):
+        I1, I2, statevars = x
+
+        dWdI1 = self.C10
+        dWdI2 = 0
+
+        return [dWdI1, dWdI2, statevars]
+
+    def hessian(self, x):
+        I1, I2, statevars = x
+
+        d2WdI1I1 = 0
+        d2WdI1I2 = 0
+        d2WdI2I2 = 0
+
+        return [d2WdI1I1, d2WdI1I2, d2WdI2I2]
+
 
 umat = hel.spaces.DistortionalSpace(
     hel.isotropic.invariants.Framework(
-        hel.isotropic.invariants.Polynomial(C10=0.5)
+        NeoHooke(C10=0.5)
     )
 )
 ```

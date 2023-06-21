@@ -1,3 +1,4 @@
+import numpy as np
 from felupe.math import cdya_ik, cdya_il, ddot, dot, dya, identity, transpose
 
 
@@ -35,23 +36,32 @@ class Framework:
             [self.I1, self.I2, statevars]
         )
 
-        b = dot(F, transpose(F), parallel=self.parallel)
-
-        eyeC = cdya_ik(eye, self.C, parallel=self.parallel)
-        beye = cdya_ik(b, eye, parallel=self.parallel)
-
-        dFFTFdF = eyeC + beye + cdya_il(F, F, parallel=self.parallel)
-
         d2I1dFdF = 2 * cdya_ik(eye, eye, parallel=self.parallel)
-        d2I2dFdF = (
-            self.I1 * d2I1dFdF + 4 * dya(F, F, parallel=self.parallel) - 2 * dFFTFdF
+
+        A = (
+            d2WdI1dI1 * dya(self.dI1dF, self.dI1dF, parallel=self.parallel)
+            + self.dWdI1 * d2I1dFdF
         )
 
-        return [
-            d2WdI1dI1 * dya(self.dI1dF, self.dI1dF, parallel=self.parallel)
-            + d2WdI1dI2 * dya(self.dI1dF, self.dI2dF, parallel=self.parallel)
-            + d2WdI1dI2 * dya(self.dI2dF, self.dI1dF, parallel=self.parallel)
-            + d2WdI2dI2 * dya(self.dI2dF, self.dI2dF, parallel=self.parallel)
-            + self.dWdI1 * d2I1dFdF
-            + self.dWdI2 * d2I2dFdF
-        ]
+        if not np.allclose(d2WdI1dI2, 0):
+            A += +d2WdI1dI2 * dya(
+                self.dI1dF, self.dI2dF, parallel=self.parallel
+            ) + d2WdI1dI2 * dya(self.dI2dF, self.dI1dF, parallel=self.parallel)
+
+        if not np.allclose(self.dWdI2, 0):
+            b = dot(F, transpose(F), parallel=self.parallel)
+
+            eyeC = cdya_ik(eye, self.C, parallel=self.parallel)
+            beye = cdya_ik(b, eye, parallel=self.parallel)
+
+            dFFTFdF = eyeC + beye + cdya_il(F, F, parallel=self.parallel)
+
+            d2I2dFdF = (
+                self.I1 * d2I1dFdF + 4 * dya(F, F, parallel=self.parallel) - 2 * dFFTFdF
+            )
+
+            A += self.dWdI2 * d2I2dFdF + d2WdI2dI2 * dya(
+                self.dI2dF, self.dI2dF, parallel=self.parallel
+            )
+
+        return [A]

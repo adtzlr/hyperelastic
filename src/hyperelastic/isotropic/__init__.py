@@ -1,3 +1,3 @@
-from ._polynomial import Polynomial
+from . import invariants
 
-__all__ = ["Polynomial"]
+__all__ = ["invariants"]

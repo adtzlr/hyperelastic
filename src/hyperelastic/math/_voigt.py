@@ -70,8 +70,9 @@ def eye(A):
 
 
 def ddot(A, B):
-    B[3:] *= 2
-    return np.sum(A * B, axis=0)
+    ntrax = len(A.shape[1:])
+    C = np.array([1, 1, 1, 2, 2, 2]).reshape(6, *np.ones(ntrax, dtype=int))
+    return np.sum(A * B * C, axis=0)
 
 
 def dya(A, B):

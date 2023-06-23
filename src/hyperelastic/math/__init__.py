@@ -1,6 +1,6 @@
 from ._voigt import (
-    as_tensor,
-    as_voigt,
+    astensor,
+    asvoigt,
     cdya,
     cdya_ik,
     ddot,
@@ -9,6 +9,5 @@ from ._voigt import (
     dya,
     eye,
     inv,
-    piola,
     trace,
 )

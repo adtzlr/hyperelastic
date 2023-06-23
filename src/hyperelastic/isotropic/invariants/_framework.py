@@ -2,8 +2,8 @@ import felupe.math as fm
 import numpy as np
 
 from ...math import (
-    as_tensor,
-    as_voigt,
+    astensor,
+    asvoigt,
     cdya,
     cdya_ik,
     ddot,
@@ -11,7 +11,6 @@ from ...math import (
     dya,
     eye,
     inv,
-    piola,
     trace,
 )
 
@@ -133,7 +132,7 @@ class Framework:
         the deformation gradient (first Piola Kirchhoff stress tensor)."""
 
         F, statevars = x[0], x[-1]
-        self.C = as_voigt(fm.dot(fm.transpose(F), F))
+        self.C = asvoigt(fm.dot(fm.transpose(F), F))
         self.I = eye(self.C)
 
         self.I1 = trace(self.C)
@@ -148,7 +147,7 @@ class Framework:
 
         self.S = self.dWdI1 * self.dI1dE + self.dWdI2 * self.dI2dE
 
-        return [fm.dot(F, as_tensor(self.S)), statevars_new]
+        return [fm.dot(F, astensor(self.S)), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivatives of the strain energy function
@@ -173,6 +172,6 @@ class Framework:
 
             C4 += self.dWdI2 * d2I2dEdE + d2WdI2dI2 * dya(self.dI2dE, self.dI2dE)
 
-        A = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, as_tensor(C4, 4))
+        A = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
         return [A + cdya_ik(self.I, self.S)]

@@ -1,1 +1,1 @@
-from ._voigt import as_voigt, as_tensor, trace, det, inv, dot, dya, cdya_ik, ddot, eye
+from ._voigt import as_tensor, as_voigt, cdya_ik, ddot, det, dot, dya, eye, inv, trace

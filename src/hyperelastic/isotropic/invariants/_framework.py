@@ -1,7 +1,19 @@
 import felupe.math as fm
 import numpy as np
 
-from ...math import as_tensor, as_voigt, ddot, dot, eye, inv, trace
+from ...math import (
+    as_tensor,
+    as_voigt,
+    cdya,
+    cdya_ik,
+    ddot,
+    dot,
+    dya,
+    eye,
+    inv,
+    piola,
+    trace,
+)
 
 
 class Framework:
@@ -121,66 +133,46 @@ class Framework:
         the deformation gradient (first Piola Kirchhoff stress tensor)."""
 
         F, statevars = x[0], x[-1]
-        self.C = fm.dot(fm.transpose(F), F)
-        C = as_voigt(self.C)
+        self.C = as_voigt(fm.dot(fm.transpose(F), F))
+        self.I = eye(self.C)
 
-        self.I1 = trace(C)
-        self.I2 = (self.I1**2 - ddot(C, C)) / 2
+        self.I1 = trace(self.C)
+        self.I2 = (self.I1**2 - ddot(self.C, self.C)) / 2
 
         self.dWdI1, self.dWdI2, statevars_new = self.material.gradient(
             [self.I1, self.I2, statevars]
         )
 
-        self.dI1dE = 2 * eye(C)
-        self.dI2dE = self.I1 * self.dI1dE - 2 * C
+        self.dI1dE = 2 * self.I
+        self.dI2dE = self.I1 * self.dI1dE - 2 * self.C
 
-        self.dI1dF = 2 * F
-        self.dI2dF = 2 * (self.I1 * F - fm.dot(F, self.C))
+        self.S = self.dWdI1 * self.dI1dE + self.dWdI2 * self.dI2dE
 
-        S = self.dWdI1 * self.dI1dE + self.dWdI2 * self.dI2dE
-
-        return [fm.dot(F, as_tensor(S)), statevars_new]
+        return [fm.dot(F, as_tensor(self.S)), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivatives of the strain energy function
         w.r.t. the deformation tensor ( fourth-order elasticity tensor)."""
 
         F = x[0]
-        eye = fm.identity(F)
 
         dWdF, statevars = self.gradient(x)
         d2WdI1dI1, d2WdI1dI2, d2WdI2dI2 = self.material.hessian(
             [self.I1, self.I2, statevars]
         )
 
-        d2I1dFdF = 2 * fm.cdya_ik(eye, eye, parallel=self.parallel)
-
-        A = (
-            d2WdI1dI1 * fm.dya(self.dI1dF, self.dI1dF, parallel=self.parallel)
-            + self.dWdI1 * d2I1dFdF
-        )
+        C4 = d2WdI1dI1 * dya(self.dI1dE, self.dI1dE)
 
         if not np.allclose(d2WdI1dI2, 0):
-            A += +d2WdI1dI2 * fm.dya(
-                self.dI1dF, self.dI2dF, parallel=self.parallel
-            ) + d2WdI1dI2 * fm.dya(self.dI2dF, self.dI1dF, parallel=self.parallel)
+            C4 += d2WdI1dI2 * dya(self.dI1dE, self.dI2dE) + d2WdI1dI2 * dya(
+                self.dI2dE, self.dI1dE
+            )
 
         if not np.allclose(self.dWdI2, 0):
-            b = fm.dot(F, fm.transpose(F), parallel=self.parallel)
+            d2I2dEdE = 4 * (dya(self.I, self.I) - cdya(self.I, self.I))
 
-            eyeC = fm.cdya_ik(eye, self.C, parallel=self.parallel)
-            beye = fm.cdya_ik(b, eye, parallel=self.parallel)
+            C4 += self.dWdI2 * d2I2dEdE + d2WdI2dI2 * dya(self.dI2dE, self.dI2dE)
 
-            dFFTFdF = eyeC + beye + fm.cdya_il(F, F, parallel=self.parallel)
+        A = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, as_tensor(C4, 4))
 
-            d2I2dFdF = (
-                self.I1 * d2I1dFdF
-                + 4 * fm.dya(F, F, parallel=self.parallel)
-                - 2 * dFFTFdF
-            )
-
-            A += self.dWdI2 * d2I2dFdF + d2WdI2dI2 * fm.dya(
-                self.dI2dF, self.dI2dF, parallel=self.parallel
-            )
-
-        return [A]
+        return [A + cdya_ik(self.I, self.S)]

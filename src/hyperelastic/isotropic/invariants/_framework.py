@@ -1,32 +1,26 @@
-import felupe.math as fm
 import numpy as np
 
-from ...math import (
-    astensor,
-    asvoigt,
-    cdya,
-    cdya_ik,
-    ddot,
-    dot,
-    dya,
-    eye,
-    inv,
-    trace,
-)
+from ...math import cdya, ddot, dya, eye, trace
 
 
 class Framework:
-    r"""The Framework for an invariant-based isotropic hyperelastic material
-    formulation provides the material behaviour-independent parts for evaluating
-    the first Piola-Kirchhoff stress tensor as well as its associated fourth-order
-    elasticity tensor.
+    r"""The Framework for a Total-Lagrangian invariant-based isotropic hyperelastic
+    material formulation provides the material behaviour-independent parts for
+    evaluating the second Piola-Kirchhoff stress tensor as well as its associated
+    fourth-order elasticity tensor.
+
+    The gradient as well as the hessian of the strain energy function are carried out
+    w.r.t. the right Cauchy-Green deformation tensor. Hence, the work-conjugate stress
+    tensor is one half of the second Piola-Kirchhoff stress tensor and the fourth-order
+    elasticitiy tensor used here is a quarter of the Total-Lagrangian elasticity tensor.
 
     ..  math::
 
-        \psi(\boldsymbol{F}) =
-            \psi(I_1(\boldsymbol{F}), I_2(\boldsymbol{F}), I_3(\boldsymbol{F}))
+        \psi(\boldsymbol{C}) =
+            \psi(I_1(\boldsymbol{C}), I_2(\boldsymbol{C}), I_3(\boldsymbol{C}))
 
     The first and second invariants of the left or right Cauchy-Green deformation tensor
+    are identified as factors of their characteristic polynomial,
 
     ..  math::
 
@@ -35,8 +29,8 @@ class Framework:
         I_2 &= \frac{1}{2}
             \left( \text{tr}(\boldsymbol{C})^2 - \text{tr}(\boldsymbol{C}^2) \right)
 
-    where the right Cauchy-Green deformation tensor eliminates the rigid body rotations
-    of the deformation gradient and serves as a quadratic change-of-length measure of
+    where the Cauchy-Green deformation tensors eliminate the rigid body rotations
+    of the deformation gradient and serve as a quadratic change-of-length measure of
     the deformation.
 
     ..  math::
@@ -53,66 +47,58 @@ class Framework:
 
         \psi_{,2} &= \frac{\partial \psi}{\partial I_2}
 
-    and the partial derivatives of the invariants w.r.t. the deformation
-    gradient are defined.
+    and the partial derivatives of the invariants w.r.t. the right Cauchy-Green
+    deformation tensor are defined.
 
     ..  math::
 
-        \frac{\partial I_1}{\partial \boldsymbol{F}} &= 2 \boldsymbol{F}
+        \frac{\partial I_1}{\partial \boldsymbol{C}} &= 2 \boldsymbol{1}
 
-        \frac{\partial I_2}{\partial \boldsymbol{F}} &=
-            2 \left( I_1 \boldsymbol{F} - \boldsymbol{F} \boldsymbol{C} \right)
+        \frac{\partial I_2}{\partial \boldsymbol{C}} &=
+            2 \left( I_1 \boldsymbol{1} - \boldsymbol{C} \right)
 
-    The first Piola-Kirchhoff stress tensor is formulated by the application of the
+    The second Piola-Kirchhoff stress tensor is formulated by the application of the
     chain rule.
 
     ..  math::
 
-        \boldsymbol{P} = \frac{\partial \psi}{\partial I_1}
-            \frac{\partial I_1}{\partial \boldsymbol{F}}
+        \frac{\partial \psi}{\partial \boldsymbol{C}} =
+            \frac{\partial \psi}{\partial I_1}
+            \frac{\partial I_1}{\partial \boldsymbol{C}}
             + \frac{\partial \psi}{\partial I_2}
-            \frac{\partial I_2}{\partial \boldsymbol{F}}
+            \frac{\partial I_2}{\partial \boldsymbol{C}}
 
     Furthermore, the second partial derivatives of the elasticity tensor are carried
     out.
 
     ..  math::
 
-        \mathbb{A} &= \frac{\partial^2 \psi}{\partial I_1~\partial I_1}
-            \left( \frac{\partial I_1}{\partial \boldsymbol{F}} \otimes
-            \frac{\partial I_1}{\partial \boldsymbol{F}} \right)
+        \mathbb{C} &= \frac{\partial^2 \psi}{\partial I_1~\partial I_1}
+            \left( \frac{\partial I_1}{\partial \boldsymbol{C}} \otimes
+            \frac{\partial I_1}{\partial \boldsymbol{C}} \right)
             + \frac{\partial^2 \psi}{\partial I_2~\partial I_2}
-            \left( \frac{\partial I_2}{\partial \boldsymbol{F}} \otimes
-            \frac{\partial I_2}{\partial \boldsymbol{F}} \right)
+            \left( \frac{\partial I_2}{\partial \boldsymbol{C}} \otimes
+            \frac{\partial I_2}{\partial \boldsymbol{C}} \right)
 
             &+ \frac{\partial^2 \psi}{\partial I_1~\partial I_2}
-            \left( \frac{\partial I_1}{\partial \boldsymbol{F}} \otimes
-            \frac{\partial I_2}{\partial \boldsymbol{F}}
-            + \frac{\partial I_2}{\partial \boldsymbol{F}} \otimes
-            \frac{\partial I_1}{\partial \boldsymbol{F}} \right)
+            \left( \frac{\partial I_1}{\partial \boldsymbol{C}} \otimes
+            \frac{\partial I_2}{\partial \boldsymbol{C}}
+            + \frac{\partial I_2}{\partial \boldsymbol{C}} \otimes
+            \frac{\partial I_1}{\partial \boldsymbol{C}} \right)
 
             &+ \frac{\partial \psi}{\partial I_1}
-            \frac{\partial^2 I_1}{\partial \boldsymbol{F}~\partial \boldsymbol{F}}
+            \frac{\partial^2 I_1}{\partial \boldsymbol{C}~\partial \boldsymbol{C}}
             + \frac{\partial \psi}{\partial I_2}
-            \frac{\partial^2 I_2}{\partial \boldsymbol{F}~\partial \boldsymbol{F}}
+            \frac{\partial^2 I_2}{\partial \boldsymbol{C}~\partial \boldsymbol{C}}
 
-    The only non material behaviour-related terms which are not already defined are
-    the second partial derivatives of the invariants w.r.t. the deformation gradient.
+    The only non material behaviour-related term which is not already defined during
+    stress evaluation is the second partial derivatives of the second invariant w.r.t.
+    the right Cauchy-Green deformation tensor.
 
     ..  math::
 
-        \frac{\partial^2 I_1}{\partial \boldsymbol{F}~\partial \boldsymbol{F}} &=
-            2~\boldsymbol{I} \overset{\small{ik}}{\odot} \boldsymbol{I}
-
-        \frac{\partial^2 I_2}{\partial \boldsymbol{F}~\partial \boldsymbol{F}} &=
-            I_1 \frac{\partial^2 I_1}{\partial \boldsymbol{F}~\partial \boldsymbol{F}}
-            + 4~\boldsymbol{F} \otimes \boldsymbol{F}
-            - 2~\frac{\partial \boldsymbol{F} \boldsymbol{C}}{\partial \boldsymbol{F}}
-
-        \frac{\partial \boldsymbol{F} \boldsymbol{C}}{\partial \boldsymbol{F}} &=
-            \boldsymbol{I} \overset{\small{ik}}{\odot} \boldsymbol{C}
-            + \boldsymbol{b} \overset{\small{ik}}{\odot} \boldsymbol{I}
-            + \boldsymbol{F} \overset{\small{il}}{\odot} \boldsymbol{F}
+        \frac{\partial^2 I_2}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=
+            \boldsymbol{I} \otimes \boldsymbol{I} - \boldsymbol{I} \odot \boldsymbol{I}
 
     """
 
@@ -127,51 +113,53 @@ class Framework:
         if hasattr(self.material, "x"):
             self.x = [self.material.x[0], self.material.x[-1]]
 
-    def gradient(self, x):
+    def gradient(self, C, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
-        the deformation gradient (first Piola Kirchhoff stress tensor)."""
+        the right Cauchy-Green deformation tensor (one half of the second Piola
+        Kirchhoff stress tensor)."""
 
-        F, statevars = x[0], x[-1]
-        self.C = asvoigt(fm.dot(fm.transpose(F), F))
-        self.I = eye(self.C)
+        self.I = I = eye(C)
 
-        self.I1 = trace(self.C)
-        self.I2 = (self.I1**2 - ddot(self.C, self.C)) / 2
+        self.I1 = I1 = trace(C)
+        self.I2 = (I1**2 - ddot(C, C)) / 2
 
         self.dWdI1, self.dWdI2, statevars_new = self.material.gradient(
-            [self.I1, self.I2, statevars]
+            self.I1, self.I2, statevars
         )
 
-        self.dI1dE = 2 * self.I
-        self.dI2dE = self.I1 * self.dI1dE - 2 * self.C
+        self.dI1dC = I
+        self.dI2dC = I1 * I - C
 
-        self.S = self.dWdI1 * self.dI1dE + self.dWdI2 * self.dI2dE
+        dWdC = self.dWdI1 * self.dI1dC + self.dWdI2 * self.dI2dC
 
-        return [fm.dot(F, astensor(self.S)), statevars_new]
+        return dWdC, statevars_new
 
-    def hessian(self, x):
+    def hessian(self, C, statevars):
         """The hessian as the second partial derivatives of the strain energy function
-        w.r.t. the deformation tensor ( fourth-order elasticity tensor)."""
+        w.r.t. the right Cauchy-Green deformation tensor (a quarter of the Lagrangian
+        fourth-order elasticity tensor associated to the second Piola-Kirchhoff stress
+        tensor)."""
 
-        F = x[0]
-
-        dWdF, statevars = self.gradient(x)
+        dWdE, statevars = self.gradient(C, statevars)
         d2WdI1dI1, d2WdI1dI2, d2WdI2dI2 = self.material.hessian(
-            [self.I1, self.I2, statevars]
+            self.I1, self.I2, statevars
         )
+        I = self.I
+        dI1dC = self.dI1dC
+        dI2dC = self.dI2dC
 
-        C4 = d2WdI1dI1 * dya(self.dI1dE, self.dI1dE)
+        ntrax = len(C.shape[1:])
+        d2WdCdC = np.zeros((6, 6, *np.ones(ntrax, dtype=int)))
+
+        if not np.allclose(d2WdI1dI1, 0):
+            d2WdCdC = d2WdCdC + d2WdI1dI1 * dya(dI1dC, dI1dC)
 
         if not np.allclose(d2WdI1dI2, 0):
-            C4 += d2WdI1dI2 * dya(self.dI1dE, self.dI2dE) + d2WdI1dI2 * dya(
-                self.dI2dE, self.dI1dE
-            )
+            d2WdCdC = d2WdCdC + d2WdI1dI2 * (dya(dI1dC, dI2dC) + dya(dI2dC, dI1dC))
 
         if not np.allclose(self.dWdI2, 0):
-            d2I2dEdE = 4 * (dya(self.I, self.I) - cdya(self.I, self.I))
+            d2I2dCdC = dya(I, I) - cdya(I, I)
 
-            C4 += self.dWdI2 * d2I2dEdE + d2WdI2dI2 * dya(self.dI2dE, self.dI2dE)
+            d2WdCdC = d2WdCdC + self.dWdI2 * d2I2dCdC + d2WdI2dI2 * dya(dI2dC, dI2dC)
 
-        A = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
-
-        return [A + cdya_ik(self.I, self.S)]
+        return d2WdCdC

@@ -32,27 +32,23 @@ class DistortionalSpace:
         F, statevars = x[0], x[-1]
 
         dWudF, statevars_new = self.gradient(x)
-        C = self.C
-        invC = self.invC
-        J = self.J
-        S = self.S
-        Sb = self.Sb
-        SbC = self.SbC
+        I = eye(self.C)
 
         d2WdCdC = self.material.hessian(self.Cu, statevars)
-        C4b = 4 * J ** (-4 / 3) * d2WdCdC
-        I = eye(C)
-        P4 = cdya(I, I) - dya(invC, C) / 3
-        dinvCdC = -cdya(invC, invC)
+        C4b = 4 * self.J ** (-4 / 3) * d2WdCdC
 
-        SbinvC = dya(Sb, invC)
+        P4 = cdya(I, I) - dya(self.invC, self.C) / 3
+        dinvCdC = -cdya(self.invC, self.invC)
+
+        SbinvC = dya(self.Sb, self.invC)
         invCSb = transpose(SbinvC)
+        invCinvC = dya(self.invC, self.invC)
 
-        C4 = 2 / 3 * (-SbC * dinvCdC - SbinvC - invCSb + SbC / 3 * dya(invC, invC))
+        C4 = 2 / 3 * (-self.SbC * dinvCdC - SbinvC - invCSb + self.SbC / 3 * invCinvC)
 
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
 
         A4 = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
-        return [A4 + cdya_ik(I, S)]
+        return [A4 + cdya_ik(I, self.S)]

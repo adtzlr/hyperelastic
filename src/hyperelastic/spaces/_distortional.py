@@ -48,7 +48,7 @@ class DistortionalSpace:
         SbinvC = dya(Sb, invC)
         invCSb = transpose(SbinvC)
 
-        C4 = 2 / 3 * (-SbC * dinvCdC - SbinvC - invCSb + SbC * dya(invC, invC) / 3)
+        C4 = 2 / 3 * (-SbC * dinvCdC - SbinvC - invCSb + SbC / 3 * dya(invC, invC))
 
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))

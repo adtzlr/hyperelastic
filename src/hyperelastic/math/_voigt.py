@@ -130,13 +130,15 @@ def eye(A):
 
 def ddot(A, B, mode=(2, 2)):
     "The double-contraction of two symmetric 3x3 tensors in Voigt-storage."
-    ntrax = len(A.shape[1:])
+    weights = np.array([1, 1, 1, 2, 2, 2])
     if mode == (2, 2):
-        weights = np.array([1, 1, 1, 2, 2, 2]).reshape(6, *np.ones(ntrax, dtype=int))
-        return np.sum(A * B * weights, axis=0)
+        return np.einsum("i...,i...,i->...", A, B, weights)
     elif mode == (4, 4):
-        weights = np.array([1, 1, 1, 2, 2, 2])
         return np.einsum("ik...,kj...,k->ij...", A, B, weights)
+    elif mode == (4, 2):
+        return np.einsum("ij...,j...,j->i...", A, B, weights)
+    elif mode == (2, 4):
+        return np.einsum("i...,ij...,i->j...", A, B, weights)
 
 
 def dya(A, B):

@@ -1,4 +1,7 @@
-from felupe.math import cdya_il, ddot, det, dya, inv, transpose
+import felupe.math as fm
+import numpy as np
+
+from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, dya, eye, inv, transpose
 
 
 class DistortionalSpace:
@@ -12,33 +15,44 @@ class DistortionalSpace:
 
     def gradient(self, x):
         F, statevars = x[0], x[-1]
-        self.J = det(F)
-        self.Fu = self.J ** (-1 / 3) * F
-        self.Pu, statevars_new = self.material.gradient([self.Fu, statevars])
-        self.Pb = self.J ** (-1 / 3) * self.Pu
-        self.PbF = ddot(self.Pb, F, parallel=self.parallel)
-        self.iFT = transpose(inv(F, determinant=self.J))
+        self.J = J = fm.det(F)
+        self.C = C = asvoigt(fm.dot(fm.transpose(F), F))
+        self.Cu = J ** (-2 / 3) * C
+        dWudCu, statevars_new = self.material.gradient(self.Cu, statevars)
 
-        return [self.Pb - self.PbF / 3 * self.iFT, statevars_new]
+        self.Sb = Sb = 2 * J ** (-2 / 3) * dWudCu
+        self.SbC = SbC = ddot(Sb, C)
+        self.invC = invC = inv(C, determinant=J**2)
+
+        self.S = Sb - SbC / 3 * invC
+
+        return [fm.dot(F, astensor(self.S)), statevars_new]
 
     def hessian(self, x):
         F, statevars = x[0], x[-1]
-        self.P, statevars_new = self.gradient(x)
 
-        self.Au = self.material.hessian([self.Fu, statevars])[0]
-        self.iFTiFT = dya(self.iFT, self.iFT, parallel=self.parallel)
+        dWudF, statevars_new = self.gradient(x)
+        C = self.C
+        invC = self.invC
+        J = self.J
+        S = self.S
+        Sb = self.Sb
+        SbC = self.SbC
 
-        self.Ab = self.J ** (-2 / 3) * self.Au
-        self.AbF = ddot(self.Ab, F, mode=(4, 2), parallel=self.parallel)
-        self.FAb = ddot(F, self.Ab, mode=(2, 4), parallel=self.parallel)
-        self.FAbF = ddot(F, self.AbF, mode=(2, 2), parallel=self.parallel)
+        d2WdCdC = self.material.hessian(self.Cu, statevars)
+        C4b = 4 * J ** (-4 / 3) * d2WdCdC
+        I = eye(C)
+        P4 = cdya(I, I) - dya(invC, C) / 3
+        dinvCdC = -cdya(invC, invC)
 
-        return [
-            self.Ab
-            - dya(self.Pb, self.iFT, parallel=self.parallel) / 3
-            - dya(self.iFT, self.Pb, parallel=self.parallel) / 3
-            - dya(self.AbF, self.iFT, parallel=self.parallel) / 3
-            - dya(self.iFT, self.FAb, parallel=self.parallel) / 3
-            + self.PbF / 3 * cdya_il(self.iFT, self.iFT, parallel=self.parallel)
-            + (self.PbF + self.FAbF) / 9 * self.iFTiFT
-        ]
+        SbinvC = dya(Sb, invC)
+        invCSb = transpose(SbinvC)
+
+        C4 = 2 / 3 * (-SbC * dinvCdC - SbinvC - invCSb + SbC / 3 * dya(invC, invC))
+
+        if not np.allclose(C4b, 0):
+            C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
+
+        A4 = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
+
+        return [A4 + cdya_ik(I, S)]

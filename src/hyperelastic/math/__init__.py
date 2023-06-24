@@ -5,9 +5,27 @@ from ._voigt import (
     cdya_ik,
     ddot,
     det,
+    dev,
     dot,
     dya,
     eye,
     inv,
     trace,
+    transpose,
 )
+
+__all__ = [
+    "astensor",
+    "asvoigt",
+    "cdya",
+    "cdya_ik",
+    "ddot",
+    "det",
+    "dev",
+    "dot",
+    "dya",
+    "eye",
+    "inv",
+    "trace",
+    "transpose",
+]

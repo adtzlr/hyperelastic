@@ -1,17 +1,16 @@
-import felupe.math as fm
 import numpy as np
 
 
 def asvoigt(A, mode=2):
     """Convert 3x3 tensor to symmetric (Voigt-notation) vector storage of shape 6."""
-    
-    if mode == 2: # 3x3 symmetric tensor
+
+    if mode == 2:  # 3x3 symmetric tensor
         i = [0, 1, 2, 0, 1, 0]
         j = [0, 1, 2, 1, 2, 2]
 
         return A[i, j]
 
-    elif mode == 4: # 3x3x3x3 major-symmetric tensor
+    elif mode == 4:  # 3x3x3x3 major-symmetric tensor
         B = np.zeros((6, 6, *A.shape[4:]))
         for i in range(3):
             for j in range(3):
@@ -43,11 +42,11 @@ def asvoigt(A, mode=2):
 
 def astensor(A, mode=2):
     "Convert symmetric 6 tensor in Voigt-notation to full 3x3 tensor."
-    if mode == 2: # second order tensor of shape 6 to 3x3
+    if mode == 2:  # second order tensor of shape 6 to 3x3
         a = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
         return A[a]
-    
-    elif mode == 4: # fourth order tensor of shape 6x6 to 3x3x3x3
+
+    elif mode == 4:  # fourth order tensor of shape 6x6 to 3x3x3x3
         a = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2])
         i, j = np.meshgrid(a, a)
         return A[i.reshape(3, 3, 3, 3), j.reshape(3, 3, 3, 3)]
@@ -58,7 +57,7 @@ def tril_from_triu(A, inplace=True):
     B = A
     if not inplace:
         B = A.copy()
-    
+
     i, j = np.triu_indices(6, 1)
     B[j, i] = A[i, j]
     return B
@@ -70,7 +69,7 @@ def trace(A):
 
 
 def transpose(A):
-    "Return the transpose of a second order tensor."
+    "Return the major transpose of a fourth order tensor in Voigt-storage."
     return np.einsum("ij...->ji...", A)
 
 
@@ -88,7 +87,7 @@ def det(A):
 def inv(A, determinant=None):
     """The inverse of a symmetric 3x3 tensor in Voigt-storage with optional provided
     determinant."""
-    
+
     detAinvA = np.zeros_like(A)
 
     if determinant is None:
@@ -109,7 +108,7 @@ def inv(A, determinant=None):
 
 def dot(A, B, mode=(2, 2)):
     "The dot-product of two symmetric 3x3 tensors in Voigt-storage."
-    
+
     if mode == (2, 2):
         trax = np.broadcast_shapes(A.shape[1:], B.shape[1:])
         C = np.zeros((3, 3, *trax))
@@ -131,22 +130,15 @@ def eye(A):
 
 def ddot(A, B, mode=(2, 2)):
     "The double-contraction of two symmetric 3x3 tensors in Voigt-storage."
-    ntrax = len(A.shape[1:])
+    weights = np.array([1, 1, 1, 2, 2, 2])
     if mode == (2, 2):
-        C = np.array([1, 1, 1, 2, 2, 2]).reshape(6, *np.ones(ntrax, dtype=int))
-        return np.sum(A * B * C, axis=0)
+        return np.einsum("i...,i...,i->...", A, B, weights)
     elif mode == (4, 4):
-        trax = np.broadcast_shapes(A.shape[2:], B.shape[2:])
-        C = np.zeros((6, 6, *trax))
-        for i in range(6):
-            for k in range(6):
-                for j in range(6):
-                    if k >= 3:
-                        w = 2
-                    else:
-                        w = 1
-                    C[i, j] += A[i, k] * B[k, j] * w
-        return C
+        return np.einsum("ik...,kj...,k->ij...", A, B, weights)
+    elif mode == (4, 2):
+        return np.einsum("ij...,j...,j->i...", A, B, weights)
+    elif mode == (2, 4):
+        return np.einsum("i...,ij...,i->j...", A, B, weights)
 
 
 def dya(A, B):

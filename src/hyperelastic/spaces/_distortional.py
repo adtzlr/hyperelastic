@@ -49,6 +49,13 @@ class DistortionalSpace:
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
 
-        A4 = np.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
+        if self.parallel:
+            from einsumt import einsumt
+
+            einsum = einsumt
+        else:
+            einsum = np.einsum
+
+        A4 = einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
         return [A4 + cdya_ik(I, self.S)]

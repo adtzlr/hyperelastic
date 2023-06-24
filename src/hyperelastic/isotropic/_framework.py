@@ -1,6 +1,6 @@
 import numpy as np
 
-from ...math import cdya, ddot, dya, eye, trace
+from ..math import cdya, ddot, dya, eye, trace
 
 
 class Framework:

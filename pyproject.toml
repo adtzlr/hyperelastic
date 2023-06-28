@@ -43,11 +43,12 @@ dynamic = ["version"]
 requires-python = ">=3.7"
 dependencies = [
   "numpy",
+  "felupe",
 ]
 
 [project.optional-dependencies]
 test = [
-    "felupe",
+    "matplotlib",
 ]
 
 [tool.setuptools.dynamic]

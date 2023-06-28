@@ -1,6 +1,7 @@
 import numpy as np
 
-from ..math import cdya, ddot, dya, eye, trace, eigh, tril_from_triu, transpose
+from ..math import cdya, dya, eigh
+
 
 class FrameworkStretches:
     r"""The Framework for a Total-Lagrangian stretch-based isotropic hyperelastic
@@ -46,38 +47,34 @@ class FrameworkStretches:
         tensor)."""
 
         dWdC, statevars = self.gradient(C, statevars)
-        d2Wdλdλ = self.material.hessian(
-            self.λ, statevars
-        )
-        
+        d2Wdλdλ = self.material.hessian(self.λ, statevars)
+
         λ = self.λ
         M = self.M
         dWdλC = self.dWdλC
-        
+
         a = [0, 1, 2, 0, 1, 0]
         b = [0, 1, 2, 1, 2, 2]
-        
 
         d2WdλC2 = d2Wdλdλ / (4 * λ[a] * λ[b])
         d2WdλC2[:3] -= dWdλC / (2 * λ**2)
-        
+
         d2WdCdC = np.zeros((6, 6, *dWdλC.shape[1:]))
-        
+
         a = [0, 1, 2, 0, 1, 0]
         b = [0, 1, 2, 1, 2, 2]
-        
+
         for m, (α, β) in enumerate(zip(a, b)):
-            
             d2WdCdC += d2WdλC2[m] * dya(M[α], M[β])
 
             if β != α:
-                v = λ[α]**2 - λ[β]**2
+                v = λ[α] ** 2 - λ[β] ** 2
                 mask = np.isclose(v, 0)
 
                 w = np.zeros_like(v)
                 w[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
                 w[mask] = (d2WdλC2[β][mask] - d2WdλC2[m][mask]) / 2
-                
+
                 d2WdCdC += w * cdya(M[α], M[β])
 
         return d2WdCdC

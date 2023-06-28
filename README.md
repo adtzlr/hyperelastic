@@ -21,7 +21,6 @@ Minimal templates for invariant-based and for principal stretch-based material f
 
 ```python
 class MyModel1:
-
     def gradient(self, I1, I2, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants of the right Cauchy-Green deformation tensor."""
@@ -29,17 +28,17 @@ class MyModel1:
         return dWdI1, dWdI2, statevars
 
     def hessian(self, I1, I2, statevars_old):
-        """The hessian as the second partial derivatives of the strain energy function 
-        w.r.t. the invariants of the right Cauchy-Green deformation tensor. """
+        """The hessian as the second partial derivatives of the strain energy function
+        w.r.t. the invariants of the right Cauchy-Green deformation tensor."""
 
         return d2WdI1I1, d2WdI2I2, d2WdI1I2
+
 
 umat1 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkInvariants(MyModel1()))
 ```
 
 ```python
 class MyModel2:
-
     def gradient(self, λ, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the principal stretches."""
@@ -48,9 +47,10 @@ class MyModel2:
 
     def hessian(self, λ, statevars_old):
         """The hessian as the second partial derivatives of the strain energy function
-        w.r.t. the principal stretches. """
+        w.r.t. the principal stretches."""
 
         return d2Wdλ1dλ1, d2Wdλ2dλ2, d2Wdλ3dλ3, d2Wdλ1dλ2, d2Wdλ2dλ3, d2Wdλ1dλ3
+
 
 umat2 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkStretches(MyModel2()))
 ```

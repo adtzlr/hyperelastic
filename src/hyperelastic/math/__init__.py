@@ -8,11 +8,11 @@ from ._voigt import (
     dev,
     dot,
     dya,
+    eigh,
     eye,
     inv,
     trace,
     transpose,
-    eigh,
     tril_from_triu,
 )
 

@@ -20,7 +20,7 @@ import hyperelastic.math as hm
 Minimal templates for invariant-based and for principal stretch-based material formulations:
 
 ```python
-class MyMaterialModel1:
+class MyModel1:
 
     def gradient(self, I1, I2, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.

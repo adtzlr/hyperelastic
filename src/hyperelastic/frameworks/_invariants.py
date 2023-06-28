@@ -3,7 +3,7 @@ import numpy as np
 from ..math import cdya, ddot, dya, eye, trace
 
 
-class FrameworkInvariants:
+class InvariantsFramework:
     r"""The Framework for a Total-Lagrangian invariant-based isotropic hyperelastic
     material formulation provides the material behaviour-independent parts for
     evaluating the second Piola-Kirchhoff stress tensor as well as its associated

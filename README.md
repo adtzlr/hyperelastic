@@ -25,7 +25,7 @@ import hyperelastic.math as hm
 ```
 
 ## Invariant-based material formulations
-A minimal template for an invariant-based material formulation:
+A minimal template for an invariant-based material formulation applied on the distortional space:
 
 ```python
 class MyModel1:
@@ -42,11 +42,11 @@ class MyModel1:
         return d2WdI1I1, d2WdI2I2, d2WdI1I2
 
 
-umat1 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkInvariants(MyModel1()))
+umat1 = hel.spaces.DistortionalSpace(hel.frameworks.InvariantsFramework(MyModel1()))
 ```
 
 ## Principal Stretch-based material formulations
-A minimal template for a principal stretch-based material formulation:
+A minimal template for a principal stretch-based material formulation applied on the distortional space:
 
 ```python
 class MyModel2:
@@ -63,7 +63,7 @@ class MyModel2:
         return d2Wdλ1dλ1, d2Wdλ2dλ2, d2Wdλ3dλ3, d2Wdλ1dλ2, d2Wdλ2dλ3, d2Wdλ1dλ3
 
 
-umat2 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkStretches(MyModel2()))
+umat2 = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(MyModel2()))
 ```
 
 # License

@@ -10,7 +10,7 @@ Spaces are partial deformations on which a given material formulation should be 
 The math module provides helpers in reduced vector (Voigt) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors.
 
 # Example
-Material Formulations have to be implemented as classes with `gradient(I1, I2, statevars)` (stress) and `hessian(I1, I2, statevars)` (elasticity) methods.
+Material Formulations have to be implemented as classes with `gradient` (stress) and `hessian` (elasticity) methods.
 
 ```python
 import hyperelastic as hel

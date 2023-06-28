@@ -43,13 +43,11 @@ dynamic = ["version"]
 requires-python = ">=3.7"
 dependencies = [
   "numpy",
-  "felupe",
 ]
 
 [project.optional-dependencies]
-all = [
-    "matplotlib",
-    "tensortrax",
+test = [
+    "felupe",
 ]
 
 [tool.setuptools.dynamic]

@@ -17,7 +17,8 @@ import hyperelastic as hel
 import hyperelastic.math as hm
 ```
 
-Minimal templates for invariant-based and for principal stretch-based material formulations:
+## Invariant-based material formulations
+A minimal template for an invariant-based material formulation:
 
 ```python
 class MyModel1:
@@ -36,6 +37,9 @@ class MyModel1:
 
 umat1 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkInvariants(MyModel1()))
 ```
+
+## Principal Stretch-based material formulations
+A minimal template for a principal stretch-based material formulation:
 
 ```python
 class MyModel2:

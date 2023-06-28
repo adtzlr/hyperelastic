@@ -3,37 +3,49 @@
   <p align="center">Constitutive <b>hyperelastic</b> material formulations for <a href="https://github.com/adtzlr/felupe">FElupe</a>.</p>
 </p>
 
-This package provides spaces on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. A generalized framework for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor enables a clean coding of these material formulations.
+This package provides the essential building blocks for constitutive hyperelastic material formulations. This includes material behaviour-independent spaces and frameworks as well as material behaviour-dependent model formulations.
+
+Spaces are partial deformations on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. Generalized frameworks for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor and the principal stretches enable a clean coding of isotropic material formulations.
+
+The math module provides helpers in reduced vector (Voigt) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors.
 
 # Example
+Material Formulations have to be implemented as classes with `gradient(I1, I2, statevars)` (stress) and `hessian(I1, I2, statevars)` (elasticity) methods.
+
 ```python
 import hyperelastic as hel
+import hyperelastic.math as hm
 
-class NeoHooke:
-    def __init__(self, C10=0):
-        self.C10 = C10
+class MyMaterialModel:
+    def __init__(self, shear_modulus):
+        self.shear_modulus = shear_modulus
 
-    def gradient(self, x):
-        I1, I2, statevars = x
+    def gradient(self, I1, I2, statevars_old):
+        """The gradient as the partial derivative of the strain energy function w.r.t.
+        the invariants of the right Cauchy-Green deformation tensor."""
 
-        dWdI1 = self.C10
+        dWdI1 = self.shear_modulus / 2
         dWdI2 = 0
 
-        return [dWdI1, dWdI2, statevars]
+        # update the state variables
+        statevars_new = statevars_old
 
-    def hessian(self, x):
-        I1, I2, statevars = x
+        return dWdI1, dWdI2, statevars_new
+
+    def hessian(self, I1, I2, statevars_old):
+        """The hessian as the second partial derivatives of the strain energy function 
+        w.r.t. the invariants of the right Cauchy-Green deformation tensor. """
 
         d2WdI1I1 = 0
         d2WdI1I2 = 0
         d2WdI2I2 = 0
 
-        return [d2WdI1I1, d2WdI1I2, d2WdI2I2]
+        return d2WdI1I1, d2WdI2I2, d2WdI1I2
 
 
 umat = hel.spaces.DistortionalSpace(
-    hel.isotropic.invariants.Framework(
-        NeoHooke(C10=0.5)
+    hel.isotropic.FrameworkInvariants(
+        MyMaterialModel(shear_modulus=1.0)
     )
 )
 ```

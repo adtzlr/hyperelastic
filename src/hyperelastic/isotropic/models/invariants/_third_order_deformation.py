@@ -67,7 +67,7 @@ class ThirdOrderDeformation:
         w.r.t. the invariants."""
 
         d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - 3)
-        d2WdI1I2 = self.C11
         d2WdI2I2 = 0
+        d2WdI1I2 = self.C11
 
-        return d2WdI1I1, d2WdI1I2, d2WdI2I2
+        return d2WdI1I1, d2WdI2I2, d2WdI1I2

@@ -1,5 +1,5 @@
 from . import models
-from ._framework import Framework
-from ._framework_stretches import FrameworkStretch
+from ._framework_invariants import FrameworkInvariants
+from ._framework_stretches import FrameworkStretches
 
-__all__ = ["Framework", "FrameworkStretch", "models"]
+__all__ = ["FrameworkInvariants", "FrameworkStretches", "models"]

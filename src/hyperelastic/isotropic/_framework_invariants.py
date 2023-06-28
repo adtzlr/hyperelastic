@@ -3,7 +3,7 @@ import numpy as np
 from ..math import cdya, ddot, dya, eye, trace
 
 
-class Framework:
+class FrameworkInvariants:
     r"""The Framework for a Total-Lagrangian invariant-based isotropic hyperelastic
     material formulation provides the material behaviour-independent parts for
     evaluating the second Piola-Kirchhoff stress tensor as well as its associated
@@ -141,7 +141,7 @@ class Framework:
         tensor)."""
 
         dWdE, statevars = self.gradient(C, statevars)
-        d2WdI1dI1, d2WdI1dI2, d2WdI2dI2 = self.material.hessian(
+        d2WdI1dI1, d2WdI2dI2, d2WdI1dI2 = self.material.hessian(
             self.I1, self.I2, statevars
         )
         I = self.I

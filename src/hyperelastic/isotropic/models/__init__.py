@@ -1,4 +1,4 @@
-from ._third_order_deformation import ThirdOrderDeformation
-from ._ogden import Ogden
+from . import invariants
+from . import stretches
 
-__all__ = ["ThirdOrderDeformation", "Ogden"]
+__all__ = ["invariants", "stretches"]

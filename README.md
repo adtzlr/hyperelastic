@@ -9,7 +9,7 @@ Spaces are partial deformations on which a given material formulation should be 
 
 The math module provides helpers in reduced vector (Voigt) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors.
 
-# Example
+# Usage
 Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` (elasticity).
 
 ```python

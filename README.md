@@ -45,7 +45,7 @@ class MyModel1:
 umat1 = hel.spaces.DistortionalSpace(hel.frameworks.InvariantsFramework(MyModel1()))
 ```
 
-## Principal Stretch-based material formulations
+## Principal stretch-based material formulations
 A minimal template for a principal stretch-based material formulation applied on the distortional space:
 
 ```python

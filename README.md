@@ -1,10 +1,7 @@
 <p align="center">
   <a href="https://github.com/adtzlr/hyperelastic"><img src="https://github.com/adtzlr/hyperelastic/assets/5793153/499f3f9a-6e1d-4b37-877f-bf8d519e4fe6" height="160px"/></a>
-  <p align="center">Constitutive hyperelastic material formulations for FElupe.</p>
+  <p align="center">Constitutive hyperelastic material formulations for < a href="https://github.com/adtzlr/felupe">FElupe</a>.</p>
 </p>
-
-# hyperelastic
-Constitutive hyperelastic material formulations for [FElupe](https://github.com/adtzlr/felupe).
 
 This package provides spaces on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. A generalized framework for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor enables a clean coding of these material formulations.
 

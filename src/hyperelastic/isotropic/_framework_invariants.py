@@ -140,7 +140,7 @@ class FrameworkInvariants:
         fourth-order elasticity tensor associated to the second Piola-Kirchhoff stress
         tensor)."""
 
-        dWdE, statevars = self.gradient(C, statevars)
+        dWdC, statevars = self.gradient(C, statevars)
         d2WdI1dI1, d2WdI2dI2, d2WdI1dI2 = self.material.hessian(
             self.I1, self.I2, statevars
         )

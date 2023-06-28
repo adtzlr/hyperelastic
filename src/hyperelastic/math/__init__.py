@@ -1,1 +1,35 @@
-from ._voigt import as_voigt, as_tensor, trace, det, inv, dot, dya, cdya_ik, ddot, eye
+from ._voigt import (
+    astensor,
+    asvoigt,
+    cdya,
+    cdya_ik,
+    ddot,
+    det,
+    dev,
+    dot,
+    dya,
+    eigh,
+    eye,
+    inv,
+    trace,
+    transpose,
+    tril_from_triu,
+)
+
+__all__ = [
+    "astensor",
+    "asvoigt",
+    "cdya",
+    "cdya_ik",
+    "ddot",
+    "det",
+    "dev",
+    "dot",
+    "dya",
+    "eye",
+    "inv",
+    "trace",
+    "transpose",
+    "eigh",
+    "tril_from_triu",
+]

@@ -17,28 +17,16 @@ import hyperelastic as hel
 import hyperelastic.math as hm
 
 class MyMaterialModel:
-    def __init__(self, shear_modulus):
-        self.shear_modulus = shear_modulus
 
-    def gradient(self, I1, I2, statevars_old):
+    def gradient(self, I1, I2, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants of the right Cauchy-Green deformation tensor."""
 
-        dWdI1 = self.shear_modulus / 2
-        dWdI2 = 0
-
-        # update the state variables
-        statevars_new = statevars_old
-
-        return dWdI1, dWdI2, statevars_new
+        return dWdI1, dWdI2, statevars
 
     def hessian(self, I1, I2, statevars_old):
         """The hessian as the second partial derivatives of the strain energy function 
         w.r.t. the invariants of the right Cauchy-Green deformation tensor. """
-
-        d2WdI1I1 = 0
-        d2WdI1I2 = 0
-        d2WdI2I2 = 0
 
         return d2WdI1I1, d2WdI2I2, d2WdI1I2
 

@@ -9,6 +9,13 @@ Spaces are partial deformations on which a given material formulation should be 
 
 The math module provides helpers in reduced vector (Voigt) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors.
 
+# Installation
+Install Python, fire up 🔥 a terminal and run 🏃
+
+```shell
+pip install hyperelastic
+```
+
 # Usage
 Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` (elasticity).
 
@@ -58,3 +65,12 @@ class MyModel2:
 
 umat2 = hel.spaces.DistortionalSpace(hel.isotropic.FrameworkStretches(MyModel2()))
 ```
+
+# License
+Hyperelastic - Constitutive hyperelastic material formulations for FElupe (C) 2023 Andreas Dutzler, Graz (Austria).
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.

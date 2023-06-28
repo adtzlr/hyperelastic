@@ -201,3 +201,12 @@ def cdya(A, B):
     s = b[k, j].reshape(6, 6)
 
     return (A[m] * B[n] + A[r] * A[s]) / 2
+
+
+def eigh(A, fun=None):
+    "Eigenvalues and -bases of matrix A."
+    wA, vA = np.linalg.eigh(astensor(A).T)
+    MA = np.einsum("...ia,...ja->...ija", vA, vA)
+    if fun is not None:
+        wA = fun(wA)
+    return wA.T, np.array([asvoigt(M) for M in MA.T])

@@ -12,6 +12,8 @@ from ._voigt import (
     inv,
     trace,
     transpose,
+    eigh,
+    tril_from_triu,
 )
 
 __all__ = [
@@ -28,4 +30,6 @@ __all__ = [
     "inv",
     "trace",
     "transpose",
+    "eigh",
+    "tril_from_triu",
 ]

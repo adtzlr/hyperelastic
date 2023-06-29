@@ -162,10 +162,10 @@ def cdya_ik(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, k].reshape(3, 3, 3, 3)
-    n = b[j, l].reshape(3, 3, 3, 3)
+    ik = b[i, k].reshape(3, 3, 3, 3)
+    jl = b[j, l].reshape(3, 3, 3, 3)
 
-    return A[m] * B[n]
+    return A[ik] * B[jl]
 
 
 def cdya_il(A, B):
@@ -179,14 +179,14 @@ def cdya_il(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, l].reshape(3, 3, 3, 3)
-    n = b[k, j].reshape(3, 3, 3, 3)
+    il = b[i, l].reshape(3, 3, 3, 3)
+    kj = b[k, j].reshape(3, 3, 3, 3)
 
-    return A[m] * B[n]
+    return A[il] * B[kj]
 
 
 def cdya(A, B):
-    "The inner- and outer-crossed dyadoc (outer) product."
+    "The inner- and outer-crossed dyadic (outer) product."
     i, j = [a.ravel() for a in np.indices((6, 6))]
 
     a = np.array([(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)])
@@ -194,13 +194,13 @@ def cdya(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, k].reshape(6, 6)
-    n = b[j, l].reshape(6, 6)
+    ik = b[i, k].reshape(6, 6)
+    jl = b[j, l].reshape(6, 6)
 
-    r = b[i, l].reshape(6, 6)
-    s = b[k, j].reshape(6, 6)
+    il = b[i, l].reshape(6, 6)
+    kj = b[k, j].reshape(6, 6)
 
-    return (A[m] * B[n] + A[r] * A[s]) / 2
+    return (A[ik] * B[jl] + A[il] * A[kj]) / 2
 
 
 def eigh(A, fun=None):

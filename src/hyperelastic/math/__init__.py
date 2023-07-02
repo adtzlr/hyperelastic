@@ -3,6 +3,7 @@ from ._voigt import (
     asvoigt,
     cdya,
     cdya_ik,
+    cdya_il,
     ddot,
     det,
     dev,
@@ -14,6 +15,7 @@ from ._voigt import (
     trace,
     transpose,
     tril_from_triu,
+    triu_from_tril,
 )
 
 __all__ = [
@@ -21,6 +23,7 @@ __all__ = [
     "asvoigt",
     "cdya",
     "cdya_ik",
+    "cdya_il",
     "ddot",
     "det",
     "dev",
@@ -32,4 +35,5 @@ __all__ = [
     "transpose",
     "eigh",
     "tril_from_triu",
+    "triu_from_tril",
 ]

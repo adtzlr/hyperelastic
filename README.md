@@ -19,7 +19,7 @@ pip install hyperelastic
 ```
 
 # Usage
-Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` (elasticity).
+Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` of the strain energy function (elasticity). It depends on the framework which derivatives have to be defined, e.g. the derivatives w.r.t. the invariants of the right Cauchy-Green deformation tensor or w.r.t. the principal stretches.
 
 ```python
 import hyperelastic as hel

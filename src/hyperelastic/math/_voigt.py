@@ -63,6 +63,17 @@ def tril_from_triu(A, inplace=True):
     return B
 
 
+def triu_from_tril(A, inplace=True):
+    "Copy lower triangle values to upper triangle values of a 3x3 tensor inplace."
+    B = A
+    if not inplace:
+        B = A.copy()
+
+    i, j = np.tril_indices(6, -1)
+    B[j, i] = A[i, j]
+    return B
+
+
 def trace(A):
     "Return the sum of the diagonal values of a 3x3 tensor."
     return np.sum(A[:3], axis=0)
@@ -124,8 +135,8 @@ def dot(A, B, mode=(2, 2)):
 
 def eye(A):
     "A 3x3 tensor in Voigt-storage with ones on the diagonal and zeros elsewhere."
-    ntrax = len(A.shape[1:])
-    return np.array([1, 1, 1, 0, 0, 0]).reshape(6, *np.ones(ntrax, dtype=int))
+    trax = np.ones(len(A.shape[1:]), dtype=int)
+    return np.array([1, 1, 1, 0, 0, 0], dtype=float).reshape(6, *trax)
 
 
 def ddot(A, B, mode=(2, 2)):
@@ -162,10 +173,10 @@ def cdya_ik(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, k].reshape(3, 3, 3, 3)
-    n = b[j, l].reshape(3, 3, 3, 3)
+    ik = b[i, k].reshape(3, 3, 3, 3)
+    jl = b[j, l].reshape(3, 3, 3, 3)
 
-    return A[m] * B[n]
+    return A[ik] * B[jl]
 
 
 def cdya_il(A, B):
@@ -179,14 +190,14 @@ def cdya_il(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, l].reshape(3, 3, 3, 3)
-    n = b[k, j].reshape(3, 3, 3, 3)
+    il = b[i, l].reshape(3, 3, 3, 3)
+    kj = b[k, j].reshape(3, 3, 3, 3)
 
-    return A[m] * B[n]
+    return A[il] * B[kj]
 
 
 def cdya(A, B):
-    "The inner- and outer-crossed dyadoc (outer) product."
+    "The inner- and outer-crossed dyadic (outer) product."
     i, j = [a.ravel() for a in np.indices((6, 6))]
 
     a = np.array([(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)])
@@ -194,13 +205,13 @@ def cdya(A, B):
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    m = b[i, k].reshape(6, 6)
-    n = b[j, l].reshape(6, 6)
+    ik = b[i, k].reshape(6, 6)
+    jl = b[j, l].reshape(6, 6)
 
-    r = b[i, l].reshape(6, 6)
-    s = b[k, j].reshape(6, 6)
+    il = b[i, l].reshape(6, 6)
+    kj = b[k, j].reshape(6, 6)
 
-    return (A[m] * B[n] + A[r] * A[s]) / 2
+    return (A[ik] * B[jl] + A[il] * B[kj]) / 2
 
 
 def eigh(A, fun=None):

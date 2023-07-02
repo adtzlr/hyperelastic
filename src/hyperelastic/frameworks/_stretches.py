@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..math import cdya, dya, eigh
+from ..math import cdya, dya, eigh, transpose
 
 
 class StretchesFramework:
@@ -13,6 +13,100 @@ class StretchesFramework:
     w.r.t. the right Cauchy-Green deformation tensor. Hence, the work-conjugate stress
     tensor is one half of the second Piola-Kirchhoff stress tensor and the fourth-order
     elasticitiy tensor used here is a quarter of the Total-Lagrangian elasticity tensor.
+
+    ..  math::
+
+        \psi(\boldsymbol{C}) = \psi(\lambda_\alpha(\boldsymbol{C}))
+
+    The principal stretches (the square roots of the eigenvalues) of the left or right
+    Cauchy-Green deformation tensor are obtained by the solution of the eigenvalue
+    problem,
+
+    ..  math::
+
+        \left( \boldsymbol{C} - \lambda^2_\alpha \boldsymbol{I} \right)
+            \boldsymbol{N}_\alpha = \boldsymbol{0}
+
+    where the Cauchy-Green deformation tensors eliminate the rigid body rotations
+    of the deformation gradient and serve as a quadratic change-of-length measure of
+    the deformation.
+
+    ..  math::
+
+        \boldsymbol{C} &= \boldsymbol{F}^T \boldsymbol{F}
+
+        \boldsymbol{b} &= \boldsymbol{F} \boldsymbol{F}^T
+
+    The first partial derivative of the strain energy function w.r.t. a principal
+    stretch
+
+    ..  math::
+
+        \psi_{,\alpha} = \frac{\partial \psi}{\partial \lambda_\alpha}
+
+    and the partial derivative of a principal strech w.r.t. the right Cauchy-Green
+    deformation tensor is defined
+
+    ..  math::
+
+        \frac{\partial \lambda_\alpha}{\partial \boldsymbol{C}} =
+            \frac{\partial (\lambda^2_\alpha)^{1/2}}{\partial \boldsymbol{C}} =
+            \frac{1}{2 \lambda_\alpha} \boldsymbol{M}_\alpha
+
+    with the eigenbase as the dyadic (outer vector) product of eigenvectors.
+
+    ..  math::
+
+        \boldsymbol{M}_\alpha = \boldsymbol{N}_\alpha \otimes \boldsymbol{N}_\alpha
+
+    The second Piola-Kirchhoff stress tensor is formulated by the application of the
+    chain rule and a sum of all principal stretch contributions.
+
+    ..  math::
+
+        \frac{\partial \psi}{\partial \boldsymbol{C}} &=
+            \sum_\alpha \frac{\partial \psi}{\partial \lambda_\alpha}
+                \frac{\partial \lambda_\alpha}{\partial \boldsymbol{C}}
+
+        \boldsymbol{S} &= 2 \frac{\partial \psi}{\partial \boldsymbol{C}}
+
+    Furthermore, the second partial derivatives of the elasticity tensor are carried
+    out.
+
+    ..  math::
+
+        \frac{\partial^2 \psi}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=
+            \sum_\alpha \sum_\beta \frac{\partial^2 \psi}
+            {\partial \lambda_\alpha~\partial \lambda_\beta}
+            \frac{\partial \lambda_\alpha}{\partial \boldsymbol{C}} \otimes
+            \frac{\partial \lambda_\beta}{\partial \boldsymbol{C}}
+
+            &+ \sum_\alpha \sum_{\beta \ne \alpha} \frac{
+                \frac{\partial \psi}{\partial \lambda^2_\alpha} -
+                \frac{\partial \psi}{\partial \lambda^2_\beta}
+            }{\lambda^2_\alpha - \lambda^2_\beta} \left( \boldsymbol{M}_\alpha \odot
+                \boldsymbol{M}_\beta + \boldsymbol{M}_\beta \odot
+            \boldsymbol{M}_\alpha \right)
+
+
+    ..  math::
+
+        \mathbb{C} = 4 \frac{\partial^2 \psi}
+            {\partial \boldsymbol{C}~\partial \boldsymbol{C}}
+
+    In case of repeated equal principal stretches, the rule of d'Hospital is applied.
+
+    ..  math::
+
+        \lim_{\lambda^2_\beta \rightarrow \lambda^2_\alpha} \left(
+                \frac{\frac{\partial \psi}{\partial \lambda^2_\alpha} -
+                    \frac{\partial \psi}{\partial \lambda^2_\beta}
+                }{\lambda^2_\alpha - \lambda^2_\beta}
+            \right) = \left(
+            - \frac{\partial^2 \psi}{\partial \lambda^2_\alpha~\partial \lambda^2_\beta}
+            + \frac{\partial^2 \psi}{\partial \lambda^2_\beta~\partial \lambda^2_\beta}
+        \right)
+
     """
 
     def __init__(self, material, parallel=False):
@@ -65,16 +159,19 @@ class StretchesFramework:
         b = [0, 1, 2, 1, 2, 2]
 
         for m, (α, β) in enumerate(zip(a, b)):
-            d2WdCdC += d2WdλC2[m] * dya(M[α], M[β])
+            M4 = dya(M[α], M[β])
+            d2WdCdC += d2WdλC2[m] * M4
 
             if β != α:
                 v = λ[α] ** 2 - λ[β] ** 2
                 mask = np.isclose(v, 0)
 
-                w = np.zeros_like(v)
-                w[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
-                w[mask] = (d2WdλC2[β][mask] - d2WdλC2[m][mask]) / 2
+                f = np.zeros_like(v)
+                f[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
+                f[mask] = d2WdλC2[β][mask] - d2WdλC2[m][mask]
 
-                d2WdCdC += w * cdya(M[α], M[β])
+                d2WdCdC += d2WdλC2[m] * transpose(M4) + f * (
+                    cdya(M[α], M[β]) + cdya(M[β], M[α])
+                )
 
         return d2WdCdC

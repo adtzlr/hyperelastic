@@ -55,6 +55,6 @@ test = [
 version = {attr = "hyperelastic.__about__.__version__"}
 
 [project.urls]
-Homepage = "https://felupe.readthedocs.io/en/latest"
+Homepage = "https://github.com/adtzlr/hyperelastic"
 Code = "https://github.com/adtzlr/hyperelastic"
 Issues = "https://github.com/adtzlr/hyperelastic/issues"

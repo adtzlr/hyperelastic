@@ -1,4 +1,3 @@
-import felupe.math as fm
 import numpy as np
 
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose
@@ -145,6 +144,13 @@ class DistortionalSpace:
         self.parallel = parallel
         self.material = material
 
+        if self.parallel:
+            from einsumt import einsumt
+
+            self.einsum = einsumt
+        else:
+            self.einsum = np.einsum
+
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
@@ -154,7 +160,8 @@ class DistortionalSpace:
         the deformation gradient."""
 
         F, statevars = x[0], x[-1]
-        self.C = C = asvoigt(fm.dot(fm.transpose(F), F))
+
+        self.C = C = asvoigt(self.einsum("kI...,kJ...->IJ...", F, F))
         self.I3 = I3 = det(C)
         self.Cu = I3 ** (-1 / 3) * C
         dWudCu, statevars_new = self.material.gradient(self.Cu, statevars)
@@ -165,7 +172,7 @@ class DistortionalSpace:
 
         self.S = Sb - SbC / 3 * invC
 
-        return [fm.dot(F, astensor(self.S)), statevars_new]
+        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivative of the strain energy function
@@ -191,13 +198,6 @@ class DistortionalSpace:
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
 
-        if self.parallel:
-            from einsumt import einsumt
-
-            einsum = einsumt
-        else:
-            einsum = np.einsum
-
-        A4 = einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
+        A4 = self.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
         return [A4 + cdya_ik(I, self.S)]

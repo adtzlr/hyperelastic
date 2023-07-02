@@ -3,7 +3,7 @@
   <p align="center">Constitutive <b>hyperelastic</b> material formulations for <a href="https://github.com/adtzlr/felupe">FElupe</a>.</p>
 </p>
 
-[![PyPI version shields.io](https://img.shields.io/pypi/v/hyperelastic.svg)](https://pypi.python.org/pypi/hyperelastic/) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![Made with love in Graz (Austria)](https://img.shields.io/badge/Made%20with%20%E2%9D%A4%EF%B8%8F%20in-Graz%20(Austria)-0c674a) [![codecov](https://codecov.io/gh/adtzlr/hyperelastic/branch/main/graph/badge.svg)](https://codecov.io/gh/adtzlr/hyperelastic) [![DOI](https://zenodo.org/badge/xyz.svg)](https://zenodo.org/badge/latestdoi/xyz) ![Codestyle black](https://img.shields.io/badge/code%20style-black-black)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/hyperelastic.svg)](https://pypi.python.org/pypi/hyperelastic/) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![Made with love in Graz (Austria)](https://img.shields.io/badge/Made%20with%20%E2%9D%A4%EF%B8%8F%20in-Graz%20(Austria)-0c674a) [![codecov](https://codecov.io/gh/adtzlr/hyperelastic/branch/main/graph/badge.svg)](https://codecov.io/gh/adtzlr/hyperelastic) [![DOI](https://zenodo.org/badge/656860854.svg)](https://zenodo.org/badge/latestdoi/656860854) ![Codestyle black](https://img.shields.io/badge/code%20style-black-black)
 
 This package provides the essential building blocks for constitutive hyperelastic material formulations. This includes material behaviour-independent spaces and frameworks as well as material behaviour-dependent model formulations.
 

@@ -44,8 +44,15 @@ class MyModel1:
         return d2WdI1I1, d2WdI2I2, d2WdI1I2
 
 
-umat1 = hel.spaces.DistortionalSpace(hel.frameworks.InvariantsFramework(MyModel1()))
+model1 = MyModel1()
+umat1 = hel.spaces.DistortionalSpace(hel.frameworks.InvariantsFramework(model1))
 ```
+
+### Available isotropic hyperelastic invariant-based material formulations
+The typical polynomial-based material formulations ([Neo-Hooke](https://en.wikipedia.org/wiki/Neo-Hookean_solid), [Mooney-Rivlin](https://en.wikipedia.org/wiki/Mooney%E2%80%93Rivlin_solid), [Yeoh](https://en.wikipedia.org/wiki/Yeoh_(hyperelastic_model)) are all available as submodels of the third order deformation material formulation.
+
+- [Third-Order-Deformation (James-Green-Simpson)](https://onlinelibrary.wiley.com/doi/abs/10.1002/app.1975.070190723) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/invariants/_third_order_deformation.py))
+
 
 ## Principal stretch-based material formulations
 A minimal template for a principal stretch-based material formulation applied on the distortional space:
@@ -65,8 +72,12 @@ class MyModel2:
         return d2Wdλ1dλ1, d2Wdλ2dλ2, d2Wdλ3dλ3, d2Wdλ1dλ2, d2Wdλ2dλ3, d2Wdλ1dλ3
 
 
-umat2 = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(MyModel2()))
+model2 = MyModel2()
+umat2 = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model2))
 ```
+
+### Available isotropic hyperelastic stretch-based material formulations
+- [Ogden](https://en.wikipedia.org/wiki/Ogden_(hyperelastic_model)) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/stretches/_ogden.py))
 
 # License
 Hyperelastic - Constitutive hyperelastic material formulations for FElupe (C) 2023 Andreas Dutzler, Graz (Austria).

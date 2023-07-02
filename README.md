@@ -13,7 +13,7 @@ The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia
 
 $$ \boldsymbol{C} = \begin{bmatrix} C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13} \end{bmatrix}^T $$
 
-$$ \mathbb{C} = \begin{bmatrix} C_{1111} && C_{1122} && C_{1133} && C_{1112} && C_{1123} && C_{1113}\end{bmatrix}^T $$
+$$ \mathbb{C} = \begin{bmatrix} \mathbb{C}_{1111} && C_{1122} && C_{1133} && C_{1112} && C_{1123} && C_{1113}\end{bmatrix}^T $$
 
  & \mathbb{C}_{2211} & \mathbb{C}_{2222} & \mathbb{C}_{2233} & \mathbb{C}_{2212} & \mathbb{C}_{2223} & \mathbb{C}_{2213}
 

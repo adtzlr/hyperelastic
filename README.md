@@ -11,7 +11,7 @@ This package provides the essential building blocks for constitutive hyperelasti
 
 The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia.org/wiki/Voigt_notation)) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors. Shear terms are not doubled for strain-like tensors, instead all math operations take care of the reduced vector storage.
 
-$$ \boldsymbol{C}_6 = \begin{bmatrix} C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13} \end{bmatrix}^T $$
+$$ \boldsymbol{C}_{6} = \begin{bmatrix} C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13} \end{bmatrix}^T $$
 
 $$\mathbb{C} = \begin{bmatrix} \mathbb{C}_{11} C_{22} C_{33} C_{12} C_{23} C_{13} \end{bmatrix}^T$$
 

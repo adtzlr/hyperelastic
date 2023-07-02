@@ -200,7 +200,7 @@ def cdya(A, B):
     il = b[i, l].reshape(6, 6)
     kj = b[k, j].reshape(6, 6)
 
-    return (A[ik] * B[jl] + A[il] * A[kj]) / 2
+    return (A[ik] * B[jl] + A[il] * B[kj]) / 2
 
 
 def eigh(A, fun=None):

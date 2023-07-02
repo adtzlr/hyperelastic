@@ -13,7 +13,7 @@ The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia
 
 $$ \boldsymbol{C} = \begin{bmatrix} C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13} \end{bmatrix}^T $$
 
-$$\mathbb{C} = \begin{bmatrix} \mathbb{C}_{11} C_{22} C_{33} C_{12} C_{23} C_{13} \end{bmatrix}^T$$
+$$ \mathbb{A} = \begin{bmatrix} C_{11} C_{22} C_{33} C_{12} C_{23} C_{13} \end{bmatrix}^T $$
 
 # Installation
 Install Python, fire up 🔥 a terminal and run 🏃

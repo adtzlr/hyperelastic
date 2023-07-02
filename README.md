@@ -30,6 +30,8 @@ Material model formulations have to be created as classes with methods for the e
 > ⓘ **Note**
 > Define your own material model formulation with manual, automatic or symbolic differentiation with the help of your favourite package, e.g. [PyTorch](https://pytorch.org/), [JAX](https://jax.readthedocs.io/en/latest/), [Tensorflow](https://www.tensorflow.org/), [TensorTRAX](https://github.com/adtzlr/tensortrax), [SymPy](https://www.sympy.org/en/index.html), etc.
 
+First, let's import hyperelastic (and its math module).
+
 ```python
 import hyperelastic as hel
 import hyperelastic.math as hm

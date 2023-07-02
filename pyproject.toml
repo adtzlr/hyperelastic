@@ -48,7 +48,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "matplotlib",
+    "sympy",
 ]
 
 [tool.setuptools.dynamic]

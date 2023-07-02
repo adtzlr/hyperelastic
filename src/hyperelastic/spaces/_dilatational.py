@@ -41,7 +41,7 @@ class DilatationalSpace:
 
         C4 = (2 * self.tr_Sb + tr_C4b) * dya(
             self.invC, self.invC
-        ) - 2 / 3 * self.tr_Sb * I4
+        ) / 9 - 2 / 3 * self.tr_Sb * I4
 
         if self.parallel:
             from einsumt import einsumt

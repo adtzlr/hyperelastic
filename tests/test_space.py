@@ -18,9 +18,9 @@ def fea(umat):
     return job
 
 
-def test_dilatational_invariants():
-    model = hel.models.invariants.ThirdOrderDeformation(C10=0.5)
-    umat = hel.spaces.DilatationalSpace(hel.frameworks.InvariantsFramework(model))
+def test_distortional_stretches():
+    model = hel.models.stretches.Ogden(mu=1, alpha=1.5)
+    umat = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model))
     fea(umat).evaluate(verbose=2)
 
 
@@ -32,9 +32,9 @@ def test_distortional_invariants():
     fea(umat).evaluate(verbose=2)
 
 
-def test_distortional_stretches():
-    model = hel.models.stretches.Ogden(mu=1, alpha=1.5)
-    umat = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model))
+def test_dilatational_invariants():
+    model = hel.models.invariants.ThirdOrderDeformation(C10=0.5)
+    umat = hel.spaces.DilatationalSpace(hel.frameworks.InvariantsFramework(model))
     fea(umat).evaluate(verbose=2)
 
 

@@ -63,6 +63,17 @@ def tril_from_triu(A, inplace=True):
     return B
 
 
+def triu_from_tril(A, inplace=True):
+    "Copy lower triangle values to upper triangle values of a 3x3 tensor inplace."
+    B = A
+    if not inplace:
+        B = A.copy()
+
+    i, j = np.tril_indices(6, -1)
+    B[j, i] = A[i, j]
+    return B
+
+
 def trace(A):
     "Return the sum of the diagonal values of a 3x3 tensor."
     return np.sum(A[:3], axis=0)
@@ -124,8 +135,8 @@ def dot(A, B, mode=(2, 2)):
 
 def eye(A):
     "A 3x3 tensor in Voigt-storage with ones on the diagonal and zeros elsewhere."
-    ntrax = len(A.shape[1:])
-    return np.array([1, 1, 1, 0, 0, 0]).reshape(6, *np.ones(ntrax, dtype=int))
+    trax = np.ones(len(A.shape[1:]), dtype=int)
+    return np.array([1, 1, 1, 0, 0, 0], dtype=float).reshape(6, *trax)
 
 
 def ddot(A, B, mode=(2, 2)):

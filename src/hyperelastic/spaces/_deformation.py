@@ -1,4 +1,3 @@
-import felupe.math as fm
 import numpy as np
 
 from ..math import astensor, asvoigt, cdya_ik, eye
@@ -43,6 +42,13 @@ class DeformationSpace:
         self.parallel = parallel
         self.material = material
 
+        if self.parallel:
+            from einsumt import einsumt
+
+            self.einsum = einsumt
+        else:
+            self.einsum = np.einsum
+
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
@@ -52,12 +58,13 @@ class DeformationSpace:
         the deformation gradient."""
 
         F, statevars = x[0], x[-1]
-        self.C = asvoigt(fm.dot(fm.transpose(F), F))
+
+        self.C = asvoigt(self.einsum("kI...,kJ...->IJ...", F, F))
         dWdC, statevars_new = self.material.gradient(self.C, statevars)
 
         self.S = 2 * dWdC
 
-        return [fm.dot(F, astensor(self.S)), statevars_new]
+        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivative of the strain energy function

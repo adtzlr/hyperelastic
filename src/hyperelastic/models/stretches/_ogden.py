@@ -7,9 +7,11 @@ class Ogden:
         self.alpha = alpha
 
     def gradient(self, stretches, statevars):
-        dWdλ = self.mu * stretches ** (self.alpha - 1)
+        dWdλ = 2 * self.mu / self.alpha * stretches ** (self.alpha - 1)
         return dWdλ, statevars
 
     def hessian(self, stretches, statevars):
-        d2Wdλdλ = self.mu * (self.alpha - 1) * stretches ** (self.alpha - 2)
+        d2Wdλdλ = (
+            2 * self.mu / self.alpha * (self.alpha - 1) * stretches ** (self.alpha - 2)
+        )
         return np.concatenate([d2Wdλdλ, np.zeros_like(d2Wdλdλ)])

@@ -9,7 +9,7 @@ def fea(umat):
     field = fem.FieldContainer([fem.Field(region, dim=3)])
     boundaries, loadcase = fem.dof.uniaxial(field, clamped=True)
     solid = fem.SolidBodyNearlyIncompressible(umat, field, bulk=5000)
-    move = fem.math.linsteps([0, 1], num=3)
+    move = fem.math.linsteps([0, 2], num=3)
     step = fem.Step(
         items=[solid], ramp={boundaries["move"]: move}, boundaries=boundaries
     )
@@ -19,7 +19,7 @@ def fea(umat):
 
 
 def test_distortional_stretches():
-    model = hel.models.stretches.Ogden(mu=1, alpha=1.5)
+    model = hel.models.stretches.Ogden(mu=1, alpha=0.436)
     umat = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model))
     fea(umat).evaluate(verbose=2)
 

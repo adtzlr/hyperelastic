@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..math import cdya, dya, eigh
+from ..math import cdya, dya, eigh, transpose
 
 
 class StretchesFramework:
@@ -65,16 +65,19 @@ class StretchesFramework:
         b = [0, 1, 2, 1, 2, 2]
 
         for m, (α, β) in enumerate(zip(a, b)):
-            d2WdCdC += d2WdλC2[m] * dya(M[α], M[β])
+            M4 = dya(M[α], M[β])
+            d2WdCdC += d2WdλC2[m] * M4
 
             if β != α:
                 v = λ[α] ** 2 - λ[β] ** 2
                 mask = np.isclose(v, 0)
 
-                w = np.zeros_like(v)
-                w[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
-                w[mask] = (d2WdλC2[β][mask] - d2WdλC2[m][mask]) / 2
+                f = np.zeros_like(v)
+                f[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
+                f[mask] = (d2WdλC2[β][mask] - d2WdλC2[m][mask]) / 2
 
-                d2WdCdC += w * cdya(M[α], M[β])
+                d2WdCdC += d2WdλC2[m] * transpose(M4) + f * (
+                    cdya(M[α], M[β]) + cdya(M[β], M[α])
+                )
 
         return d2WdCdC

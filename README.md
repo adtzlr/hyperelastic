@@ -9,7 +9,11 @@ This package provides the essential building blocks for constitutive hyperelasti
 
 **Spaces** are partial deformations on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. Generalized **Frameworks** for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor and the principal stretches enable a clean coding of isotropic material formulations.
 
-The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia.org/wiki/Voigt_notation)) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors.
+The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia.org/wiki/Voigt_notation)) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors. Shear terms are not doubled for strain-like tensors, instead all math operations take care of the reduced vector storage.
+
+$$\boldsymbol{C} = \begin{bmatrix} C_{11} C_{22} C_{33} C_{12} C_{23} C_{13} \end{bmatrx}^T$$
+
+$$\mathbb{C} = \begin{bmatrix} \mathbb{C}_{11} C_{22} C_{33} C_{12} C_{23} C_{13} \end{bmatrx}^T$$
 
 # Installation
 Install Python, fire up 🔥 a terminal and run 🏃

@@ -102,16 +102,14 @@ class InvariantsFramework:
 
     """
 
-    def __init__(self, material, parallel=False):
+    def __init__(self, material, nstatevars=0, parallel=False):
         """Initialize the Framework for an invariant-based isotropic hyperelastic
         material formulation."""
 
         self.parallel = parallel
         self.material = material
 
-        self.x = [np.eye(3), np.zeros(0)]
-        if hasattr(self.material, "x"):
-            self.x = [self.material.x[0], self.material.x[-1]]
+        self.x = [np.eye(3), np.zeros(nstatevars)]
 
     def gradient(self, C, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.

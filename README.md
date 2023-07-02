@@ -23,7 +23,7 @@ pip install hyperelastic
 # Usage
 Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` of the strain energy function (elasticity). It depends on the framework which derivatives have to be defined, e.g. the derivatives w.r.t. the invariants of the right Cauchy-Green deformation tensor or w.r.t. the principal stretches.
 
-> **Note**
+> **Warning**
 > Define your own material model formulation with manual, automatic or symbolic differentiation with the help of your favourite package, e.g. [PyTorch](https://pytorch.org/), [JAX](https://jax.readthedocs.io/en/latest/), [Tensorflow](https://www.tensorflow.org/), [TensorTRAX](https://github.com/adtzlr/tensortrax), [SymPy](https://www.sympy.org/en/index.html), etc.
 
 ```python

@@ -110,11 +110,34 @@ class MyStretchesModel:
 
 model = MyStretchesModel()
 framework = hel.frameworks.StretchesFramework(model)
-umat2 = hel.spaces.DistortionalSpace(framework)
+umat = hel.spaces.DistortionalSpace(framework)
 ```
 
 ### Available isotropic hyperelastic stretch-based material formulations
 - [Ogden](https://en.wikipedia.org/wiki/Ogden_(hyperelastic_model)) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/stretches/_ogden.py))
+
+## Lab
+By using [`matadi`](https://github.com/adtzlr/matadi)'s `LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed.
+
+```python
+mooney_rivlin = hel.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)
+framework = hel.frameworks.InvariantsFramework(mooney_rivlin)
+umat = hel.spaces.DistortionalSpace(framework)
+
+import matadi
+
+lab = matadi.LabIncompressible(umat, title="Mooney Rivlin")
+data = lab.run(
+    ux=True,
+    bx=True,
+    ps=True,
+    stretch_min=0.7,
+    stretch_max=2.5,
+)
+fig, ax = lab.plot(data, stability=True)
+```
+
+![lab_mooney-rivlin](https://github.com/adtzlr/hyperelastic/assets/5793153/1b21df81-e0fd-4ea1-9bd7-24d4d70ba801)
 
 # License
 Hyperelastic - Constitutive hyperelastic material formulations for FElupe (C) 2023 Andreas Dutzler, Graz (Austria).

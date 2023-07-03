@@ -48,7 +48,7 @@ class ThirdOrderDeformation:
         self.C20 = C20
         self.C30 = C30
 
-    def gradient(self, I1, I2, statevars):
+    def gradient(self, I1, I2, I3, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants."""
 
@@ -59,15 +59,19 @@ class ThirdOrderDeformation:
             + self.C30 * 3 * (I1 - 3) ** 2
         )
         dWdI2 = self.C01 + self.C11 * (I1 - 3)
+        dWdI3 = None
 
-        return dWdI1, dWdI2, statevars
+        return dWdI1, dWdI2, dWdI3, statevars
 
-    def hessian(self, I1, I2, statevars):
+    def hessian(self, I1, I2, I3, statevars):
         """The hessian as the second partial derivatives of the strain energy function
         w.r.t. the invariants."""
 
         d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - 3)
-        d2WdI2I2 = 0
+        d2WdI2I2 = None
+        d2WdI3I3 = None
         d2WdI1I2 = self.C11
+        d2WdI2I3 = None
+        d2WdI1I3 = None
 
-        return d2WdI1I1, d2WdI2I2, d2WdI1I2
+        return d2WdI1I1, d2WdI2I2, d2WdI3I3, d2WdI1I2, d2WdI2I3, d2WdI1I3

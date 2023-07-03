@@ -117,7 +117,7 @@ umat = hel.spaces.DistortionalSpace(framework)
 - [Ogden](https://en.wikipedia.org/wiki/Ogden_(hyperelastic_model)) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/stretches/_ogden.py))
 
 ## Lab
-By using [`matadi`](https://github.com/adtzlr/matadi)'s `LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed.
+By using [matadi](https://github.com/adtzlr/matadi)'s `LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed.
 
 ```python
 mooney_rivlin = hel.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)

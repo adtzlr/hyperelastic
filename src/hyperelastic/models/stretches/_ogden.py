@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Ogden:
     def __init__(self, mu, alpha):
         self.mu = mu
@@ -14,4 +11,4 @@ class Ogden:
         d2Wdλdλ = (
             2 * self.mu / self.alpha * (self.alpha - 1) * stretches ** (self.alpha - 2)
         )
-        return np.concatenate([d2Wdλdλ, np.zeros_like(d2Wdλdλ)])
+        return [*d2Wdλdλ, None, None, None]

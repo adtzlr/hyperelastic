@@ -126,6 +126,8 @@ class StretchesFramework:
         self.λ, self.M = eigh(C, fun=np.sqrt)
 
         self.dWdλ, statevars_new = self.material.gradient(self.λ, statevars)
+        self.dWdλ = np.asarray(self.dWdλ)
+
         self.dWdλC = self.dWdλ / (2 * self.λ)
 
         dWdC = np.sum(np.expand_dims(self.dWdλC, axis=1) * self.M, axis=0)
@@ -140,6 +142,14 @@ class StretchesFramework:
 
         dWdC, statevars = self.gradient(C, statevars)
         d2Wdλdλ = self.material.hessian(self.λ, statevars)
+
+        if not isinstance(d2Wdλdλ, np.ndarray):
+            newshape = self.λ[0].shape
+            _d2Wdλdλ = np.zeros((6, *self.λ[0].shape))
+            for a in range(6):
+                if d2Wdλdλ[a] is not None:
+                    _d2Wdλdλ[a] = np.broadcast_to(d2Wdλdλ[a], newshape)
+            d2Wdλdλ = _d2Wdλdλ
 
         λ = self.λ
         M = self.M

@@ -21,7 +21,7 @@ pip install hyperelastic
 ```
 
 # Usage
-Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` of the strain energy function (elasticity). It depends on the framework which derivatives have to be defined, e.g. the derivatives w.r.t. the invariants of the right Cauchy-Green deformation tensor or w.r.t. the principal stretches. An instance of a **Framework** has to be *finalized* by the application on a **Space**.
+Material model formulations have to be created as classes with methods for the evaluation of the `gradient` (stress) and the `hessian` (elasticity) of the strain energy function. It depends on the framework which derivatives have to be defined, e.g. the derivatives w.r.t. the invariants of the right Cauchy-Green deformation tensor or w.r.t. the principal stretches. An instance of a **Framework** has to be *finalized* by the application on a **Space**.
 
 - [Deformation (Full) Space](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/spaces/_deformation.py)
 - [Distortional Space](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/spaces/_distortional.py)

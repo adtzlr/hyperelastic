@@ -41,7 +41,7 @@ import hyperelastic.math as hm
 A minimal template for an invariant-based material formulation applied on the distortional space:
 
 ```python
-class MyModel1:
+class MyInvariantsModel:
     def gradient(self, I1, I2, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants of the right Cauchy-Green deformation tensor."""
@@ -55,8 +55,9 @@ class MyModel1:
         return d2WdI1I1, d2WdI2I2, d2WdI1I2
 
 
-model1 = MyModel1()
-umat1 = hel.spaces.DistortionalSpace(hel.frameworks.InvariantsFramework(model1))
+model = MyInvariantsModel()
+framework = hel.frameworks.InvariantsFramework(model)
+umat = hel.spaces.DistortionalSpace(framework)
 ```
 
 ### Available isotropic hyperelastic invariant-based material formulations
@@ -69,7 +70,7 @@ The typical polynomial-based material formulations ([Neo-Hooke](https://en.wikip
 A minimal template for a principal stretch-based material formulation applied on the distortional space:
 
 ```python
-class MyModel2:
+class MyStretchesModel:
     def gradient(self, λ, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the principal stretches."""
@@ -83,8 +84,9 @@ class MyModel2:
         return d2Wdλ1dλ1, d2Wdλ2dλ2, d2Wdλ3dλ3, d2Wdλ1dλ2, d2Wdλ2dλ3, d2Wdλ1dλ3
 
 
-model2 = MyModel2()
-umat2 = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model2))
+model = MyStretchesModel()
+framework = hel.frameworks.StretchesFramework(model)
+umat2 = hel.spaces.DistortionalSpace(framework)
 ```
 
 ### Available isotropic hyperelastic stretch-based material formulations

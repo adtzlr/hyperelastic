@@ -19,7 +19,7 @@ def fea(umat):
 
 
 def test_distortional_stretches():
-    model = hel.models.stretches.Ogden(mu=1, alpha=0.436)
+    model = hel.models.stretches.Ogden(mu=[1], alpha=[0.436])
     umat = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model))
     fea(umat).evaluate(verbose=2)
 

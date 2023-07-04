@@ -3,7 +3,7 @@ import numpy as np
 from ..math import cdya, dya, eigh, transpose
 
 
-class StretchesFramework:
+class Stretches:
     r"""The Framework for a Total-Lagrangian stretch-based isotropic hyperelastic
     material formulation provides the material behaviour-independent parts for
     evaluating the second Piola-Kirchhoff stress tensor as well as its associated

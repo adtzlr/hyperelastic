@@ -1,4 +1,4 @@
-from ._invariants import InvariantsFramework
-from ._stretches import StretchesFramework
+from ._invariants import Invariants
+from ._stretches import Stretches
 
-__all__ = ["InvariantsFramework", "StretchesFramework"]
+__all__ = ["Invariants", "Stretches"]

@@ -1,5 +1,5 @@
-from ._deformation import DeformationSpace
-from ._dilatational import DilatationalSpace
-from ._distortional import DistortionalSpace
+from ._deformation import Deformation
+from ._dilatational import Dilatational
+from ._distortional import Distortional
 
-__all__ = ["DistortionalSpace", "DilatationalSpace", "DeformationSpace"]
+__all__ = ["Distortional", "Dilatational", "Deformation"]

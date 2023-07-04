@@ -44,9 +44,15 @@ class SymbolicMaterialFormulation:
             [self.x, self.y, self.z], self.W.diff(self.z, self.z)
         )
 
-        self.d2Wdxdy = lambda x, y, z: np.zeros_like(x)
-        self.d2Wdydz = lambda x, y, z: np.zeros_like(x)
-        self.d2Wdxdz = lambda x, y, z: np.zeros_like(x)
+        self.d2Wdxdy = sym.lambdify(
+            [self.x, self.y, self.z], self.W.diff(self.x, self.y)
+        )
+        self.d2Wdydz = sym.lambdify(
+            [self.x, self.y, self.z], self.W.diff(self.y, self.z)
+        )
+        self.d2Wdxdz = sym.lambdify(
+            [self.x, self.y, self.z], self.W.diff(self.x, self.z)
+        )
 
     def gradient(self, stretches, statevars):
         return [
@@ -56,21 +62,19 @@ class SymbolicMaterialFormulation:
         ], statevars
 
     def hessian(self, stretches, statevars):
-        return np.array(
-            [
-                self.d2Wdxdx(*stretches),
-                self.d2Wdydy(*stretches),
-                self.d2Wdzdz(*stretches),
-                self.d2Wdxdy(*stretches),
-                self.d2Wdydz(*stretches),
-                self.d2Wdxdz(*stretches),
-            ]
-        )
+        return [
+            self.d2Wdxdx(*stretches),
+            self.d2Wdydy(*stretches),
+            self.d2Wdzdz(*stretches),
+            self.d2Wdxdy(*stretches),
+            self.d2Wdydz(*stretches),
+            self.d2Wdxdz(*stretches),
+        ]
 
 
 def test_distortional_stretches_sympy():
     model = SymbolicMaterialFormulation(ogden, mu=1, alpha=0.436)
-    umat = hel.spaces.DistortionalSpace(hel.frameworks.StretchesFramework(model))
+    umat = hel.DistortionalSpace(hel.StretchesFramework(model))
     fea(umat).evaluate(verbose=2)
 
 

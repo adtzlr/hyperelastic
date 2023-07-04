@@ -7,9 +7,9 @@
 
 This package provides the essential building blocks for constitutive hyperelastic material formulations. This includes material behaviour-independent spaces and frameworks as well as material behaviour-dependent model formulations.
 
-**Spaces** are full or partial deformations on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. Generalized *Total-Lagrange* **Frameworks** for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor and the principal stretches enable a clean coding of isotropic material formulations.
+**Spaces** ([`hyperelastic.spaces`](https://github.com/adtzlr/hyperelastic/tree/main/src/hyperelastic/spaces)) are full or partial deformations on which a given material formulation should be projected to, e.g. to the distortional (part of the deformation) space. Generalized *Total-Lagrange* **Frameworks** ([`hyperelastic.frameworks`](https://github.com/adtzlr/hyperelastic/tree/main/src/hyperelastic/frameworks)) for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor and the principal stretches enable a clean coding of isotropic material formulations.
 
-The math-module provides helpers in reduced vector ([Voigt](https://en.wikipedia.org/wiki/Voigt_notation)) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors. Shear terms are not doubled for strain-like tensors, instead all math operations take care of the reduced vector storage.
+The [`hyperelastic.math`](https://github.com/adtzlr/hyperelastic/tree/main/src/hyperelastic/math)-module provides helpers in reduced vector ([Voigt](https://en.wikipedia.org/wiki/Voigt_notation)) storage for symmetric three-dimensional second-order tensors along with a matrix storage for (at least minor) symmetric three-dimensional fourth-order tensors. Shear terms are not doubled for strain-like tensors, instead all math operations take care of the reduced vector storage.
 
 $$ \boldsymbol{C} = \begin{bmatrix} C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13} \end{bmatrix}^T $$
 
@@ -69,8 +69,8 @@ class MyInvariantsModel:
 
 
 model = MyInvariantsModel()
-framework = hel.frameworks.InvariantsFramework(model)
-umat = hel.spaces.DistortionalSpace(framework)
+framework = hel.InvariantsFramework(model)
+umat = hel.DistortionalSpace(framework)
 ```
 
 ### Available isotropic hyperelastic invariant-based material formulations
@@ -109,8 +109,8 @@ class MyStretchesModel:
 
 
 model = MyStretchesModel()
-framework = hel.frameworks.StretchesFramework(model)
-umat = hel.spaces.DistortionalSpace(framework)
+framework = hel.StretchesFramework(model)
+umat = hel.DistortionalSpace(framework)
 ```
 
 ### Available isotropic hyperelastic stretch-based material formulations
@@ -121,8 +121,8 @@ By using [matadi](https://github.com/adtzlr/matadi)'s `LabIncompressible`, numer
 
 ```python
 mooney_rivlin = hel.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)
-framework = hel.frameworks.InvariantsFramework(mooney_rivlin)
-umat = hel.spaces.DistortionalSpace(framework)
+framework = hel.InvariantsFramework(mooney_rivlin)
+umat = hel.DistortionalSpace(framework)
 
 import matadi
 

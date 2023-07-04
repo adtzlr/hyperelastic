@@ -3,7 +3,7 @@ import numpy as np
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose
 
 
-class DistortionalSpace:
+class Distortional:
     r"""The distortional (part of the deformation) space is a partial deformation with
     constant volume. For a given deformation map :math:`x(X)` and its deformation
     gradient :math:`\boldsymbol{F}`, the distortional part of the deformation gradient

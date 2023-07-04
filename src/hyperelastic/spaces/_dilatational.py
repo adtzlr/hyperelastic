@@ -3,7 +3,7 @@ import numpy as np
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, trace
 
 
-class DilatationalSpace:
+class Dilatational:
     def __init__(self, material, parallel=False):
         self.parallel = parallel
         self.material = material

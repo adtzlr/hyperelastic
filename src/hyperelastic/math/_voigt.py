@@ -64,7 +64,7 @@ def tril_from_triu(A, inplace=True):
 
 
 def triu_from_tril(A, inplace=True):
-    "Copy lower triangle values to upper triangle values of a 3x3 tensor inplace."
+    "Copy lower triangle values to upper triangle values of a 6x6 tensor inplace."
     B = A
     if not inplace:
         B = A.copy()
@@ -123,12 +123,15 @@ def dot(A, B, mode=(2, 2)):
     if mode == (2, 2):
         trax = np.broadcast_shapes(A.shape[1:], B.shape[1:])
         C = np.zeros((3, 3, *trax))
-        C[0] = A[0] * B[0] + A[3] * B[3] + A[5] * B[5]
-        C[1] = A[3] * B[3] + A[1] * B[1] + A[4] * B[4]
-        C[2] = A[4] * B[4] + A[5] * B[5] + A[2] * B[2]
-        C[3] = A[0] * B[3] + A[3] * B[1] + A[5] * B[4]
-        C[4] = A[3] * B[5] + A[1] * B[4] + A[4] * B[2]
-        C[5] = A[0] * B[5] + A[3] * B[4] + A[5] * B[2]
+        C[0, 0] = A[0] * B[0] + A[3] * B[3] + A[5] * B[5]
+        C[1, 1] = A[3] * B[3] + A[1] * B[1] + A[4] * B[4]
+        C[2, 2] = A[4] * B[4] + A[5] * B[5] + A[2] * B[2]
+        C[0, 1] = A[0] * B[3] + A[3] * B[1] + A[5] * B[4]
+        C[1, 2] = A[3] * B[5] + A[1] * B[4] + A[4] * B[2]
+        C[0, 2] = A[0] * B[5] + A[3] * B[4] + A[5] * B[2]
+        C[1, 0] = A[3] * B[0] + A[1] * B[3] + A[4] * B[5]
+        C[2, 1] = A[5] * B[3] + A[4] * B[1] + A[2] * B[4]
+        C[2, 0] = A[5] * B[0] + A[4] * B[3] + A[2] * B[5]
 
     return C
 

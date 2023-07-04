@@ -3,7 +3,7 @@ import numpy as np
 from ..math import astensor, asvoigt, cdya_ik, eye
 
 
-class DeformationSpace:
+class Deformation:
     r"""The deformation space.
 
     This class takes a Total-Lagrange material formulation and applies it on the

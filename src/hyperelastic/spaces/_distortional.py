@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose
+from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose, partition
 
 
 class Distortional:
@@ -154,8 +154,8 @@ class Distortional:
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
-
-    def gradient(self, x):
+    
+    def _grad(self, x):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the deformation gradient."""
 
@@ -174,7 +174,24 @@ class Distortional:
 
         return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
 
-    def hessian(self, x):
+    def gradient(self, x):
+        """The gradient as the partial derivative of the strain energy function w.r.t.
+        the deformation gradient."""
+        
+        from joblib import Parallel, delayed
+        
+        y, axis = partition(x, threads=1)
+        res = Parallel(n_jobs=1, prefer="threads")(delayed(self._grad)(z) for z in zip(*y))
+        #res = [self._grad(z) for z in zip(*y)]
+        
+        dWdF = np.concatenate([r[0] for r in res], axis=axis)
+        
+        if res[0][1] is not None:
+            statevars = np.concatenate([r[1] for r in res], axis=axis)
+
+        return dWdF, statevars
+
+    def _hess(self, x):
         """The hessian as the second partial derivative of the strain energy function
         w.r.t. the deformation gradient."""
 
@@ -201,3 +218,17 @@ class Distortional:
         A4 = self.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
         return [A4 + cdya_ik(I, self.S)]
+
+    def hessian(self, x):
+        """The hessian as the partial derivative of the strain energy function w.r.t.
+        the deformation gradient."""
+        
+        from joblib import Parallel, delayed
+        
+        y, axis = partition(x, threads=2)
+        res = Parallel(n_jobs=2, prefer="threads")(delayed(self._hess)(z) for z in zip(*y))
+        #res = [self._hess(z) for z in zip(*y)]
+        
+        d2WdFdF = np.concatenate(res, axis=axis)
+        
+        return d2WdFdF

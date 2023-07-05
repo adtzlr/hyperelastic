@@ -1,3 +1,4 @@
+from ._parallel import partition
 from ._voigt import (
     astensor,
     asvoigt,
@@ -36,4 +37,5 @@ __all__ = [
     "eigh",
     "tril_from_triu",
     "triu_from_tril",
+    "partition",
 ]

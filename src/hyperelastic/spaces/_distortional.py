@@ -1,4 +1,5 @@
 import numpy as np
+from threading import Thread
 
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose
 
@@ -155,49 +156,97 @@ class Distortional:
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
 
-    def gradient(self, x):
+    def _gradient(self, x, full_output=False):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the deformation gradient."""
 
         F, statevars = x[0], x[-1]
 
-        self.C = C = asvoigt(self.einsum("kI...,kJ...->IJ...", F, F))
-        self.I3 = I3 = det(C)
-        self.Cu = I3 ** (-1 / 3) * C
-        dWudCu, statevars_new = self.material.gradient(self.Cu, statevars)
+        C = C = asvoigt(self.einsum("kI...,kJ...->IJ...", F, F))
+        I3 = I3 = det(C)
+        Cu = I3 ** (-1 / 3) * C
+        dWudCu, statevars_new = self.material.gradient(Cu, statevars)
 
-        self.Sb = Sb = 2 * I3 ** (-1 / 3) * dWudCu
-        self.SbC = SbC = ddot(Sb, C)
-        self.invC = invC = inv(C, determinant=I3)
+        Sb = 2 * I3 ** (-1 / 3) * dWudCu
+        SbC = ddot(Sb, C)
+        invC = inv(C, determinant=I3)
 
-        self.S = Sb - SbC / 3 * invC
+        S = Sb - SbC / 3 * invC
+        
+        results = [C, I3, Cu, Sb, SbC, invC, S]
+        
+        if full_output:
+            return self.einsum("iK...,KJ...->iJ...", F, astensor(S)), statevars_new, results
+        else:
+            return self.einsum("iK...,KJ...->iJ...", F, astensor(S)), statevars_new
+    
+    def gradient(self, x):
+        
+        P = np.zeros_like(x[0])
+        
+        def target(values, q):
+            values[..., q, :] = self._gradient([x[0][..., q, :], x[1]])[0]
 
-        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
+        threads = [
+            Thread(target=target, args=(P, q))
+            for q in np.arange(x[0].shape[-2])
+        ]
+        
+        for t in threads:
+            t.start()
 
-    def hessian(self, x):
+        for t in threads:
+            t.join()
+        
+        return P, x[1]
+        
+        
+
+    def _hessian(self, x):
         """The hessian as the second partial derivative of the strain energy function
         w.r.t. the deformation gradient."""
 
         F, statevars = x[0], x[-1]
 
-        dWudF, statevars_new = self.gradient(x)
-        I = eye(self.C)
+        dWudF, statevars_new, results = self._gradient(x, full_output=True)
+        C, I3, Cu, Sb, SbC, invC, S = results
+        I = eye(C)
 
-        d2WdCdC = self.material.hessian(self.Cu, statevars)
-        C4b = 4 * self.I3 ** (-2 / 3) * d2WdCdC
+        d2WdCdC = self.material.hessian(Cu, statevars)
+        C4b = 4 * I3 ** (-2 / 3) * d2WdCdC
 
-        P4 = cdya(I, I) - dya(self.invC, self.C) / 3
-        I4 = cdya(self.invC, self.invC)
+        P4 = cdya(I, I) - dya(invC, C) / 3
+        I4 = cdya(invC, invC)
 
-        SbinvC = dya(self.Sb, self.invC)
+        SbinvC = dya(Sb, invC)
         invCSb = transpose(SbinvC)
-        invCinvC = dya(self.invC, self.invC)
+        invCinvC = dya(invC, invC)
 
-        C4 = 2 / 3 * (self.SbC * I4 - SbinvC - invCSb + self.SbC / 3 * invCinvC)
+        C4 = 2 / 3 * (SbC * I4 - SbinvC - invCSb + SbC / 3 * invCinvC)
 
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
 
         A4 = self.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
 
-        return [A4 + cdya_ik(I, self.S)]
+        return [A4 + cdya_ik(I, S)]
+
+    def hessian(self, x):
+        
+        A = np.zeros((3, 3, 3, 3, *x[0].shape[2:]))
+        
+        def target(values, q):
+            values[..., q, :] = self._hessian([x[0][..., q, :], x[1]])[0]
+
+        threads = [
+            Thread(target=target, args=(A, q))
+            for q in np.arange(x[0].shape[-2])
+        ]
+        
+        for t in threads:
+            t.start()
+
+        for t in threads:
+            t.join()
+        
+        return [A]

@@ -52,14 +52,31 @@ class ThirdOrderDeformation:
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants."""
 
-        dWdI1 = (
-            self.C10
-            + self.C11 * (I2 - 3)
-            + self.C20 * 2 * (I1 - 3)
-            + self.C30 * 3 * (I1 - 3) ** 2
-        )
-        dWdI2 = self.C01 + self.C11 * (I1 - 3)
+        dWdI1 = None
+        dWdI2 = None
         dWdI3 = None
+
+        if self.C10 != 0 or self.C11 != 0 or self.C20 != 0 or self.C30 != 0:
+            dWdI1 = 0
+
+        if self.C01 != 0 or self.C11 != 0:
+            dWdI2 = 0
+
+        if self.C10 != 0:
+            dWdI1 += self.C10
+
+        if self.C01 != 0:
+            dWdI2 += self.C01
+
+        if self.C11 != 0:
+            dWdI1 += self.C11 * (I2 - 3)
+            dWdI2 += self.C11 * (I1 - 3)
+
+        if self.C20 != 0:
+            dWdI1 += self.C20 * 2 * (I1 - 3)
+
+        if self.C30 != 0:
+            dWdI1 += self.C30 * 3 * (I1 - 3) ** 2
 
         return dWdI1, dWdI2, dWdI3, statevars
 
@@ -67,11 +84,17 @@ class ThirdOrderDeformation:
         """The hessian as the second partial derivatives of the strain energy function
         w.r.t. the invariants."""
 
-        d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - 3)
+        d2WdI1I1 = None
         d2WdI2I2 = None
         d2WdI3I3 = None
-        d2WdI1I2 = self.C11
+        d2WdI1I2 = None
         d2WdI2I3 = None
         d2WdI1I3 = None
+
+        if self.C20 != 0 or self.C30 != 0:
+            d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - 3)
+
+        if self.C11 != 0:
+            d2WdI1I2 = self.C11
 
         return d2WdI1I1, d2WdI2I2, d2WdI3I3, d2WdI1I2, d2WdI2I3, d2WdI1I3

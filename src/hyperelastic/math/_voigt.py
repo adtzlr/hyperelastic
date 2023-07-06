@@ -372,11 +372,29 @@ def ddot(A, B, mode=(2, 2)):
 
         C &= \boldsymbol{A} : \boldsymbol{B}
 
+        C &= A_{ij} : B_{ij}
+
+
+    ..  math::
+
         \boldsymbol{C} &= \boldsymbol{A} : \mathbb{B}
+
+        C_{kl} &= A_{ij} : \mathbb{B}_{ijkl}
+
+
+    ..  math::
 
         \boldsymbol{C} &= \mathbb{B} : \boldsymbol{A}
 
+        C_{ij} &= \mathbb{B}_{ijkl} : A_{kl}
+
+
+    ..  math::
+
         \mathbb{C} &= \mathbb{A} : \mathbb{B}
+
+        \mathbb{C}_{ijmn} &= \mathbb{A}_{ijkl} : \mathbb{A}_{klmn}
+
 
     Examples
     --------

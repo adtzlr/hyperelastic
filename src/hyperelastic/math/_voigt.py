@@ -52,24 +52,24 @@ def astensor(A, mode=2):
         return A[i.reshape(3, 3, 3, 3), j.reshape(3, 3, 3, 3)]
 
 
-def tril_from_triu(A, inplace=True):
-    "Copy upper triangle values to lower triangle values of a 3x3 tensor inplace."
+def tril_from_triu(A, dim=6, inplace=True):
+    "Copy upper triangle values to lower triangle values of a nxn tensor inplace."
     B = A
     if not inplace:
         B = A.copy()
 
-    i, j = np.triu_indices(6, 1)
+    i, j = np.triu_indices(dim, 1)
     B[j, i] = A[i, j]
     return B
 
 
-def triu_from_tril(A, inplace=True):
-    "Copy lower triangle values to upper triangle values of a 6x6 tensor inplace."
+def triu_from_tril(A, dim=6, inplace=True):
+    "Copy lower triangle values to upper triangle values of a nxn tensor inplace."
     B = A
     if not inplace:
         B = A.copy()
 
-    i, j = np.tril_indices(6, -1)
+    i, j = np.tril_indices(dim, -1)
     B[j, i] = A[i, j]
     return B
 

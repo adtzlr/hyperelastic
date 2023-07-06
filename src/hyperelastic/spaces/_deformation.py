@@ -11,7 +11,7 @@ class Deformation:
 
     ..  math::
 
-        psi = \psi(\boldsymbol{F})
+        \psi = \psi(\boldsymbol{F})
 
     Given a Total-Lagrange material formulation, for the variation and linearization of
     the virtual work of internal forces, the output quantities have to be transformed:

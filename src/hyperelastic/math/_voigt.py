@@ -335,7 +335,51 @@ def dev(A):
 
 
 def cdya_ik(A, B):
-    "The inner-crossed dyadic (outer) product."
+    r"""The inner-crossed dyadic product of two symmetric second-order
+    tensors in reduced vector storage, where the inner indices (the right index of the
+    first tensor and the left index of the second tensor) are interchanged.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Inner-crossed dyadic product in full-array storage.
+
+    Notes
+    -----
+    The result of the inner-crossed dyadic product of two symmetric second order tensors
+    is a major- (but not minor-) symmetric fourth-order tensor. This is also the case
+    for :math:`\boldsymbol{A} = \boldsymbol{B}`.
+
+    ..  math::
+
+        \mathbb{C} &= \boldsymbol{A} \overline{\otimes} \boldsymbol{B}
+
+        \mathbb{C}_{ijkl} &= A_{ik}~B_{jl}
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> D = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> A = np.einsum("ik,jl", C, D)
+
+    >>> C6 = asvoigt(C, mode=2)
+    >>> D6 = asvoigt(D, mode=2)
+
+    >>> np.allclose(A, cdya_ik(C6, D6))
+    True
+
+    """
     i, j = [a.ravel() for a in np.indices((9, 9))]
 
     a = np.array(
@@ -352,8 +396,9 @@ def cdya_ik(A, B):
 
 
 def cdya_il(A, B):
-    r"""The right-crossed dyadic product of two symmetric second-order 
-    tensors in reduced vector storage.
+    r"""The right-crossed dyadic product of two symmetric second-order
+    tensors in reduced vector storage, where the right indices of the two tensors are
+    interchanged.
 
     Parameters
     ----------
@@ -365,7 +410,7 @@ def cdya_il(A, B):
     Returns
     -------
     np.ndarray
-        Symmetric crossed-dyadic product in full-array storage.
+        Right-crossed dyadic product in full-array storage.
 
     Notes
     -----

@@ -63,5 +63,5 @@ html_theme_options = {
     "logo": {
         "image_light": "_static/logo-light.png",
         "image_dark": "_static/logo-dark.png",
-    }
+    },
 }

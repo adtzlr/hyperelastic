@@ -445,7 +445,7 @@ def cdya(A, B):
 
     C = (A[ik] * B[jl] + A[il] * B[kj]) / 2
 
-    if not np.allclose(A, B):
+    if A is not B:
         C += (B[ik] * A[jl] + B[il] * A[kj]) / 2
         C /= 2
 

@@ -1,6 +1,8 @@
 .. _api:
 
-API reference
+API Reference
 =============
 
-.. automodule:: hyperelastic
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

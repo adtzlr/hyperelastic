@@ -81,7 +81,8 @@ class Invariants:
 
     ..  math::
 
-        \mathbb{C} &= \frac{\partial^2 \psi}{\partial I_1~\partial I_1}
+        \frac{\partial^2 \psi}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=
+            \frac{\partial^2 \psi}{\partial I_1~\partial I_1}
             \left( \frac{\partial I_1}{\partial \boldsymbol{C}} \otimes
             \frac{\partial I_1}{\partial \boldsymbol{C}} \right)
 
@@ -124,7 +125,7 @@ class Invariants:
 
     ..  math::
 
-        \frac{\partial^2 I_12}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=
+        \frac{\partial^2 I_1}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=
             \mathbb{0}
 
         \frac{\partial^2 I_2}{\partial \boldsymbol{C}~\partial \boldsymbol{C}} &=

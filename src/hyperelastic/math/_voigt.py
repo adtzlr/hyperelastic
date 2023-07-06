@@ -2,79 +2,79 @@ import numpy as np
 
 
 def asvoigt(A, mode=2):
-    r"""Convert a three-dimensional tensor from full array-storage into reduced 
-    symmetric (Voigt-notation) vector/matrix storage. 
-    
+    r"""Convert a three-dimensional tensor from full array-storage into reduced
+    symmetric (Voigt-notation) vector/matrix storage.
+
     Parameters
     ----------
     A : np.ndarray
         A three-dimensional second- or fourth-order tensor in full array-storage.
     mode : int, optional
         The mode, 2 for second-order and 4 for fourth-order tensors (default is 2).
-    
+
     Returns
     -------
     np.ndarray
         A three-dimensional second- or fourth-order tensor in reduced symmetric (Voigt)
         vector/matrix storage.
-    
+
     Notes
     -----
     This is the inverse operation of :func:`astensor`.
-    
-    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the upper triangle 
+
+    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the upper triangle
     entries are inserted into a 6x1 vector, starting from the main diagonal, followed by
     the consecutive next upper diagonals.
-    
+
     ..  math::
-        
-        \boldsymbol{C} = \begin{bmatrix} 
+
+        \boldsymbol{C} = \begin{bmatrix}
             C_{11} & C_{12} & C_{13} \\
             C_{12} & C_{22} & C_{23} \\
             C_{13} & C_{23} & C_{33}
-        \end{bmatrix} \qquad \longrightarrow \boldsymbol{C} = \begin{bmatrix} 
+        \end{bmatrix} \qquad \longrightarrow \boldsymbol{C} = \begin{bmatrix}
             C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13}
         \end{bmatrix}^T
-    
-    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} = 
-    A_{jikl} = A_{ijlk} = A_{jilk}`, 
-    rearranged to 9x9, the upper triangle entries are inserted into a 6x6 matrix, 
-    starting from the main diagonal, followed by the consecutive next upper diagonals.
-    
+
+    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} =
+    A_{jikl} = A_{ijlk} = A_{jilk}`, rearranged to 9x9, the upper triangle entries are
+    inserted into a 6x6 matrix, starting from the main diagonal, followed by the
+    consecutive next upper diagonals.
+
     ..  math::
-        
-        \begin{bmatrix} 
-            A_{1111} & A_{1112} & A_{1113} & 
-            A_{1121} & A_{1122} & A_{1123} & 
+
+        \begin{bmatrix}
+            A_{1111} & A_{1112} & A_{1113} &
+            A_{1121} & A_{1122} & A_{1123} &
             A_{1131} & A_{1132} & A_{1133} \\
             %
-            A_{1211} & A_{1212} & A_{1213} & 
-            A_{1221} & A_{1222} & A_{1223} & 
+            A_{1211} & A_{1212} & A_{1213} &
+            A_{1221} & A_{1222} & A_{1223} &
             A_{1231} & A_{1232} & A_{1233} \\
             %
             \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots \\
-            A_{3111} & A_{3112} & A_{3113} & 
-            A_{3121} & A_{3122} & A_{3123} & 
+            A_{3111} & A_{3112} & A_{3113} &
+            A_{3121} & A_{3122} & A_{3123} &
             A_{3131} & A_{3132} & A_{3133}
             %
-        \end{bmatrix} \qquad 
-        
-        \longrightarrow \mathbb{A} = \begin{bmatrix} 
+        \end{bmatrix} \qquad
+
+        \longrightarrow \mathbb{A} = \begin{bmatrix}
             A_{1111} & A_{1122} & A_{1133} & A_{1112} & A_{1123} & A_{1113} \\
             A_{2211} & A_{2222} & A_{2233} & A_{2212} & A_{2223} & A_{2213} \\
              \dots   &  \dots   &  \dots   &  \dots   &  \dots   &  \dots   \\
             A_{1311} & A_{1322} & A_{1333} & A_{1312} & A_{1323} & A_{1313}
         \end{bmatrix}
-    
+
     Examples
     --------
     >>> import hyperelastic.math as hm
     >>> import numpy as np
-    
+
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
     >>> asvoigt(C, mode=2)
     array([1. , 1.1, 1.2, 1.3, 1.4, 1.5])
-    
+
     >>> A = np.einsum("ij,kl", C, C)
     >>> asvoigt(A, mode=4)
     array([[1.  , 1.1 , 1.2 , 1.3 , 1.4 , 1.5 ],
@@ -125,7 +125,7 @@ def asvoigt(A, mode=2):
 def astensor(A, mode=2):
     r"""Convert a three-dimensional tensor from symmetric (Voigt-notation) vector/matrix
     storage into full array-storage.
-    
+
     Parameters
     ----------
     A : np.ndarray
@@ -133,84 +133,84 @@ def astensor(A, mode=2):
         vector/matrix storage.
     mode : int, optional
         The mode, 2 for second-order and 4 for fourth-order tensors (default is 2).
-    
+
     Returns
     -------
     np.ndarray
         A three-dimensional second- or fourth-order tensor in full array-storage.
-    
+
     Notes
     -----
     This is the inverse operation of :func:`asvoigt`.
-    
-    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the entries are 
+
+    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the entries are
     re-created from a 6x1 vector.
-    
+
     ..  math::
-        
-        \boldsymbol{C} = \begin{bmatrix} 
+
+        \boldsymbol{C} = \begin{bmatrix}
             C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13}
-        \end{bmatrix}^T \longrightarrow 
+        \end{bmatrix}^T \longrightarrow
         %
-        \boldsymbol{C} = \begin{bmatrix} 
+        \boldsymbol{C} = \begin{bmatrix}
             C_{11} & C_{12} & C_{13} \\
             C_{12} & C_{22} & C_{23} \\
             C_{13} & C_{23} & C_{33}
-        \end{bmatrix} \qquad 
-    
-    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} = 
+        \end{bmatrix} \qquad
+
+    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} =
     A_{jikl} = A_{ijlk} = A_{jilk}`, the entries are re-created from
     a 6x6 matrix.
-    
+
     ..  math::
 
-        \mathbb{A} = \begin{bmatrix} 
+        \mathbb{A} = \begin{bmatrix}
             A_{1111} & A_{1122} & A_{1133} & A_{1112} & A_{1123} & A_{1113} \\
             A_{2211} & A_{2222} & A_{2233} & A_{2212} & A_{2223} & A_{2213} \\
              \dots   &  \dots   &  \dots   &  \dots   &  \dots   &  \dots   \\
             A_{1311} & A_{1322} & A_{1333} & A_{1312} & A_{1323} & A_{1313}
-        \end{bmatrix} 
-        
-        \longrightarrow \begin{bmatrix} 
-            A_{1111} & A_{1112} & A_{1113} & 
-            A_{1121} & A_{1122} & A_{1123} & 
+        \end{bmatrix}
+
+        \longrightarrow \begin{bmatrix}
+            A_{1111} & A_{1112} & A_{1113} &
+            A_{1121} & A_{1122} & A_{1123} &
             A_{1131} & A_{1132} & A_{1133} \\
             %
-            A_{1211} & A_{1212} & A_{1213} & 
-            A_{1221} & A_{1222} & A_{1223} & 
+            A_{1211} & A_{1212} & A_{1213} &
+            A_{1221} & A_{1222} & A_{1223} &
             A_{1231} & A_{1232} & A_{1233} \\
             %
             \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots \\
-            A_{3111} & A_{3112} & A_{3113} & 
-            A_{3121} & A_{3122} & A_{3123} & 
+            A_{3111} & A_{3112} & A_{3113} &
+            A_{3121} & A_{3122} & A_{3123} &
             A_{3131} & A_{3132} & A_{3133}
             %
-        \end{bmatrix} \qquad 
-    
+        \end{bmatrix} \qquad
+
     Examples
     --------
     >>> import hyperelastic.math as hm
     >>> import numpy as np
-    
+
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
     >>> C6 = asvoigt(C, mode=2)
     >>> D = astensor(C6, mode=2)
     >>> np.allclose(C, D)
     True
-    
+
     >>> D
     array([[1. , 1.3, 1.5],
            [1.3, 1.1, 1.4],
            [1.5, 1.4, 1.2]])
-    
+
     >>> A = np.einsum("ij,kl", C, C)
     >>> A66 = asvoigt(A, mode=4)
     >>> B = astensor(A66, mode=4)
     >>> np.allclose(A, B)
     True
-    
+
     """
-    
+
     if mode == 2:  # second order tensor of shape 6 to 3x3
         a = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
         return A[a]
@@ -369,7 +369,67 @@ def cdya_il(A, B):
 
 
 def cdya(A, B):
-    "The inner- and outer-crossed dyadic (outer) product."
+    r"""The full-symmetric crossed-dyadic product of two symmetric second-order tensors
+    in reduced vector storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Symmetric crossed-dyadic product in reduced matrix storage.
+
+    Notes
+    -----
+    The result of the symmetric crossed-dyadic product of two symmetric second order
+    tensors is a minor- and major-symmetric fourth-order tensor.
+
+    ..  math::
+
+        \mathbb{C} &= \frac{1}{2} \left(
+            \boldsymbol{A} \odot \boldsymbol{B} + \boldsymbol{B} \odot \boldsymbol{S}
+        \right)
+
+        \mathbb{C} &= \frac{1}{4} \left(
+            \boldsymbol{A} \overline{\otimes} \boldsymbol{B} +
+            \boldsymbol{A} \underline{\otimes} \boldsymbol{B} +
+            \boldsymbol{B} \overline{\otimes} \boldsymbol{A} +
+            \boldsymbol{B} \underline{\otimes} \boldsymbol{A}
+        \right)
+
+        \mathbb{C}_{ijkl} &= \frac{1}{4} \left(
+            A_{ik}~B_{jl} + A_{il}~B_{kj} + B_{ik}~A_{jl} + B_{il}~A_{kj}
+        \right)
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> D = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> CD = (np.einsum("ik,jl", C, D) + np.einsum("il,kj", C, D)) / 2
+    >>> DC = (np.einsum("ik,jl", D, C) + np.einsum("il,kj", D, C)) / 2
+
+    >>> A = (CD + DC) / 2
+
+    >>> C6 = asvoigt(C, mode=2)
+    >>> D6 = asvoigt(D, mode=2)
+
+    >>> np.allclose(A, astensor(cdya(C6, D6), mode=4))
+    True
+
+    >>> np.allclose(A, astensor(cdya(D6, C6), mode=4))
+    True
+
+    """
+
     i, j = [a.ravel() for a in np.indices((6, 6))]
 
     a = np.array([(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)])
@@ -383,7 +443,13 @@ def cdya(A, B):
     il = b[i, l].reshape(6, 6)
     kj = b[k, j].reshape(6, 6)
 
-    return (A[ik] * B[jl] + A[il] * B[kj]) / 2
+    C = (A[ik] * B[jl] + A[il] * B[kj]) / 2
+
+    if not np.allclose(A, B):
+        C += (B[ik] * A[jl] + B[il] * A[kj]) / 2
+        C /= 2
+
+    return C
 
 
 def eigh(A, fun=None):

@@ -178,8 +178,6 @@ class Stretches:
                 f[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
                 f[mask] = d2WdλC2[β][mask] - d2WdλC2[m][mask]
 
-                d2WdCdC += d2WdλC2[m] * transpose(M4) + f * (
-                    cdya(M[α], M[β]) + cdya(M[β], M[α])
-                )
+                d2WdCdC += d2WdλC2[m] * transpose(M4) + f * 2 * cdya(M[α], M[β])
 
         return d2WdCdC

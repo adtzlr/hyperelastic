@@ -1,29 +1,104 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 512 512" xml:space="preserve">
-<g>
-	<path style="fill:#C8C6CD;" d="M223.119,512c-2.521,0-5.036-0.997-6.905-2.972c-7.947-8.402-26.33-31.685-25.403-66.334
-		c0.384-14.343,7.393-24.21,13.578-32.918c5.471-7.701,10.638-14.975,11.819-25.534c1.278-11.427-1.485-23.552-8.213-36.037
-		c-2.49-4.62-0.764-10.383,3.857-12.873c4.618-2.49,10.383-0.764,12.873,3.857c8.598,15.953,12.087,31.823,10.371,47.167
-		c-1.728,15.444-8.892,25.529-15.212,34.427c-5.5,7.744-9.845,13.86-10.074,22.42c-0.759,28.332,15.278,47.55,20.212,52.767
-		c3.606,3.813,3.439,9.827-0.374,13.434C227.81,511.138,225.462,512,223.119,512z"/>
-	<path style="fill:#C8C6CD;" d="M322.784,507.777c-2.129,0-4.27-0.712-6.041-2.172c-4.048-3.339-4.623-9.328-1.285-13.377
-		c13.989-16.962,20.378-32.807,18.99-47.094c-1.052-10.819-6.2-18.402-12.161-27.183c-6.462-9.518-13.785-20.304-16.473-36.364
-		c-3.169-18.945,2.421-43.805,14.029-64.318c2.585-4.568,8.383-6.174,12.95-3.591c4.568,2.585,6.176,8.383,3.591,12.95
-		c-9.408,16.627-14.257,37.284-11.825,51.823c2.002,11.958,7.563,20.151,13.452,28.825c6.801,10.017,13.833,20.375,15.354,36.02
-		c1.893,19.496-5.927,40.027-23.245,61.025C328.242,506.597,325.525,507.777,322.784,507.777z"/>
-</g>
-<path style="fill:#67D1D3;" d="M232.014,323.371c3.648,12.058-5.292,17.779-17.351,21.427c-12.058,3.648-22.67,3.84-26.318-8.218
-	s3.171-24.791,15.23-28.437C215.635,304.494,228.367,311.312,232.014,323.371z"/>
-<path style="fill:#F7CF6D;" d="M348.772,315.249c0,12.598-10.212,11.591-22.81,11.591c-12.598,0-22.81,1.007-22.81-11.591
-	c0-12.598,10.212-22.81,22.81-22.81C338.56,292.437,348.772,302.651,348.772,315.249z"/>
-<ellipse style="fill:#88E2E2;" cx="163.836" cy="183.821" rx="123.574" ry="131.239"/>
-<path style="fill:#67D1D3;" d="M236.165,77.421c17.45,22.629,27.924,51.562,27.924,83.093c0,72.481-55.322,131.237-123.567,131.237
-	c-27.013,0-51.998-9.213-72.332-24.833c22.661,29.386,57.087,48.143,95.643,48.143c68.245,0,123.567-58.757,123.567-131.237
-	C287.401,140.036,267.202,101.261,236.165,77.421z"/>
-<ellipse style="fill:#F9DE8F;" cx="333.948" cy="146.33" rx="137.79" ry="146.33"/>
-<path style="fill:#F7CF6D;" d="M414.978,27.985c19.621,25.285,31.407,57.685,31.407,93.009c0,80.819-61.688,146.335-137.782,146.335
-	c-30.291,0-58.292-10.39-81.036-27.985c25.271,32.564,63.54,53.326,106.376,53.326c76.095,0,137.783-65.517,137.783-146.335
-	C471.726,97.687,449.369,54.593,414.978,27.985z"/>
-</svg>
+
+<svg
+   height="250"
+   width="1000"
+   version="1.1"
+   id="Layer_1"
+   viewBox="0 0 1000 250"
+   xml:space="preserve"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:export-filename="/home/andreas/Dokumente/GitHub/hyperelastic/docs/_static/logo-dark.png"
+   inkscape:export-xdpi="100"
+   inkscape:export-ydpi="100"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs23" /><sodipodi:namedview
+   id="namedview21"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   showgrid="false"
+   height="1600px"
+   units="px"
+   inkscape:zoom="0.7875"
+   inkscape:cx="558.73016"
+   inkscape:cy="137.77778"
+   inkscape:window-width="1920"
+   inkscape:window-height="1007"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+
+
+
+
+
+
+<g
+   id="g3220"
+   transform="matrix(0.4796627,0,0,0.4796627,-16.573988,2.5714286)"><g
+     id="g6">
+	<path
+   style="fill:#c8c6cd"
+   d="m 223.119,512 c -2.521,0 -5.036,-0.997 -6.905,-2.972 -7.947,-8.402 -26.33,-31.685 -25.403,-66.334 0.384,-14.343 7.393,-24.21 13.578,-32.918 5.471,-7.701 10.638,-14.975 11.819,-25.534 1.278,-11.427 -1.485,-23.552 -8.213,-36.037 -2.49,-4.62 -0.764,-10.383 3.857,-12.873 4.618,-2.49 10.383,-0.764 12.873,3.857 8.598,15.953 12.087,31.823 10.371,47.167 -1.728,15.444 -8.892,25.529 -15.212,34.427 -5.5,7.744 -9.845,13.86 -10.074,22.42 -0.759,28.332 15.278,47.55 20.212,52.767 3.606,3.813 3.439,9.827 -0.374,13.434 -1.838,1.734 -4.186,2.596 -6.529,2.596 z"
+   id="path2" />
+	<path
+   style="fill:#c8c6cd"
+   d="m 322.784,507.777 c -2.129,0 -4.27,-0.712 -6.041,-2.172 -4.048,-3.339 -4.623,-9.328 -1.285,-13.377 13.989,-16.962 20.378,-32.807 18.99,-47.094 -1.052,-10.819 -6.2,-18.402 -12.161,-27.183 -6.462,-9.518 -13.785,-20.304 -16.473,-36.364 -3.169,-18.945 2.421,-43.805 14.029,-64.318 2.585,-4.568 8.383,-6.174 12.95,-3.591 4.568,2.585 6.176,8.383 3.591,12.95 -9.408,16.627 -14.257,37.284 -11.825,51.823 2.002,11.958 7.563,20.151 13.452,28.825 6.801,10.017 13.833,20.375 15.354,36.02 1.893,19.496 -5.927,40.027 -23.245,61.025 -1.878,2.276 -4.595,3.456 -7.336,3.456 z"
+   id="path4" />
+</g><path
+     style="fill:#67d1d3"
+     d="m 232.014,323.371 c 3.648,12.058 -5.292,17.779 -17.351,21.427 -12.058,3.648 -22.67,3.84 -26.318,-8.218 -3.648,-12.058 3.171,-24.791 15.23,-28.437 12.06,-3.649 24.792,3.169 28.439,15.228 z"
+     id="path8" /><path
+     style="fill:#f7cf6d"
+     d="m 348.772,315.249 c 0,12.598 -10.212,11.591 -22.81,11.591 -12.598,0 -22.81,1.007 -22.81,-11.591 0,-12.598 10.212,-22.81 22.81,-22.81 12.598,-0.002 22.81,10.212 22.81,22.81 z"
+     id="path10" /><ellipse
+     style="fill:#88e2e2"
+     cx="163.836"
+     cy="183.821"
+     rx="123.574"
+     ry="131.239"
+     id="ellipse12" /><path
+     style="fill:#67d1d3"
+     d="m 236.165,77.421 c 17.45,22.629 27.924,51.562 27.924,83.093 0,72.481 -55.322,131.237 -123.567,131.237 -27.013,0 -51.998,-9.213 -72.332,-24.833 22.661,29.386 57.087,48.143 95.643,48.143 68.245,0 123.567,-58.757 123.567,-131.237 0.001,-43.788 -20.198,-82.563 -51.235,-106.403 z"
+     id="path14" /><ellipse
+     style="fill:#f9de8f"
+     cx="333.948"
+     cy="146.33"
+     rx="137.78999"
+     ry="146.33"
+     id="ellipse16" /><path
+     style="fill:#f7cf6d"
+     d="m 414.978,27.985 c 19.621,25.285 31.407,57.685 31.407,93.009 0,80.819 -61.688,146.335 -137.782,146.335 -30.291,0 -58.292,-10.39 -81.036,-27.985 25.271,32.564 63.54,53.326 106.376,53.326 76.095,0 137.783,-65.517 137.783,-146.335 0,-48.648 -22.357,-91.742 -56.748,-118.35 z"
+     id="path18" /></g>
+<text
+   xml:space="preserve"
+   style="font-style:normal;font-weight:normal;font-size:212.672px;line-height:1.25;font-family:sans-serif;letter-spacing:-6.38015px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.680549"
+   x="143.37997"
+   y="209.11163"
+   id="text2491"
+   inkscape:export-filename="/home/andreas/Dokumente/GitHub/hyperelastic/docs/_static/logo-dark.png"
+   inkscape:export-xdpi="100"
+   inkscape:export-ydpi="100"><tspan
+     sodipodi:role="line"
+     id="tspan2489"
+     style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:212.672px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';fill:#000000;stroke:none;stroke-width:0.680549"
+     x="143.37997"
+     y="209.11163"><tspan
+       style="font-size:240px;fill:#000000;stroke:none"
+       id="tspan117567">H</tspan><tspan
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:133.333px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';fill:#000000;stroke:none;stroke-width:0.680549"
+       id="tspan64412">yper</tspan><tspan
+       style="font-size:240px;fill:#000000;stroke:none"
+       id="tspan118847">E</tspan><tspan
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:133.333px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';fill:#000000;stroke:none;stroke-width:0.680549"
+       id="tspan76250">lastic</tspan></tspan></text></svg>

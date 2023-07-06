@@ -217,7 +217,7 @@ def astensor(A, mode=2):
 
     elif mode == 4:  # fourth order tensor of shape 6x6 to 3x3x3x3
         a = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2])
-        i, j = np.meshgrid(a, a)
+        i, j = np.meshgrid(a, a, indexing="ij")
         return A[i.reshape(3, 3, 3, 3), j.reshape(3, 3, 3, 3)]
 
 
@@ -325,12 +325,75 @@ def ddot(A, B, mode=(2, 2)):
 
 
 def dya(A, B):
-    "The dyadic (outer) product."
+    r"""The dyadic product of two symmetric second-order tensors in reduced vector
+    storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Dyadic product in reduced matrix storage.
+
+    Notes
+    -----
+    The result of the dyadic product of two symmetric second order tensors
+    is a minor- (but not major-) symmetric fourth-order tensor. For the case of
+    :math:`\boldsymbol{A} = \boldsymbol{B}`, the result is both major- and minor-
+    symmetric.
+
+    ..  math::
+
+        \mathbb{C} &= \boldsymbol{A} \otimes \boldsymbol{B}
+
+        \mathbb{C}_{ijkl} &= A_{ij}~B_{kl}
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> D = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> A = np.einsum("ij,kl", C, D)
+
+    >>> C6 = asvoigt(C, mode=2)
+    >>> D6 = asvoigt(D, mode=2)
+
+    >>> np.allclose(A, astensor(dya(C6, D6), mode=4))
+    True
+
+    """
     return A.reshape(-1, 1, *A.shape[1:]) * B.reshape(1, -1, *B.shape[1:])
 
 
 def dev(A):
-    "The deviatoric part of a 3x3 tensor."
+    r"""The deviatoric part of a three-dimensional second-order tensor.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        Symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Deviatoric part of the symmetric second-order tensor in reduced vector storage.
+
+    Notes
+    -----
+    ..  math::
+
+        \text{dev}(\boldsymbol{C}) =
+         \boldsymbol{C} - \frac{\text{tr}(\boldsymbol{C})}{3} \boldsymbol{I}
+
+    """
     return A - trace(A) / 3 * eye(A)
 
 

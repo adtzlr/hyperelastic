@@ -8,8 +8,10 @@ def test_math():
     np.random.seed(546123)
     F = np.eye(3).reshape(3, 3, 1, 1) + np.random.rand(3, 3, 4, 10) / 10
     C = np.einsum("ki...,kj...->ij...", F, F)
+    D = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3, 1, 1) * C
     A = np.einsum("ij...,kl...->ijkl...", C, C)
     C6 = hm.asvoigt(C, mode=2)
+    D6 = hm.asvoigt(D, mode=2)
     A6 = hm.asvoigt(A, mode=4)
 
     assert np.allclose(hm.tril_from_triu(A6, inplace=False), A6)
@@ -22,6 +24,19 @@ def test_math():
 
     assert np.allclose(hm.cdya_il(C6, C6), np.einsum("il...,kj...->ijkl...", C, C))
     assert np.allclose(hm.cdya_ik(C6, C6), np.einsum("ik...,jl...->ijkl...", C, C))
+
+    CD = (
+        np.einsum("ik...,jl...->ijkl...", C, D)
+        + np.einsum("il...,kj...->ijkl...", C, D)
+    ) / 2
+    DC = (
+        np.einsum("ik...,jl...->ijkl...", D, C)
+        + np.einsum("il...,kj...->ijkl...", D, C)
+    ) / 2
+    B = (CD + DC) / 2
+
+    assert np.allclose(B, hm.astensor(hm.cdya(C6, D6), mode=4))
+    assert np.allclose(B, hm.astensor(hm.cdya(D6, C6), mode=4))
 
 
 if __name__ == "__main__":

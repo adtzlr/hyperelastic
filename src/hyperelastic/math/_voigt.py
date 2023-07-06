@@ -352,7 +352,50 @@ def cdya_ik(A, B):
 
 
 def cdya_il(A, B):
-    "The outer-crossed dyadic (outer) product."
+    r"""The right-crossed dyadic product of two symmetric second-order 
+    tensors in reduced vector storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Symmetric crossed-dyadic product in full-array storage.
+
+    Notes
+    -----
+    The result of the right-crossed dyadic product of two symmetric second
+    order tensors is a non-symmetric fourth-order tensor. In case of
+    :math:`\boldsymbol{A} = \boldsymbol{B}`, the fourth-order tensor is major-symmetric.
+
+    ..  math::
+
+        \mathbb{C} &= \boldsymbol{A} {\otimes\small{|}} \boldsymbol{B}
+
+        \mathbb{C}_{ijkl} &= A_{il}~B_{kj}
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> D = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> A = np.einsum("il,kj", C, D)
+
+    >>> C6 = asvoigt(C, mode=2)
+    >>> D6 = asvoigt(D, mode=2)
+
+    >>> np.allclose(A, cdya_il(C6, D6))
+    True
+
+    """
     i, j = [a.ravel() for a in np.indices((9, 9))]
 
     a = np.array(

@@ -11,7 +11,25 @@ class Deformation:
 
     ..  math::
 
-        \psi = \psi(\boldsymbol{F})
+        \psi = \psi(\boldsymbol{C}(\boldsymbol{F}))
+
+    The gradient of the strain energy function is carried out w.r.t. the Green Lagrange
+    strain tensor. Hence, the work-conjugate stress tensor here refers to the second
+    Piola-Kirchhoff stress tensor.
+
+    ..  math::
+
+        \boldsymbol{S} = \frac{\partial \psi}{\partial \frac{1}{2}\boldsymbol{C}}
+
+    The hessian of the strain energy function is carried out w.r.t. the Green-Lagrange
+    strain tensor. Hence, the work-conjugate elasticity tensor here refers to the
+    fourth-order Total-Lagrangian elasticity tensor.
+
+    ..  math::
+
+        \mathbb{C} = \frac{\partial^2 \psi}{\partial \frac{1}{2}\boldsymbol{C}~
+            \frac{1}{2}\boldsymbol{C}}
+
 
     Given a Total-Lagrange material formulation, for the variation and linearization of
     the virtual work of internal forces, the output quantities have to be transformed:

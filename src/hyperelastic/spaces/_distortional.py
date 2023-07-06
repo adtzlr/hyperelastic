@@ -5,12 +5,13 @@ from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, t
 
 class Distortional:
     r"""The distortional (part of the deformation) space is a partial deformation with
-    constant volume. For a given deformation map :math:`x(X)` and its deformation
-    gradient :math:`\boldsymbol{F}`, the distortional part of the deformation gradient
-    :math:`\hat{\boldsymbol{F}}` is obtained by a multiplicative (consecutive) split
-    into a volume-changing (dilatational) and a constant-volume (distortional) part of
-    the deformation gradient. Due to the fact that the dilatational part is proportional
-    to the unit tensor, the order of these partial deformations is not unique.
+    constant volume. For a given deformation map :math:`\boldsymbol{x}(\boldsymbol{x})`
+    and its deformation gradient :math:`\boldsymbol{F}`, the distortional part of the
+    deformation gradient :math:`\hat{\boldsymbol{F}}` is obtained by a multiplicative
+    (consecutive) split into a volume-changing (dilatational) and a constant-volume
+    (distortional) part of the deformation gradient. Due to the fact that the
+    dilatational part is proportional to the unit tensor, the order of these partial
+    deformations is not unique.
 
     ..  math::
 
@@ -87,7 +88,7 @@ class Distortional:
             = \text{dev}(\bar{\boldsymbol{S}} \boldsymbol{C}) \boldsymbol{C}^{-1}
 
     The hessian of the strain energy function is carried out w.r.t. the Green-Lagrange
-    strain tensor. Hence, the work-conjugate stress tensor used in this space
+    strain tensor. Hence, the work-conjugate elasticity tensor used in this space
     projection refers to the fourth-order Total-Lagrangian elasticity tensor.
 
     ..  math::

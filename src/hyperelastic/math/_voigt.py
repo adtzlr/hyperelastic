@@ -2,7 +2,89 @@ import numpy as np
 
 
 def asvoigt(A, mode=2):
-    """Convert 3x3 tensor to symmetric (Voigt-notation) vector storage of shape 6."""
+    r"""Convert a three-dimensional tensor from full array-storage into reduced 
+    symmetric (Voigt-notation) vector/matrix storage. 
+    
+    Parameters
+    ----------
+    A : np.ndarray
+        A three-dimensional second- or fourth-order tensor in full array-storage.
+    mode : int, optional
+        The mode, 2 for second-order and 4 for fourth-order tensors (default is 2).
+    
+    Returns
+    -------
+    np.ndarray
+        A three-dimensional second- or fourth-order tensor in reduced symmetric (Voigt)
+        vector/matrix storage.
+    
+    Notes
+    -----
+    This is the inverse operation of :func:`astensor`.
+    
+    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the upper triangle 
+    entries are inserted into a 6x1 vector, starting from the main diagonal, followed by
+    the consecutive next upper diagonals.
+    
+    ..  math::
+        
+        \boldsymbol{C} = \begin{bmatrix} 
+            C_{11} & C_{12} & C_{13} \\
+            C_{12} & C_{22} & C_{23} \\
+            C_{13} & C_{23} & C_{33}
+        \end{bmatrix} \qquad \longrightarrow \boldsymbol{C} = \begin{bmatrix} 
+            C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13}
+        \end{bmatrix}^T
+    
+    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} = 
+    A_{jikl} = A_{ijlk} = A_{jilk}`, 
+    rearranged to 9x9, the upper triangle entries are inserted into a 6x6 matrix, 
+    starting from the main diagonal, followed by the consecutive next upper diagonals.
+    
+    ..  math::
+        
+        \begin{bmatrix} 
+            A_{1111} & A_{1112} & A_{1113} & 
+            A_{1121} & A_{1122} & A_{1123} & 
+            A_{1131} & A_{1132} & A_{1133} \\
+            %
+            A_{1211} & A_{1212} & A_{1213} & 
+            A_{1221} & A_{1222} & A_{1223} & 
+            A_{1231} & A_{1232} & A_{1233} \\
+            %
+            \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots \\
+            A_{3111} & A_{3112} & A_{3113} & 
+            A_{3121} & A_{3122} & A_{3123} & 
+            A_{3131} & A_{3132} & A_{3133}
+            %
+        \end{bmatrix} \qquad 
+        
+        \longrightarrow \mathbb{A} = \begin{bmatrix} 
+            A_{1111} & A_{1122} & A_{1133} & A_{1112} & A_{1123} & A_{1113} \\
+            A_{2211} & A_{2222} & A_{2233} & A_{2212} & A_{2223} & A_{2213} \\
+             \dots   &  \dots   &  \dots   &  \dots   &  \dots   &  \dots   \\
+            A_{1311} & A_{1322} & A_{1333} & A_{1312} & A_{1323} & A_{1313}
+        \end{bmatrix}
+    
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+    
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> asvoigt(C, mode=2)
+    array([1. , 1.1, 1.2, 1.3, 1.4, 1.5])
+    
+    >>> A = np.einsum("ij,kl", C, C)
+    >>> asvoigt(A, mode=4)
+    array([[1.  , 1.1 , 1.2 , 1.3 , 1.4 , 1.5 ],
+           [1.1 , 1.21, 1.32, 1.43, 1.54, 1.65],
+           [1.2 , 1.32, 1.44, 1.56, 1.68, 1.8 ],
+           [1.3 , 1.43, 1.56, 1.69, 1.82, 1.95],
+           [1.4 , 1.54, 1.68, 1.82, 1.96, 2.1 ],
+           [1.5 , 1.65, 1.8 , 1.95, 2.1 , 2.25]])
+
+    """
 
     if mode == 2:  # 3x3 symmetric tensor
         i = [0, 1, 2, 0, 1, 0]
@@ -41,7 +123,94 @@ def asvoigt(A, mode=2):
 
 
 def astensor(A, mode=2):
-    "Convert symmetric 6 tensor in Voigt-notation to full 3x3 tensor."
+    r"""Convert a three-dimensional tensor from symmetric (Voigt-notation) vector/matrix
+    storage into full array-storage.
+    
+    Parameters
+    ----------
+    A : np.ndarray
+        A three-dimensional second- or fourth-order tensor in reduced symmetric (Voigt)
+        vector/matrix storage.
+    mode : int, optional
+        The mode, 2 for second-order and 4 for fourth-order tensors (default is 2).
+    
+    Returns
+    -------
+    np.ndarray
+        A three-dimensional second- or fourth-order tensor in full array-storage.
+    
+    Notes
+    -----
+    This is the inverse operation of :func:`asvoigt`.
+    
+    For a symmetric 3x3 second-order tensor :math:`C_{ij} = C_{ji}`, the entries are 
+    re-created from a 6x1 vector.
+    
+    ..  math::
+        
+        \boldsymbol{C} = \begin{bmatrix} 
+            C_{11} & C_{22} & C_{33} & C_{12} & C_{23} & C_{13}
+        \end{bmatrix}^T \longrightarrow 
+        %
+        \boldsymbol{C} = \begin{bmatrix} 
+            C_{11} & C_{12} & C_{13} \\
+            C_{12} & C_{22} & C_{23} \\
+            C_{13} & C_{23} & C_{33}
+        \end{bmatrix} \qquad 
+    
+    For a (at least minor) symmetric 3x3x3x3 fourth-order tensor :math:`A_{ijkl} = 
+    A_{jikl} = A_{ijlk} = A_{jilk}`, the entries are re-created from
+    a 6x6 matrix.
+    
+    ..  math::
+
+        \mathbb{A} = \begin{bmatrix} 
+            A_{1111} & A_{1122} & A_{1133} & A_{1112} & A_{1123} & A_{1113} \\
+            A_{2211} & A_{2222} & A_{2233} & A_{2212} & A_{2223} & A_{2213} \\
+             \dots   &  \dots   &  \dots   &  \dots   &  \dots   &  \dots   \\
+            A_{1311} & A_{1322} & A_{1333} & A_{1312} & A_{1323} & A_{1313}
+        \end{bmatrix} 
+        
+        \longrightarrow \begin{bmatrix} 
+            A_{1111} & A_{1112} & A_{1113} & 
+            A_{1121} & A_{1122} & A_{1123} & 
+            A_{1131} & A_{1132} & A_{1133} \\
+            %
+            A_{1211} & A_{1212} & A_{1213} & 
+            A_{1221} & A_{1222} & A_{1223} & 
+            A_{1231} & A_{1232} & A_{1233} \\
+            %
+            \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots & \dots \\
+            A_{3111} & A_{3112} & A_{3113} & 
+            A_{3121} & A_{3122} & A_{3123} & 
+            A_{3131} & A_{3132} & A_{3133}
+            %
+        \end{bmatrix} \qquad 
+    
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+    
+    >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> C6 = asvoigt(C, mode=2)
+    >>> D = astensor(C6, mode=2)
+    >>> np.allclose(C, D)
+    True
+    
+    >>> D
+    array([[1. , 1.3, 1.5],
+           [1.3, 1.1, 1.4],
+           [1.5, 1.4, 1.2]])
+    
+    >>> A = np.einsum("ij,kl", C, C)
+    >>> A66 = asvoigt(A, mode=4)
+    >>> B = astensor(A66, mode=4)
+    >>> np.allclose(A, B)
+    True
+    
+    """
+    
     if mode == 2:  # second order tensor of shape 6 to 3x3
         a = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
         return A[a]

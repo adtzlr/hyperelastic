@@ -305,14 +305,109 @@ def dot(A, B, mode=(2, 2)):
     return C
 
 
-def eye(A):
-    "A 3x3 tensor in Voigt-storage with ones on the diagonal and zeros elsewhere."
-    trax = np.ones(len(A.shape[1:]), dtype=int)
+def eye(A=None):
+    r"""A 3x3 tensor in Voigt-storage with ones on the diagonal and zeros elsewhere. The
+    dimension is taken from the input argument (a symmetric second-order tensor in
+    reduced vector storage).
+
+    Parameters
+    ----------
+    A : np.ndarray or None, optional
+        Symmetric second- or fourth-order tensor in reduced vector storage (default is
+        None).
+
+    Returns
+    -------
+    np.ndarray
+        Identity matrix in reduced vector storage.
+
+    Notes
+    -----
+    ..  math::
+
+        \boldsymbol{I} = \begin{bmatrix} 1 & 1 & 1 & 0 & 0 & 0 \end{bmatrix}^T
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = asvoigt(A)
+    >>> hm.eye(B)
+    array([1., 1., 1., 0., 0., 0.])
+
+    """
+
+    trax = ()
+    if A is not None:
+        trax = np.ones(len(A.shape[1:]), dtype=int)
+
     return np.array([1, 1, 1, 0, 0, 0], dtype=float).reshape(6, *trax)
 
 
 def ddot(A, B, mode=(2, 2)):
-    "The double-contraction of two symmetric 3x3 tensors in Voigt-storage."
+    r"""The double-dot product of two symmetric tensors in reduced vector storage, where
+    the two innermost indices of both tensors are contracted.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second- or fourth-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second- or fourth-order tensor in reduced vector storage.
+    mode : 2-tuple, optional
+        The mode, 2 for second-order and 4 for fourth-order tensors (default is (2, 2)).
+
+    Returns
+    -------
+    np.ndarray
+        Double-dot product of two symmetric tensors in scalar or reduced vector/matrix
+        storage.
+
+    Notes
+    -----
+
+    ..  math::
+
+        C &= \boldsymbol{A} : \boldsymbol{B}
+
+        \boldsymbol{C} &= \boldsymbol{A} : \mathbb{B}
+
+        \boldsymbol{C} &= \mathbb{B} : \boldsymbol{A}
+
+        \mathbb{C} &= \mathbb{A} : \mathbb{B}
+
+    Examples
+    --------
+    >>> import hyperelastic.math as hm
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> A4 = np.einsum("ij,kl", A, B)
+    >>> B4 = (np.einsum("ik,jl", A, A) + np.einsum("il,kj", A, A)) / 2
+
+    >>> ddot(asvoigt(A), asvoigt(B), mode=(2, 2))
+    15.39
+
+    >>> ddot(asvoigt(A), asvoigt(B4, mode=4), mode=(2, 4))
+    array([18.899, 18.863, 21.698, 18.903, 20.253, 20.316])
+
+    >>> ddot(asvoigt(B4, mode=4), asvoigt(A), mode=(4, 2))
+    array([18.899, 18.863, 21.698, 18.903, 20.253, 20.316])
+
+    >>> ddot(asvoigt(A4, mode=4), asvoigt(B4, mode=4), mode=(4, 4))
+    array([[18.519 , 18.787 , 21.944 , 18.675 , 20.326 , 20.225 ],
+           [20.3709, 20.6657, 24.1384, 20.5425, 22.3586, 22.2475],
+           [22.2228, 22.5444, 26.3328, 22.41  , 24.3912, 24.27  ],
+           [24.0747, 24.4231, 28.5272, 24.2775, 26.4238, 26.2925],
+           [25.9266, 26.3018, 30.7216, 26.145 , 28.4564, 28.315 ],
+           [27.7785, 28.1805, 32.916 , 28.0125, 30.489 , 30.3375]])
+
+    """
+
     weights = np.array([1, 1, 1, 2, 2, 2])
     if mode == (2, 2):
         return np.einsum("i...,i...,i->...", A, B, weights)

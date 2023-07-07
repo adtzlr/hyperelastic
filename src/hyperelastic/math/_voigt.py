@@ -68,7 +68,7 @@ def asvoigt(A, mode=2):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -189,7 +189,7 @@ def astensor(A, mode=2):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, astensor
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -287,7 +287,52 @@ def inv(A, determinant=None):
 
 
 def dot(A, B, mode=(2, 2)):
-    "The dot-product of two symmetric 3x3 tensors in Voigt-storage."
+    r"""The dot product of two symmetric second-order tensors in reduced vector storage,
+    where the second index of the first tensor and the first index of the second tensor
+    are contracted.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        First symmetric second-order tensor in reduced vector storage.
+    B : np.ndarray
+        Second symmetric second-order tensor in reduced vector storage.
+    mode : 2-tuple, optional
+        The mode, 2 for second-order and 4 for fourth-order tensors (default is (2, 2)).
+
+    Returns
+    -------
+    np.ndarray
+        Dot product of two symmetric second-order tensors in reduced vector storage.
+
+    Notes
+    -----
+
+    ..  math::
+
+        C &= \boldsymbol{A} ~ \boldsymbol{B}
+
+        C_{ij} &= A_{ik} B_{kj}
+
+    Examples
+    --------
+    >>> from hyperelastic.math import asvoigt, dot
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> C = dot(asvoigt(A), asvoigt(B), mode=(2, 2))
+    >>> C
+    array([[5.27, 4.78, 4.69],
+           [5.2 , 4.85, 4.78],
+           [5.56, 5.2 , 5.27]])
+
+    >>> D = A @ B
+    >>> np.allclose(C, D)
+    True
+
+    """
 
     if mode == (2, 2):
         trax = np.broadcast_shapes(A.shape[1:], B.shape[1:])
@@ -329,12 +374,12 @@ def eye(A=None):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, eye
     >>> import numpy as np
 
     >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
     >>> B = asvoigt(A)
-    >>> hm.eye(B)
+    >>> eye(B)
     array([1., 1., 1., 0., 0., 0.])
 
     """
@@ -398,7 +443,7 @@ def ddot(A, B, mode=(2, 2)):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, ddot
     >>> import numpy as np
 
     >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -468,7 +513,7 @@ def dya(A, B):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, astensor, dya
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -541,7 +586,7 @@ def cdya_ik(A, B):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, cdya_ik
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -602,7 +647,7 @@ def cdya_il(A, B):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, cdya_il
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
@@ -672,7 +717,7 @@ def cdya(A, B):
 
     Examples
     --------
-    >>> import hyperelastic.math as hm
+    >>> from hyperelastic.math import asvoigt, astensor, cdya
     >>> import numpy as np
 
     >>> C = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)

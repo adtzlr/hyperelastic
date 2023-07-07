@@ -701,7 +701,7 @@ def cdya(A, B):
     ..  math::
 
         \mathbb{C} &= \frac{1}{2} \left(
-            \boldsymbol{A} \odot \boldsymbol{B} + \boldsymbol{B} \odot \boldsymbol{S}
+            \boldsymbol{A} \odot \boldsymbol{B} + \boldsymbol{B} \odot \boldsymbol{A}
         \right)
 
         \mathbb{C} &= \frac{1}{4} \left(

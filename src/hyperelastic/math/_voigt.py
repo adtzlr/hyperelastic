@@ -511,9 +511,9 @@ def dev(A):
 
 
 def cdya_ik(A, B):
-    r"""The inner-crossed dyadic product of two symmetric second-order
-    tensors in reduced vector storage, where the inner indices (the right index of the
-    first tensor and the left index of the second tensor) are interchanged.
+    r"""The overlined-dyadic product of two symmetric second-order
+    tensors in reduced vector storage, where the inner indices (the second index of the
+    first tensor and the first index of the second tensor) are interchanged.
 
     Parameters
     ----------
@@ -525,11 +525,11 @@ def cdya_ik(A, B):
     Returns
     -------
     np.ndarray
-        Inner-crossed dyadic product in full-array storage.
+        Overlined-dyadic product in full-array storage.
 
     Notes
     -----
-    The result of the inner-crossed dyadic product of two symmetric second order tensors
+    The result of the overlined-dyadic product of two symmetric second order tensors
     is a major- (but not minor-) symmetric fourth-order tensor. This is also the case
     for :math:`\boldsymbol{A} = \boldsymbol{B}`.
 
@@ -572,7 +572,7 @@ def cdya_ik(A, B):
 
 
 def cdya_il(A, B):
-    r"""The right-crossed dyadic product of two symmetric second-order
+    r"""The underlined-dyadic product of two symmetric second-order
     tensors in reduced vector storage, where the right indices of the two tensors are
     interchanged.
 
@@ -586,17 +586,17 @@ def cdya_il(A, B):
     Returns
     -------
     np.ndarray
-        Right-crossed dyadic product in full-array storage.
+        Underlined-dyadic product in full-array storage.
 
     Notes
     -----
-    The result of the right-crossed dyadic product of two symmetric second
+    The result of the underlined-dyadic product of two symmetric second
     order tensors is a non-symmetric fourth-order tensor. In case of
     :math:`\boldsymbol{A} = \boldsymbol{B}`, the fourth-order tensor is major-symmetric.
 
     ..  math::
 
-        \mathbb{C} &= \boldsymbol{A} {\otimes\small{|}} \boldsymbol{B}
+        \mathbb{C} &= \boldsymbol{A} \underline{\otimes} \boldsymbol{B}
 
         \mathbb{C}_{ijkl} &= A_{il}~B_{kj}
 

@@ -44,7 +44,7 @@ class Stretches:
 
         \psi_{,\alpha} = \frac{\partial \psi}{\partial \lambda_\alpha}
 
-    and the partial derivative of a principal strech w.r.t. the right Cauchy-Green
+    and the partial derivative of a principal stretch w.r.t. the right Cauchy-Green
     deformation tensor is defined
 
     ..  math::

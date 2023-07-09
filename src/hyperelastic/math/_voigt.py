@@ -264,7 +264,7 @@ def det(A):
     )
 
 
-def inv(A, determinant=None):
+def inv(A, determinant=None, out=None):
     """The inverse of a symmetric 3x3 tensor in Voigt-storage with optional provided
     determinant."""
 
@@ -275,15 +275,20 @@ def inv(A, determinant=None):
     else:
         detA = determinant
 
-    detAinvA[0] = A[1] * A[2] - A[4] ** 2
-    detAinvA[1] = A[0] * A[2] - A[5] ** 2
-    detAinvA[2] = A[0] * A[1] - A[3] ** 2
+    Ai = A[[1, 0, 0, 4, 3, 3]]
+    Aj = A[[2, 2, 1, 5, 5, 4]]
+    Ak = A[[4, 5, 3, 3, 0, 1]]
+    Al = A[[4, 5, 3, 2, 4, 5]]
 
-    detAinvA[3] = A[4] * A[5] - A[3] * A[2]
-    detAinvA[4] = A[3] * A[5] - A[0] * A[4]
-    detAinvA[5] = A[3] * A[4] - A[1] * A[5]
+    if out is None:
+        out = Ai
 
-    return detAinvA / detA
+    Aij = np.multiply(Ai, Aj, out=Ai)
+    Akl = np.multiply(Ak, Al, out=Ak)
+
+    detAinvA = np.subtract(Aij, Akl, out=out)
+
+    return np.divide(*np.broadcast_arrays(detAinvA, detA), out=out)
 
 
 def dot(A, B, mode=(2, 2)):
@@ -482,7 +487,7 @@ def ddot(A, B, mode=(2, 2)):
         return np.einsum("i...,ij...,i->j...", A, B, weights)
 
 
-def dya(A, B):
+def dya(A, B, out=None):
     r"""The dyadic product of two symmetric second-order tensors in reduced vector
     storage.
 
@@ -492,6 +497,10 @@ def dya(A, B):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
+    out : np.ndarray, optional
+        A location into which the result is stored. If provided, it must have a shape
+        that the inputs broadcast to. If not provided or None, a freshly-allocated array
+        is returned (default is None).
 
     Returns
     -------
@@ -528,7 +537,12 @@ def dya(A, B):
     True
 
     """
-    return A.reshape(-1, 1, *A.shape[1:]) * B.reshape(1, -1, *B.shape[1:])
+
+    return np.multiply(
+        A.reshape(-1, 1, *A.shape[1:]),
+        B.reshape(1, -1, *B.shape[1:]),
+        out=out,
+    )
 
 
 def dev(A):
@@ -555,7 +569,7 @@ def dev(A):
     return A - trace(A) / 3 * eye(A)
 
 
-def cdya_ik(A, B):
+def cdya_ik(A, B, out=None):
     r"""The overlined-dyadic product of two symmetric second-order
     tensors in reduced vector storage, where the inner indices (the second index of the
     first tensor and the first index of the second tensor) are interchanged.
@@ -566,6 +580,10 @@ def cdya_ik(A, B):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
+    out : np.ndarray, optional
+        A location into which the result is stored. If provided, it must have a shape
+        that the inputs broadcast to. If not provided or None, a freshly-allocated array
+        is returned (default is None).
 
     Returns
     -------
@@ -602,10 +620,10 @@ def cdya_ik(A, B):
 
     """
 
-    return np.einsum("ijkl...->ikjl...", astensor(dya(A, B), mode=4))
+    return np.swapaxes(astensor(dya(A, B, out=out), mode=4), 1, 2)
 
 
-def cdya_il(A, B):
+def cdya_il(A, B, out=None):
     r"""The underlined-dyadic product of two symmetric second-order
     tensors in reduced vector storage, where the right indices of the two tensors are
     interchanged.
@@ -616,6 +634,10 @@ def cdya_il(A, B):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
+    out : np.ndarray, optional
+        A location into which the result is stored. If provided, it must have a shape
+        that the inputs broadcast to. If not provided or None, a freshly-allocated array
+        is returned (default is None).
 
     Returns
     -------
@@ -652,10 +674,10 @@ def cdya_il(A, B):
 
     """
 
-    return np.einsum("ijkl...->ilkj...", astensor(dya(A, B), mode=4))
+    return np.swapaxes(astensor(dya(A, B, out=out), mode=4), 1, 3)
 
 
-def cdya(A, B):
+def cdya(A, B, out=None):
     r"""The full-symmetric crossed-dyadic product of two symmetric second-order tensors
     in reduced vector storage.
 
@@ -665,6 +687,10 @@ def cdya(A, B):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
+    out : np.ndarray, optional
+        A location into which the result is stored. If provided, it must have a shape
+        that the inputs broadcast to. If not provided or None, a freshly-allocated array
+        is returned (default is None).
 
     Returns
     -------
@@ -740,7 +766,8 @@ def cdya(A, B):
     il = b[i, l]
     kj = b[k, j]
 
-    C = np.zeros((6, *np.broadcast_shapes(A.shape, B.shape)))
+    if out is None:
+        out = np.zeros((6, *np.broadcast_shapes(A.shape, B.shape)))
 
     A, B = np.broadcast_arrays(A, B)
     Aik, Bjl, Ail, Bkj = A[ik], B[jl], A[il], B[kj]
@@ -755,9 +782,9 @@ def cdya(A, B):
     else:
         values /= 2
 
-    C[ij, kl] = C[kl, ij] = values
+    out[ij, kl] = out[kl, ij] = values
 
-    return C
+    return out
 
 
 def eigh(A, fun=None):

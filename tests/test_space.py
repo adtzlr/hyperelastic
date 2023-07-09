@@ -1,5 +1,4 @@
 import felupe as fem
-import pytest
 
 import hyperelastic as hel
 
@@ -36,8 +35,7 @@ def test_distortional_invariants():
 def test_dilatational_invariants():
     model = hel.models.invariants.ThirdOrderDeformation(C10=0.5)
     umat = hel.DilatationalSpace(hel.InvariantsFramework(model))
-    with pytest.raises(ValueError):
-        fea(umat).evaluate(verbose=2)
+    fea(umat).evaluate(verbose=2)
 
 
 def test_deformation_invariants():

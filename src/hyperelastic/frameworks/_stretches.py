@@ -163,8 +163,7 @@ class Stretches:
 
         d2WdCdC = np.zeros((6, 6, *dWdλC.shape[1:]))
 
-        a = [0, 1, 2, 0, 1, 0]
-        b = [0, 1, 2, 1, 2, 2]
+        f = np.zeros_like(λ[0])
 
         for m, (α, β) in enumerate(zip(a, b)):
             M4 = dya(M[α], M[β])
@@ -174,7 +173,6 @@ class Stretches:
                 v = λ[α] ** 2 - λ[β] ** 2
                 mask = np.isclose(v, 0)
 
-                f = np.zeros_like(v)
                 f[~mask] = (dWdλC[α][~mask] - dWdλC[β][~mask]) / v[~mask]
                 f[mask] = d2WdλC2[β][mask] - d2WdλC2[m][mask]
 

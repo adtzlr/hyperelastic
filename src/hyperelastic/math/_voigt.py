@@ -283,7 +283,7 @@ def trace(A):
 
     """
 
-    return np.sum(A[:3])
+    return np.sum(A[:3], axis=0)
 
 
 def transpose(A):

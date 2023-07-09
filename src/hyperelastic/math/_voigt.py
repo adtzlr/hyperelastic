@@ -601,19 +601,8 @@ def cdya_ik(A, B):
     True
 
     """
-    i, j = [a.ravel() for a in np.indices((9, 9))]
 
-    a = np.array(
-        [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
-    )
-    b = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
-
-    i, j, k, l = np.hstack([a[i], a[j]]).T
-
-    ik = b[i, k].reshape(3, 3, 3, 3)
-    jl = b[j, l].reshape(3, 3, 3, 3)
-
-    return A[ik] * B[jl]
+    return np.einsum("ijkl...->ikjl...", astensor(dya(A, B), mode=4))
 
 
 def cdya_il(A, B):
@@ -662,19 +651,8 @@ def cdya_il(A, B):
     True
 
     """
-    i, j = [a.ravel() for a in np.indices((9, 9))]
 
-    a = np.array(
-        [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
-    )
-    b = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
-
-    i, j, k, l = np.hstack([a[i], a[j]]).T
-
-    il = b[i, l].reshape(3, 3, 3, 3)
-    kj = b[k, j].reshape(3, 3, 3, 3)
-
-    return A[il] * B[kj]
+    return np.einsum("ijkl...->ilkj...", astensor(dya(A, B), mode=4))
 
 
 def cdya(A, B):

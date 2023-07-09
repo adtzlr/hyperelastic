@@ -221,26 +221,26 @@ def astensor(A, mode=2):
         return A[i.reshape(3, 3, 3, 3), j.reshape(3, 3, 3, 3)]
 
 
-def tril_from_triu(A, dim=6, inplace=True):
+def tril_from_triu(A, dim=6, out=None):
     "Copy upper triangle values to lower triangle values of a nxn tensor inplace."
-    B = A
-    if not inplace:
-        B = A.copy()
+
+    if out is None:
+        out = A.copy()
 
     i, j = np.triu_indices(dim, 1)
-    B[j, i] = A[i, j]
-    return B
+    out[j, i] = A[i, j]
+    return out
 
 
-def triu_from_tril(A, dim=6, inplace=True):
+def triu_from_tril(A, dim=6, out=None):
     "Copy lower triangle values to upper triangle values of a nxn tensor inplace."
-    B = A
-    if not inplace:
-        B = A.copy()
+
+    if out is None:
+        out = A.copy()
 
     i, j = np.tril_indices(dim, -1)
-    B[j, i] = A[i, j]
-    return B
+    out[j, i] = A[i, j]
+    return out
 
 
 def trace(A):

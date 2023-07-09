@@ -1,6 +1,5 @@
 import numpy as np
 
-import hyperelastic
 import hyperelastic.math as hm
 
 
@@ -14,8 +13,9 @@ def test_math():
     D6 = hm.asvoigt(D, mode=2)
     A6 = hm.asvoigt(A, mode=4)
 
-    assert np.allclose(hm.tril_from_triu(A6, inplace=False), A6)
-    assert np.allclose(hm.triu_from_tril(A6, inplace=False), A6)
+    assert np.allclose(hm.tril_from_triu(A6), A6)
+    assert np.allclose(hm.triu_from_tril(A6), A6)
+    assert np.allclose(hm.trace(hm.dev(C6)), 0)
 
     assert np.allclose(hm.inv(C6), hm.inv(C6, determinant=hm.det(C6)))
     assert np.allclose(hm.dot(C6, C6), np.einsum("ik...,kj...->ij...", C, C))

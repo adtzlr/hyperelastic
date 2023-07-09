@@ -244,17 +244,134 @@ def triu_from_tril(A, dim=6, inplace=True):
 
 
 def trace(A):
-    "Return the sum of the diagonal values of a 3x3 tensor."
-    return np.sum(A[:3], axis=0)
+    r"""The trace of a symmetric second-order tensor in reduced vector storage as the
+    sum of the main diagonal.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        Symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Trace of a symmetric second-order tensor in reduced vector storage.
+
+    Notes
+    -----
+
+    ..  math::
+
+        \text{tr}\left(\boldsymbol{C}\right) &= \boldsymbol{C} : \boldsymbol{I}
+            = C_{11} + C_{22} + C_{33}
+
+        C_{kk} &= C_{ij} : \delta_{ij}
+
+    Examples
+    --------
+    >>> from hyperelastic.math import asvoigt, trace
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+
+    >>> trA = trace(asvoigt(A))
+    >>> trA
+    3.3
+
+    >>> np.allclose(trA, np.trace(A))
+    True
+
+    """
+
+    return np.sum(A[:3])
 
 
 def transpose(A):
-    "Return the major transpose of a fourth order tensor in Voigt-storage."
-    return np.einsum("ij...->ji...", A)
+    r"""The major-transpose of a symmetric fourth-order tensor in reduced vector
+    storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        Symmetric fourth-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Major-transpose of a symmetric fourth-order tensor in reduced vector storage.
+
+    Notes
+    -----
+
+    ..  math::
+
+        \mathbb{A}_{ijkl}^T = \mathbb{A}_{klij}
+
+
+    Examples
+    --------
+    >>> from hyperelastic.math import asvoigt, dya, transpose
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2])[::-1].reshape(3, 3)
+
+    >>> C = dya(asvoigt(A), asvoigt(B))
+    >>> C
+    array([[1.2 , 1.1 , 1.  , 1.4 , 1.3 , 1.5 ],
+           [1.32, 1.21, 1.1 , 1.54, 1.43, 1.65],
+           [1.44, 1.32, 1.2 , 1.68, 1.56, 1.8 ],
+           [1.56, 1.43, 1.3 , 1.82, 1.69, 1.95],
+           [1.68, 1.54, 1.4 , 1.96, 1.82, 2.1 ],
+           [1.8 , 1.65, 1.5 , 2.1 , 1.95, 2.25]])
+
+    >>> transpose(C)
+    array([[1.2 , 1.32, 1.44, 1.56, 1.68, 1.8 ],
+           [1.1 , 1.21, 1.32, 1.43, 1.54, 1.65],
+           [1.  , 1.1 , 1.2 , 1.3 , 1.4 , 1.5 ],
+           [1.4 , 1.54, 1.68, 1.82, 1.96, 2.1 ],
+           [1.3 , 1.43, 1.56, 1.69, 1.82, 1.95],
+           [1.5 , 1.65, 1.8 , 1.95, 2.1 , 2.25]])
+
+    >>> D = astensor(C, mode=4)
+    >>> E = astensor(transpose(C), mode=4)
+    >>> np.allclose(D, np.einsum("klij", E))
+    True
+
+    """
+
+    return np.swapaxes(A, 0, 1)
 
 
 def det(A):
-    "The determinant of a symmetric 3x3 tensor in Voigt-storage (rule of Sarrus)."
+    """The determinant of a symmetric second-order tensor in reduced vector storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        Symmetric second-order tensor in reduced vector storage.
+
+    Returns
+    -------
+    np.ndarray
+        Determinant of a symmetric second-order tensor in reduced vector storage.
+
+    Examples
+    --------
+    >>> from hyperelastic.math import asvoigt, det
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = asvoigt(A)
+
+    >>> det(B)
+    0.3169999999999993
+
+    >>> np.allclose(det(B), np.linalg.det(A))
+    True
+
+    """
+
     return (
         A[0] * A[1] * A[2]
         + 2 * A[3] * A[4] * A[5]
@@ -265,8 +382,47 @@ def det(A):
 
 
 def inv(A, determinant=None, out=None):
-    """The inverse of a symmetric 3x3 tensor in Voigt-storage with optional provided
-    determinant."""
+    r"""The inverse of a symmetric second-order tensor in reduced vector storage.
+
+    Parameters
+    ----------
+    A : np.ndarray
+        Symmetric second-order tensor in reduced vector storage.
+    determinant : np.ndarray or None, optional
+        The determinant of the symmetric second-order tensor (default is None).
+    out : np.ndarray or None, optional
+        A location into which the result is stored. If provided, it must have a shape
+        that the inputs broadcast to. If not provided or None, a freshly-allocated array
+        is returned (default is None).
+
+    Returns
+    -------
+    np.ndarray
+        Inverse of a symmetric second-order tensor in reduced vector storage.
+
+    Notes
+    -----
+
+    ..  math::
+
+        \boldsymbol{C} \boldsymbol{C}^{-1} = \boldsymbol{I}
+
+
+    Examples
+    --------
+    >>> from hyperelastic.math import asvoigt, inv
+    >>> import numpy as np
+
+    >>> A = np.array([1.0, 1.3, 1.5, 1.3, 1.1, 1.4, 1.5, 1.4, 1.2]).reshape(3, 3)
+    >>> B = asvoigt(A)
+
+    >>> inv(B)
+    array([-2.01892744, -3.31230284, -1.86119874,  1.70347003,  1.73501577, 0.5362776 ])
+
+    >>> np.allclose(dot(B, inv(B)), np.eye(3))
+    True
+
+    """
 
     detAinvA = np.zeros_like(A)
 
@@ -497,7 +653,7 @@ def dya(A, B, out=None):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
-    out : np.ndarray, optional
+    out : np.ndarray or None, optional
         A location into which the result is stored. If provided, it must have a shape
         that the inputs broadcast to. If not provided or None, a freshly-allocated array
         is returned (default is None).
@@ -580,7 +736,7 @@ def cdya_ik(A, B, out=None):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
-    out : np.ndarray, optional
+    out : np.ndarray or None, optional
         A location into which the result is stored. If provided, it must have a shape
         that the inputs broadcast to. If not provided or None, a freshly-allocated array
         is returned (default is None).
@@ -634,7 +790,7 @@ def cdya_il(A, B, out=None):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
-    out : np.ndarray, optional
+    out : np.ndarray or None, optional
         A location into which the result is stored. If provided, it must have a shape
         that the inputs broadcast to. If not provided or None, a freshly-allocated array
         is returned (default is None).
@@ -687,7 +843,7 @@ def cdya(A, B, out=None):
         First symmetric second-order tensor in reduced vector storage.
     B : np.ndarray
         Second symmetric second-order tensor in reduced vector storage.
-    out : np.ndarray, optional
+    out : np.ndarray or None, optional
         A location into which the result is stored. If provided, it must have a shape
         that the inputs broadcast to. If not provided or None, a freshly-allocated array
         is returned (default is None).

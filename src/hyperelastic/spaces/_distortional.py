@@ -5,7 +5,7 @@ from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, t
 
 class Distortional:
     r"""The distortional (part of the deformation) space is a partial deformation with
-    constant volume. For a given deformation map :math:`\boldsymbol{x}(\boldsymbol{x})`
+    constant volume. For a given deformation map :math:`\boldsymbol{x}(\boldsymbol{X})`
     and its deformation gradient :math:`\boldsymbol{F}`, the distortional part of the
     deformation gradient :math:`\hat{\boldsymbol{F}}` is obtained by a multiplicative
     (consecutive) split into a volume-changing (dilatational) and a constant-volume

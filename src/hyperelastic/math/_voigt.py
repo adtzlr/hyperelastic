@@ -746,24 +746,38 @@ def cdya(A, B):
 
     """
 
-    i, j = [a.ravel() for a in np.indices((6, 6))]
+    i, j = [a.ravel() for a in np.triu_indices(6)]
 
     a = np.array([(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)])
     b = np.array([0, 3, 5, 3, 1, 4, 5, 4, 2]).reshape(3, 3)
 
     i, j, k, l = np.hstack([a[i], a[j]]).T
 
-    ik = b[i, k].reshape(6, 6)
-    jl = b[j, l].reshape(6, 6)
+    ij = b[i, j]
+    kl = b[k, l]
 
-    il = b[i, l].reshape(6, 6)
-    kj = b[k, j].reshape(6, 6)
+    ik = b[i, k]
+    jl = b[j, l]
 
-    C = (A[ik] * B[jl] + A[il] * B[kj]) / 2
+    il = b[i, l]
+    kj = b[k, j]
+
+    C = np.zeros((6, *np.broadcast_shapes(A.shape, B.shape)))
+
+    A, B = np.broadcast_arrays(A, B)
+    Aik, Bjl, Ail, Bkj = A[ik], B[jl], A[il], B[kj]
+
+    values = np.multiply(Aik, Bjl, out=Aik) + np.multiply(Ail, Bkj, out=Ail)
 
     if A is not B:
-        C += (B[ik] * A[jl] + B[il] * A[kj]) / 2
-        C /= 2
+        Bik, Ajl, Bil, Akj = B[ik], A[jl], B[il], A[kj]
+
+        values += np.multiply(Bik, Ajl, out=Bik) + np.multiply(Bil, Akj, out=Bil)
+        values /= 4
+    else:
+        values /= 2
+
+    C[ij, kl] = C[kl, ij] = values
 
     return C
 

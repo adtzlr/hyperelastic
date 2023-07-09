@@ -1,5 +1,4 @@
 import felupe as fem
-import numpy as np
 import sympy as sym
 
 import hyperelastic as hel

@@ -78,9 +78,9 @@ html_theme_options = {
         #"image_dark": "_static/logo-dark.png",
         "text": "Hyperelastic",
     },
-    "switcher": {
-        "json_url": "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json",
-    },
-    "navbar_start": ["navbar-logo", "version-switcher"],
-    "check_switcher": False,
+    #"switcher": {
+    #    "json_url": "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json",
+    #},
+    #"navbar_start": ["navbar-logo", "version-switcher"],
+    #"check_switcher": False,
 }

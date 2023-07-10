@@ -82,4 +82,5 @@ html_theme_options = {
         "json_url": "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json",
     },
     "navbar_start": ["navbar-logo", "version-switcher"],
+    "check_switcher": False,
 }

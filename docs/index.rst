@@ -1,5 +1,5 @@
-Hyperelastic
-============
+Hyperelastic documentation
+==========================
 
 *Constitutive hyperelastic material formulations for* https://github.com/adtzlr/felupe .
 
@@ -10,4 +10,19 @@ This package provides the essential building blocks for constitutive hyperelasti
    :caption: Contents:
    
    tutorial
-   hyperelastic/global
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Modules:
+
+   hyperelastic/spaces
+   hyperelastic/frameworks
+   hyperelastic/models
+   hyperelastic/math
+
+Indices and Tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

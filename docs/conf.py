@@ -50,18 +50,36 @@ math_number_all = True
 html_theme = "pydata_sphinx_theme"
 html_static_path = ["_static"]
 html_show_sourcelink = False
+html_logo = "_static/logo.png"
 
 html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
             "url": "https://github.com/adtzlr/hyperelastic",
-            "icon": "fa-brands fa-square-github",
+            "icon": "fa-brands fa-github",
+            "type": "fontawesome",
+        },
+        {
+            "name": "Read the Docs",
+            "url": "https://readthedocs.org/projects/hyperelastic/downloads",
+            "icon": "fa-solid fa-book",
+            "type": "fontawesome",
+        },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/hyperelastic/",
+            "icon": "fa-solid fa-box",
             "type": "fontawesome",
         }
     ],
     "logo": {
-        "image_light": "_static/logo-light.png",
-        "image_dark": "_static/logo-dark.png",
+        #"image_light": "_static/logo-light.png",
+        #"image_dark": "_static/logo-dark.png",
+        "text": "Hyperelastic",
     },
+    "switcher": {
+        "json_url": "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json",
+    },
+    "navbar_start": ["navbar-logo", "version-switcher"],
 }

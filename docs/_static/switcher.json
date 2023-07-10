@@ -1,0 +1,22 @@
+[
+    {
+        "version": "latest",
+        "url": "https://hyperelastic.readthedocs.io/en/latest/index.html"
+    },
+    {
+        "version": "stable",
+        "url": "https://hyperelastic.readthedocs.io/en/stable/index.html"
+    },
+    {
+        "version": "v0.5.0",
+        "url": "https://hyperelastic.readthedocs.io/en/v0.5.0/index.html"
+    },
+    {
+        "version": "v0.4.0",
+        "url": "https://hyperelastic.readthedocs.io/en/v0.4.0/index.html"
+    },
+    {
+        "version": "v0.3.0",
+        "url": "https://hyperelastic.readthedocs.io/en/v0.3.0/index.html"
+    }
+]

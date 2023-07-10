@@ -6,6 +6,9 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import os
+import hyperelastic
+
 project = "Hyperelastic"
 copyright = "2023, Andreas Dutzler"
 author = "Andreas Dutzler"
@@ -52,6 +55,24 @@ html_static_path = ["_static"]
 html_show_sourcelink = False
 html_logo = "_static/logo.png"
 
+# Define the json_url for our version switcher.
+json_url = "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json"
+
+# Define the version we use for matching in the version switcher.
+version_match = os.environ.get("READTHEDOCS_VERSION")
+# If READTHEDOCS_VERSION doesn't exist, we're not on RTD
+# If it is an integer, we're in a PR build and the version isn't correct.
+if not version_match or version_match.isdigit():
+    # For local development, infer the version to match from the package.
+    release = hyperelastic.__version__
+    if "dev" in release or "rc" in release:
+        version_match = "latest"
+        # We want to keep the relative reference if we are in dev mode
+        # but we want the whole url if we are effectively in a released version
+        json_url = "_static/switcher.json"
+    else:
+        version_match = "v" + release
+
 html_theme_options = {
     "icon_links": [
         {
@@ -78,9 +99,9 @@ html_theme_options = {
         #"image_dark": "_static/logo-dark.png",
         "text": "Hyperelastic",
     },
-    #"switcher": {
-    #    "json_url": "https://hyperelastic.readthedocs.io/en/latest/_static/switcher.json",
-    #},
-    #"navbar_start": ["navbar-logo", "version-switcher"],
-    #"check_switcher": False,
+    "switcher": {
+        "json_url": json_url,
+        "version_match": version_match,
+    },
+    "navbar_start": ["navbar-logo", "version-switcher"],
 }

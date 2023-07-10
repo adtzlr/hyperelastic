@@ -5,7 +5,7 @@ The (topologic) deformation of a solid body is given by a displacement vector. T
 
 Generalized *Total-Lagrange* :mod:`Frameworks <.frameworks>` for isotropic hyperelastic material formulations based on the invariants of the right Cauchy-Green deformation tensor and the principal stretches enable a clean coding of isotropic material formulations.
 
-.. image:: images/frameworks.svg
+.. image:: images/frameworks.png
    :align: center
 
 .. automodule:: hyperelastic.frameworks

@@ -3,7 +3,7 @@ Spaces
 
 :mod:`Spaces <.spaces>` are full or partial deformations on which a given material formulation may be projected to, e.g. to the distortional (part of the deformation) space.
 
-.. image:: images/spaces.svg
+.. image:: images/spaces.png
    :align: center
 
 

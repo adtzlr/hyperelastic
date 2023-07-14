@@ -1,4 +1,4 @@
-from . import frameworks, math, models, spaces
+from . import frameworks, lab, math, models, spaces
 from .__about__ import __version__
 from .frameworks import Invariants as InvariantsFramework
 from .frameworks import Stretches as StretchesFramework
@@ -7,6 +7,7 @@ from .spaces import Dilatational as DilatationalSpace
 from .spaces import Distortional as DistortionalSpace
 
 __all__ = [
+    "lab",
     "spaces",
     "frameworks",
     "math",

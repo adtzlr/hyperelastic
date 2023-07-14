@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ._curve_fit import curve_fits
+from ._curve_fit import concatenate_curve_fit
 
 
 class Optimize:
@@ -11,10 +11,19 @@ class Optimize:
         self.parameters = parameters
         self.mask = mask
 
+        if self.mask is None:
+            self.mask = [None] * len(self.experiments)
+
     def init(self, *args, **kwargs):
         self.f = [simulation.stress_curve_fit for simulation in self.simulations]
-        self.x = [experiment.stretch[self.mask] for experiment in self.experiments]
-        self.y = [experiment.stress()[self.mask] for experiment in self.experiments]
+        self.x = [
+            experiment.stretch[mask]
+            for mask, experiment in zip(self.mask, self.experiments)
+        ]
+        self.y = [
+            experiment.stress()[mask]
+            for mask, experiment in zip(self.mask, self.experiments)
+        ]
 
         f0 = np.concatenate(
             [fi(xi, *self.parameters) for fi, xi in zip(self.f, self.x)]
@@ -28,10 +37,16 @@ class Optimize:
 
         return self.parameters
 
+    def mean_relative_std(self):
+        return np.mean(self.errors / np.abs(self.parameters)) * 100
+
+    def relative_norm_residuals(self):
+        return np.linalg.norm(self.residuals / np.concatenate(self.y))
+
     def run(self, *args, **kwargs):
         p0 = self.init(*args, **kwargs)
 
-        popt, pcov = curve_fits(self.f, self.x, self.y, p0, *args, **kwargs)
+        popt, pcov = concatenate_curve_fit(self.f, self.x, self.y, p0, *args, **kwargs)
         fopt = np.concatenate([fi(xi, *popt) for fi, xi in zip(self.f, self.x)])
 
         self.parameters[:] = popt
@@ -46,12 +61,14 @@ class Optimize:
     def plot(self):
         fig, ax = plt.subplots()
 
-        for simulation, experiment in zip(self.simulations, self.experiments):
+        for i, (simulation, experiment) in enumerate(
+            zip(self.simulations, self.experiments)
+        ):
             fig, ax = simulation.plot_stress_stretch(
-                "C7", label=f"{experiment.label} (Simulation)", ax=ax
+                f"C{i}", label=f"{experiment.label} (Simulation)", lw=3, ax=ax
             )
             fig, ax = experiment.plot_stress_stretch(
-                ".-", label=f"{experiment.label} (Experiment)", ax=ax
+                f"C{i}", label=f"{experiment.label} (Experiment)", lw=0.7, ax=ax
             )
 
         ax.legend()
@@ -66,9 +83,9 @@ class Optimize:
             0.02,
             text
             + "\n\n"
-            + f"Norm of Residuals = {np.linalg.norm(self.residuals): 1.2g}"
+            + f"Relative Norm of Residuals = {self.relative_norm_residuals(): 1.1g}%"
             + "\n"
-            + f"Mean Standard Deviation of Parameters = {np.mean(self.errors): 1.2g}",
+            + f"Mean Standard Deviation of Parameters = {self.mean_relative_std(): 1.1g}%",
             horizontalalignment="right",
             verticalalignment="bottom",
             fontsize="small",

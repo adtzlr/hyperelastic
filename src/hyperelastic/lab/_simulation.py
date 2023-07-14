@@ -18,7 +18,7 @@ class Simulation(LabPlotter):
         kwargs = {label: p for label, p in zip(self.labels, parameters)}
         mat = self.material(**kwargs)
         F = self.loadcase.defgrad(x)
-        P = mat.gradient([F, None])[0]
+        P = mat.gradient([F.reshape(3, 3, 1, -1), None])[0].reshape(3, 3, -1)
         return self.loadcase.stress(F, P)
 
     def stress(self):

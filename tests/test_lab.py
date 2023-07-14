@@ -79,7 +79,7 @@ def test_lab():
     parameters = optimize.run()
     fig, ax = optimize.plot()
 
-    # assert np.allclose(parameters, [ 4.35981843e-01,  2.27510525e-02, -2.80018875e-04])
+    assert np.allclose(parameters, [5.28491948e-01, 9.05298609e-03, 8.32226589e-05])
 
 
 if __name__ == "__main__":

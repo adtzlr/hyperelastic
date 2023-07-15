@@ -10,6 +10,7 @@ class Optimize:
         self.simulations = simulations
         self.parameters = parameters
         self.mask = mask
+        self.take = None
 
         if self.mask is None:
             self.mask = [None] * len(self.experiments)
@@ -43,7 +44,7 @@ class Optimize:
     def relative_norm_residuals(self):
         return np.linalg.norm(self.residuals / np.concatenate(self.y))
 
-    def run(self, *args, **kwargs):
+    def curve_fit(self, *args, **kwargs):
         p0 = self.init(*args, **kwargs)
 
         popt, pcov = concatenate_curve_fit(self.f, self.x, self.y, p0, *args, **kwargs)
@@ -56,19 +57,20 @@ class Optimize:
         for simulation in self.simulations:
             simulation.parameters[:] = self.parameters
 
-        return self.parameters
+        return self.parameters, pcov
 
-    def plot(self):
+    def plot(self, title=None):
         fig, ax = plt.subplots()
 
         for i, (simulation, experiment) in enumerate(
             zip(self.simulations, self.experiments)
         ):
+            label = experiment.label
             fig, ax = simulation.plot_stress_stretch(
-                f"C{i}", label=f"{experiment.label} (Simulation)", lw=3, ax=ax
+                f"C{i}", label=f"{label}", lw=3, ax=ax
             )
             fig, ax = experiment.plot_stress_stretch(
-                f"C{i}", label=f"{experiment.label} (Experiment)", lw=0.7, ax=ax
+                f"C{i}", label=f"{label} (Experiment)", lw=0.7, ax=ax
             )
 
         ax.legend()
@@ -91,5 +93,9 @@ class Optimize:
             fontsize="small",
             transform=ax.transAxes,
         )
+
+        if title is not None:
+            ax.set_title(title)
+
         fig.tight_layout()
         return fig, ax

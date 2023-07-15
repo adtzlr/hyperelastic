@@ -76,8 +76,8 @@ def test_lab():
         ],
     )
 
-    parameters = optimize.run()
-    fig, ax = optimize.plot()
+    parameters, pcov = optimize.curve_fit(method="lm")
+    fig, ax = optimize.plot(title="Yeoh")
 
     assert np.allclose(parameters, [5.28491948e-01, 9.05298609e-03, 8.32226589e-05])
 

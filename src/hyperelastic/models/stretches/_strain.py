@@ -1,19 +1,48 @@
 import numpy as np
 
 
-class StrainInvariants:
-    r"""The Formulation for a Total-Lagrangian generalized-strain invariant-based
+def strain(stretch, exponent):
+    "Seth-Hill strain as a function of the stretch (and first and second derivatives)."
+
+    k = exponent
+    λ = stretch
+
+    E = (λ**k - 1) / k
+    dEdλ = λ ** (k - 1)
+    d2Edλdλ = (k - 1) * λ ** (k - 2)
+
+    return E, dEdλ, d2Edλdλ
+
+
+def deformation(stretch, exponent):
+    """Generalized deformation as a function of the stretch (and first and second
+    derivatives)."""
+
+    k = exponent
+    λ = stretch
+
+    Ck = 2 / k * λ**k
+    dCkdλ = 2 * λ ** (k - 1)
+    d2Ckdλdλ = 2 * (k - 1) * λ ** (k - 2)
+
+    return Ck, dCkdλ, d2Ckdλdλ
+
+
+class GeneralizedInvariants:
+    r"""The Framework for a Total-Lagrangian generalized invariant-based
     isotropic hyperelastic material formulation provides the material behaviour-
     independent parts for evaluating the second Piola-Kirchhoff stress tensor as well as
     its associated fourth-order elasticity tensor."""
 
-    def __init__(self, material, strain_exponent):
+    def __init__(self, material, fun, **kwargs):
         self.material = material
-        self.k = strain_exponent
+        self.strain = fun
+        self.kwargs = kwargs
 
     def gradient(self, stretches, statevars):
         # principal strains
-        self.E = E = (stretches**self.k - 1) / self.k
+        self.E, self.dEdλ, self.d2Edλdλ = self.strain(stretches, **self.kwargs)
+        E = self.E
 
         # strain invariants
         self.I1 = E[0] + E[1] + E[2]
@@ -24,27 +53,25 @@ class StrainInvariants:
             self.I1, self.I2, self.I3, statevars
         )
 
-        self.dEαdλα = stretches ** (self.k - 1)
-
         Eβ = E[[1, 0, 0]]
         Eγ = E[[2, 2, 1]]
 
-        self.dI1dEα = np.ones_like(E)
-        self.dI2dEα = Eβ + Eγ
-        self.dI3dEα = Eβ * Eγ
+        self.dI1dE = np.ones_like(E)
+        self.dI2dE = Eβ + Eγ
+        self.dI3dE = Eβ * Eγ
 
-        dWdλα = np.zeros_like(stretches)
+        dWdλ = np.zeros_like(stretches)
 
         if self.dWdI1 is not None:
-            dWdλα += self.dWdI1 * self.dI1dEα * self.dEαdλα
+            dWdλ += self.dWdI1 * self.dI1dE * self.dEdλ
 
         if self.dWdI2 is not None:
-            dWdλα += self.dWdI2 * self.dI2dEα * self.dEαdλα
+            dWdλ += self.dWdI2 * self.dI2dE * self.dEdλ
 
         if self.dWdI3 is not None:
-            dWdλα += self.dWdI3 * self.dI3dEα * self.dEαdλα
+            dWdλ += self.dWdI3 * self.dI3dE * self.dEdλ
 
-        return dWdλα, statevars_new
+        return dWdλ, statevars_new
 
     def hessian(self, stretches, statevars):
         dWdλα, statevars_new = self.gradient(stretches, statevars)
@@ -57,18 +84,16 @@ class StrainInvariants:
             d2WdI1dI3,
         ) = self.material.hessian(self.I1, self.I2, self.I3, statevars)
 
-        λ = stretches
-        dI1dE = self.dI1dEα
-        dI2dE = self.dI2dEα
-        dI3dE = self.dI3dEα
-        dEdλ = self.dEαdλα
+        dI1dE = self.dI1dE
+        dI2dE = self.dI2dE
+        dI3dE = self.dI3dE
+        dEdλ = self.dEdλ
+        d2Edλdλ = self.d2Edλdλ
 
         Eγ = [None, None, None, 2, 0, 1]
 
         d2Wdλαdλβ = np.zeros((6, *dWdλα.shape[1:]))
         idx = [(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)]
-
-        d2Edλdλ = (self.k - 1) * λ ** (self.k - 2)
 
         for m, (α, β) in enumerate(idx):
             if d2WdI1dI1 is not None:
@@ -91,10 +116,12 @@ class StrainInvariants:
 
             if α != β:
                 if self.dWdI2 is not None:
-                    d2Wdλαdλβ[m] += self.dWdI2 * dEdλ[α] * dEdλ[β]
+                    d2I2dEdE = 1
+                    d2Wdλαdλβ[m] += self.dWdI2 * d2I2dEdE * dEdλ[α] * dEdλ[β]
 
                 if self.dWdI3 is not None:
-                    d2Wdλαdλβ[m] += self.dWdI3 * Eγ[m] * dEdλ[α] * dEdλ[β]
+                    d2I3dEdE = Eγ[m]
+                    d2Wdλαdλβ[m] += self.dWdI3 * d2I3dEdE * dEdλ[α] * dEdλ[β]
 
             if α == β:
                 if self.dWdI1 is not None:

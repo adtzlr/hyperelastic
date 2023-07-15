@@ -30,7 +30,7 @@ def pre(diameter, length):
 
 def material(k, **kwargs):
     tod = hyperelastic.models.invariants.ThirdOrderDeformation(strain=False, **kwargs)
-    fun = hyperelastic.models.stretches.deformation
+    fun = hyperelastic.models.generalized.deformation
     framework = hyperelastic.GeneralizedInvariantsFramework(tod, fun=fun, exponent=k)
     return hyperelastic.DistortionalSpace(framework)
 

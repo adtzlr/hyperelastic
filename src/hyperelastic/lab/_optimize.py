@@ -45,13 +45,10 @@ class Optimize:
 
         return np.mean(self.errors / np.abs(self.parameters)) * 100
 
-    def relative_norm_residuals(self):
-        "Return the relative norm of the residuals."
+    def norm_residuals(self):
+        "Return the norm of the residuals."
 
-        y = np.concatenate(self.y)
-        y[np.isclose(y, 0)] = 1
-
-        return np.linalg.norm(self.residuals / y)
+        return np.linalg.norm(self.residuals)
 
     def curve_fit(self, *args, **kwargs):
         p0 = self.init(*args, **kwargs)
@@ -94,7 +91,7 @@ class Optimize:
             0.02,
             text
             + "\n\n"
-            + f"Relative Norm of Residuals = {self.relative_norm_residuals(): 1.1f}%"
+            + f"Absolute Norm of Residuals = {self.norm_residuals(): 1.4g}"
             + "\n"
             + f"Mean Std. Deviation of Parameters = {self.mean_relative_std(): 1.1f}%",
             horizontalalignment="right",

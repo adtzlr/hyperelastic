@@ -21,7 +21,7 @@ def pre(diameter, length):
     force = np.concatenate([force, force2[::-1]]) * area
 
     np.random.seed(56489)
-    force += (np.random.rand(len(stretch)) - 0.5) * 100
+    force += (stretch - 1) * (np.random.rand(len(stretch)) - 0.5) * 30
 
     displacement = (stretch - 1) * length
 
@@ -30,7 +30,10 @@ def pre(diameter, length):
 
 def material(k, **kwargs):
     tod = hyperelastic.models.invariants.ThirdOrderDeformation(strain=False, **kwargs)
-    model = hyperelastic.models.stretches.DeformationInvariants(tod, strain_exponent=k)
+    fun = hyperelastic.models.stretches.deformation
+    model = hyperelastic.models.stretches.GeneralizedInvariants(
+        tod, fun=fun, exponent=k
+    )
     framework = hyperelastic.StretchesFramework(model)
     return hyperelastic.DistortionalSpace(framework)
 
@@ -49,7 +52,7 @@ def test_lab():
         hyperelastic.lab.Experiment(
             label="Biaxial Tension",
             displacement=displacement / 2,
-            force=force * 4 / 5,
+            force=force * 2 / 3,
             area=area,
             length=length,
         ),
@@ -85,11 +88,11 @@ def test_lab():
     )
 
     parameters, pcov = optimize.curve_fit(method="lm")
-    fig, ax = optimize.plot(title="Yeoh (Generalized Strain)")
+    fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
 
-    print(parameters)
+    # print(parameters)
 
-    # assert np.allclose(parameters, [1.36430662, 1.49676211, 0.27328351, 0.02754018])
+    assert np.allclose(parameters, [1.54438747, 0.56391278, 0.01298499, 0.00233807])
 
 
 if __name__ == "__main__":

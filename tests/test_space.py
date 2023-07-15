@@ -32,6 +32,13 @@ def test_distortional_invariants():
     fea(umat).evaluate(verbose=2)
 
 
+def test_distortional_strain_invariants():
+    tod = hel.models.invariants.ThirdOrderDeformation(C10=0.4, C01=0.1)
+    model = hel.models.stretches.StrainInvariants(tod, strain_exponent=2)
+    umat = hel.DistortionalSpace(hel.StretchesFramework(model))
+    fea(umat).evaluate(verbose=2)
+
+
 def test_dilatational_invariants():
     model = hel.models.invariants.ThirdOrderDeformation(C10=0.5)
     umat = hel.DilatationalSpace(hel.InvariantsFramework(model))
@@ -51,3 +58,4 @@ if __name__ == "__main__":
     test_distortional_invariants()
     test_dilatational_invariants()
     test_deformation_invariants()
+    test_distortional_strain_invariants()

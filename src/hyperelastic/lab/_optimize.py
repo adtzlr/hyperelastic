@@ -85,9 +85,9 @@ class Optimize:
             0.02,
             text
             + "\n\n"
-            + f"Relative Norm of Residuals = {self.relative_norm_residuals(): 1.1g}%"
+            + f"Relative Norm of Residuals = {self.relative_norm_residuals(): 1.1f}%"
             + "\n"
-            + f"Mean Standard Deviation of Parameters = {self.mean_relative_std(): 1.1g}%",
+            + f"Mean Std. Deviation of Parameters = {self.mean_relative_std(): 1.1f}%",
             horizontalalignment="right",
             verticalalignment="bottom",
             fontsize="small",

@@ -72,6 +72,7 @@ def test_lab():
         parameters=np.ones(3),
         mask=[
             np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
+            # np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
             np.zeros_like(displacement, dtype=bool),  # deactivate biaxial loadcase
         ],
     )

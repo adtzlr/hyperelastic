@@ -1,16 +1,19 @@
 import numpy as np
 
 
-class GeneralizedStrainInvariants:
-    "Generalized Strain Invariants."
+class StrainInvariants:
+    r"""The Formulation for a Total-Lagrangian generalized-strain invariant-based
+    isotropic hyperelastic material formulation provides the material behaviour-
+    independent parts for evaluating the second Piola-Kirchhoff stress tensor as well as
+    its associated fourth-order elasticity tensor."""
 
-    def __init__(self, material, k=2):
+    def __init__(self, material, strain_exponent):
         self.material = material
-        self.k = k
+        self.k = strain_exponent
 
     def gradient(self, stretches, statevars):
         # principal strains
-        E = (stretches**self.k - 1) / self.k
+        self.E = E = (stretches**self.k - 1) / self.k
 
         # strain invariants
         self.I1 = E[0] + E[1] + E[2]
@@ -21,73 +24,86 @@ class GeneralizedStrainInvariants:
             self.I1, self.I2, self.I3, statevars
         )
 
-        dEαdλα = stretches ** (self.k - 1)
+        self.dEαdλα = stretches ** (self.k - 1)
 
-        Eβ = E[[1, 2, 0]]
-        Eγ = E[[2, 0, 1]]
+        Eβ = E[[1, 0, 0]]
+        Eγ = E[[2, 2, 1]]
 
-        self.dI1dλα = dEαdλα
-        self.dI2dλα = dEαdλα * (Eβ + Eγ)
-        self.dI3dλα = dEαdλα * Eβ * Eγ
+        self.dI1dEα = np.ones_like(E)
+        self.dI2dEα = Eβ + Eγ
+        self.dI3dEα = Eβ * Eγ
 
-        dWdλα = (
-            self.dWdI1 * self.dI1dλα
-            + self.dWdI2 * self.dI2dλα
-            + self.dWdI3 * self.dI3dλα
-        )
+        dWdλα = np.zeros_like(stretches)
+
+        if self.dWdI1 is not None:
+            dWdλα += self.dWdI1 * self.dI1dEα * self.dEαdλα
+
+        if self.dWdI2 is not None:
+            dWdλα += self.dWdI2 * self.dI2dEα * self.dEαdλα
+
+        if self.dWdI3 is not None:
+            dWdλα += self.dWdI3 * self.dI3dEα * self.dEαdλα
 
         return dWdλα, statevars_new
 
     def hessian(self, stretches, statevars):
-        return
-        # d2Wdλαdλα = np.zeros_like(stretches)
+        dWdλα, statevars_new = self.gradient(stretches, statevars)
+        (
+            d2WdI1dI1,
+            d2WdI2dI2,
+            d2WdI3dI3,
+            d2WdI1dI2,
+            d2WdI2dI3,
+            d2WdI1dI3,
+        ) = self.material.hessian(self.I1, self.I2, self.I3, statevars)
 
-        # dWdλα, statevars = self.gradient(stretches, statevars)
-        # (
-        #     d2WdI1dI1,
-        #     d2WdI2dI2,
-        #     d2WdI3dI3,
-        #     d2WdI1dI2,
-        #     d2WdI2dI3,
-        #     d2WdI1dI3,
-        # ) = self.material.hessian(self.I1, self.I2, self.I3, statevars)
+        λ = stretches
+        dI1dE = self.dI1dEα
+        dI2dE = self.dI2dEα
+        dI3dE = self.dI3dEα
+        dEdλ = self.dEαdλα
 
-        # out = np.zeros((6, *dWdλα[1:]))
-        # out[:3] += self.dWdI1 * (self.k - 1) * stretches ** (self.k - 2)
+        Eγ = [None, None, None, 2, 0, 1]
 
-        # for m, (α, β) in enumerate(np.triu_indices(3)):
-        #     out[m] = (
-        #         d2WdI1dI1 * self.dI1dλα[α] * self.dI1dλα[β]
-        #         + d2WdI2dI2 * self.dI2dλα[α] * self.dI2dλα[β]
-        #         + d2WdI3dI3 * self.dI3dλα[α] * self.dI3dλα[β]
-        #         + d2WdI1dI2 * self.dI1dλα[α] * self.dI2dλα[β]
-        #         + d2WdI2dI3 * self.dI2dλα[α] * self.dI3dλα[β]
-        #         + d2WdI1dI3 * self.dI1dλα[α] * self.dI3dλα[β]
-        #     )
+        d2Wdλαdλβ = np.zeros((6, *dWdλα.shape[1:]))
+        idx = [(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)]
 
-        # dI1dλα_dI1dλβ = np.expand_dims(self.dI1dλα, 1) * np.expand_dims(self.dI1dλα, 0)
-        # dI2dλα_dI2dλβ = np.expand_dims(self.dI2dλα, 1) * np.expand_dims(self.dI2dλα, 0)
-        # dI3dλα_dI3dλβ = np.expand_dims(self.dI3dλα, 1) * np.expand_dims(self.dI3dλα, 0)
-        # dI1dλα_dI2dλβ = np.expand_dims(self.dI1dλα, 1) * np.expand_dims(self.dI2dλα, 0)
-        # dI2dλα_dI3dλβ = np.expand_dims(self.dI2dλα, 1) * np.expand_dims(self.dI3dλα, 0)
-        # dI1dλα_dI3dλβ = np.expand_dims(self.dI1dλα, 1) * np.expand_dims(self.dI3dλα, 0)
+        d2Edλdλ = (self.k - 1) * λ ** (self.k - 2)
 
-        # d2I1dλαdλβ = (self.k - 1) * stretches ** (self.k - 2)
+        for m, (α, β) in enumerate(idx):
+            if d2WdI1dI1 is not None:
+                d2Wdλαdλβ[m] += d2WdI1dI1 * dI1dE[α] * dEdλ[α] * dI1dE[β] * dEdλ[β]
 
-        # work in progress...
+            if d2WdI2dI2 is not None:
+                d2Wdλαdλβ[m] += d2WdI2dI2 * dI2dE[α] * dEdλ[α] * dI2dE[β] * dEdλ[β]
 
-        # d2I2dλαdλβ =
-        # d2I3dλαdλβ =
+            if d2WdI3dI3 is not None:
+                d2Wdλαdλβ[m] += d2WdI3dI3 * dI3dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
 
-        # out = (
-        #     d2WdI1dI1 * dI1dλα_dI1dλβ +
-        #     d2WdI2dI2 * dI2dλα_dI2dλβ +
-        #     d2WdI3dI3 * dI3dλα_dI3dλβ +
-        #     d2WdI1dI2 * dI1dλα_dI2dλβ +
-        #     d2WdI2dI3 * dI2dλα_dI3dλβ +
-        #     d2WdI1dI3 * dI1dλα_dI3dλβ +
-        #     self.dWdI1 * d2I1dλαdλβ + self.dWdI2 * d2I2dλαdλβ + self.dWdI3 * d2I3dλαdλβ
-        # )
+            if d2WdI1dI2 is not None:
+                d2Wdλαdλβ[m] += 2 * d2WdI1dI2 * dI1dE[α] * dEdλ[α] * dI2dE[β] * dEdλ[β]
 
-        # idx = [(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)]
-        # return [out[idx]]
+            if d2WdI2dI3 is not None:
+                d2Wdλαdλβ[m] += 2 * d2WdI2dI3 * dI2dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
+
+            if d2WdI1dI3 is not None:
+                d2Wdλαdλβ[m] += 2 * d2WdI1dI3 * dI1dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
+
+            if α != β:
+                if self.dWdI2 is not None:
+                    d2Wdλαdλβ[m] += self.dWdI2 * dEdλ[α] * dEdλ[β]
+
+                if self.dWdI3 is not None:
+                    d2Wdλαdλβ[m] += self.dWdI3 * Eγ[m] * dEdλ[α] * dEdλ[β]
+
+            if α == β:
+                if self.dWdI1 is not None:
+                    d2Wdλαdλβ[m] += self.dWdI1 * dI1dE[α] * d2Edλdλ[α]
+
+                if self.dWdI2 is not None:
+                    d2Wdλαdλβ[m] += self.dWdI2 * dI2dE[α] * d2Edλdλ[α]
+
+                if self.dWdI3 is not None:
+                    d2Wdλαdλβ[m] += self.dWdI3 * dI3dE[α] * d2Edλdλ[α]
+
+        return d2Wdλαdλβ

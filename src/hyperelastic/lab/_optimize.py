@@ -39,10 +39,19 @@ class Optimize:
         return self.parameters
 
     def mean_relative_std(self):
+        """Return the relative mean of the standard deviations of the material
+        parameters, normalized by the absolute mean-values of the parameters.
+        """
+
         return np.mean(self.errors / np.abs(self.parameters)) * 100
 
     def relative_norm_residuals(self):
-        return np.linalg.norm(self.residuals / np.concatenate(self.y))
+        "Return the relative norm of the residuals."
+
+        y = np.concatenate(self.y)
+        y[np.isclose(y, 0)] = 1
+
+        return np.linalg.norm(self.residuals / y)
 
     def curve_fit(self, *args, **kwargs):
         p0 = self.init(*args, **kwargs)
@@ -73,7 +82,7 @@ class Optimize:
                 f"C{i}", label=f"{label} (Experiment)", lw=0.7, ax=ax
             )
 
-        ax.legend()
+        ax.legend(loc=2)
         text = "\n".join(
             [
                 rf"{n} = {p:1.2g} $\pm${2*s:1.2g}"

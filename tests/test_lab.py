@@ -28,10 +28,12 @@ def pre(diameter, length):
     return force, displacement, area, length
 
 
-def material(k, **kwargs):
+def material(**kwargs):
+    k = kwargs.pop("k")
     tod = hyperelastic.models.invariants.ThirdOrderDeformation(strain=False, **kwargs)
     fun = hyperelastic.models.generalized.deformation
     framework = hyperelastic.GeneralizedInvariantsFramework(tod, fun=fun, exponent=k)
+    # framework = hyperelastic.InvariantsFramework(tod)
     return hyperelastic.DistortionalSpace(framework)
 
 
@@ -63,13 +65,13 @@ def test_lab():
             ux,
             experiments[0].stretch,
             material=material,
-            labels=["k", "C10", "C20", "C30"],
+            labels=["C10", "C20", "C30", "k"],
         ),
         hyperelastic.lab.Simulation(
             bx,
             experiments[1].stretch,
             material=material,
-            labels=["k", "C10", "C20", "C30"],
+            labels=["C10", "C20", "C30", "k"],
         ),
     ]
 
@@ -89,7 +91,7 @@ def test_lab():
 
     # print(parameters)
 
-    assert np.allclose(parameters, [1.54438747, 0.56391278, 0.01298499, 0.00233807])
+    assert np.allclose(parameters, [0.56391278, 0.01298499, 0.00233807, 1.54438747])
 
 
 if __name__ == "__main__":

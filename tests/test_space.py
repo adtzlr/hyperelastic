@@ -34,9 +34,9 @@ def test_distortional_invariants():
 
 def test_distortional_strain_invariants():
     tod = hel.models.invariants.ThirdOrderDeformation(
-        C10=0.4, C01=0.1, C20=0.1, strain=1
+        C10=0.4, C01=0.1, C20=0.1, strain=False
     )
-    model = hel.models.stretches.StrainInvariants(tod, strain_exponent=2)
+    model = hel.models.stretches.DeformationInvariants(tod, strain_exponent=1.4)
     umat = hel.DistortionalSpace(hel.StretchesFramework(model))
     fea(umat).evaluate(verbose=2)
 

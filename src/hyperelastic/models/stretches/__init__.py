@@ -1,4 +1,4 @@
 from ._ogden import Ogden
-from ._strain import GeneralizedInvariants, deformation, strain
+from ._strain import GeneralizedInvariantsModel, deformation, strain
 
-__all__ = ["Ogden", "GeneralizedInvariants", "strain", "deformation"]
+__all__ = ["Ogden", "GeneralizedInvariantsModel", "strain", "deformation"]

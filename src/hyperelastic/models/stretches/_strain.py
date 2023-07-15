@@ -28,8 +28,8 @@ def deformation(stretch, exponent):
     return Ck, dCkdλ, d2Ckdλdλ
 
 
-class GeneralizedInvariants:
-    r"""The Framework for a Total-Lagrangian generalized invariant-based
+class GeneralizedInvariantsModel:
+    r"""The Model-Framework for a Total-Lagrangian generalized invariant-based
     isotropic hyperelastic material formulation provides the material behaviour-
     independent parts for evaluating the second Piola-Kirchhoff stress tensor as well as
     its associated fourth-order elasticity tensor."""

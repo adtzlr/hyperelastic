@@ -37,8 +37,8 @@ def test_distortional_generalized_strain_invariants():
         C10=0.4, C01=0.1, C20=0.1, strain=True
     )
     fun = hel.models.stretches.strain
-    model = hel.models.stretches.GeneralizedInvariants(tod, fun=fun, exponent=1.4)
-    umat = hel.DistortionalSpace(hel.StretchesFramework(model))
+    framework = hel.GeneralizedInvariantsFramework(tod, fun=fun, exponent=1.4)
+    umat = hel.DistortionalSpace(framework)
     fea(umat).evaluate(verbose=2)
 
 
@@ -47,8 +47,8 @@ def test_distortional_generalized_deformation_invariants():
         C10=0.4, C01=0.1, C20=0.1, strain=False
     )
     fun = hel.models.stretches.deformation
-    model = hel.models.stretches.GeneralizedInvariants(tod, fun=fun, exponent=1.4)
-    umat = hel.DistortionalSpace(hel.StretchesFramework(model))
+    framework = hel.GeneralizedInvariantsFramework(tod, fun=fun, exponent=1.4)
+    umat = hel.DistortionalSpace(framework)
     fea(umat).evaluate(verbose=2)
 
 

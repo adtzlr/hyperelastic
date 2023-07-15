@@ -37,7 +37,7 @@ class ThirdOrderDeformation:
 
     """
 
-    def __init__(self, C10=0, C01=0, C11=0, C20=0, C30=0):
+    def __init__(self, C10=0, C01=0, C11=0, C20=0, C30=0, strain=False):
         """Initialize the Third Order Deformation material formulation with its
         parameters.
         """
@@ -47,6 +47,9 @@ class ThirdOrderDeformation:
         self.C11 = C11
         self.C20 = C20
         self.C30 = C30
+
+        # value of invariants at the undeformed state
+        self.undeformed = 0 if strain else 3
 
     def gradient(self, I1, I2, I3, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
@@ -69,14 +72,14 @@ class ThirdOrderDeformation:
             dWdI2 += self.C01
 
         if self.C11 != 0:
-            dWdI1 += self.C11 * (I2 - 3)
-            dWdI2 += self.C11 * (I1 - 3)
+            dWdI1 += self.C11 * (I2 - self.undeformed)
+            dWdI2 += self.C11 * (I1 - self.undeformed)
 
         if self.C20 != 0:
-            dWdI1 += self.C20 * 2 * (I1 - 3)
+            dWdI1 += self.C20 * 2 * (I1 - self.undeformed)
 
         if self.C30 != 0:
-            dWdI1 += self.C30 * 3 * (I1 - 3) ** 2
+            dWdI1 += self.C30 * 3 * (I1 - self.undeformed) ** 2
 
         return dWdI1, dWdI2, dWdI3, statevars
 
@@ -92,7 +95,7 @@ class ThirdOrderDeformation:
         d2WdI1I3 = None
 
         if self.C20 != 0 or self.C30 != 0:
-            d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - 3)
+            d2WdI1I1 = self.C20 * 2 + self.C30 * 6 * (I1 - self.undeformed)
 
         if self.C11 != 0:
             d2WdI1I2 = self.C11

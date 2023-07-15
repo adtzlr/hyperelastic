@@ -28,9 +28,10 @@ def pre(diameter, length):
     return force, displacement, area, length
 
 
-def material(**kwargs):
-    model = hyperelastic.models.invariants.ThirdOrderDeformation(**kwargs)
-    framework = hyperelastic.InvariantsFramework(model)
+def material(k, **kwargs):
+    tod = hyperelastic.models.invariants.ThirdOrderDeformation(strain=True, **kwargs)
+    model = hyperelastic.models.stretches.StrainInvariants(tod, strain_exponent=k)
+    framework = hyperelastic.StretchesFramework(model)
     return hyperelastic.DistortionalSpace(framework)
 
 
@@ -59,28 +60,34 @@ def test_lab():
 
     simulations = [
         hyperelastic.lab.Simulation(
-            ux, experiments[0].stretch, material=material, labels=["C10", "C20", "C30"]
+            ux,
+            experiments[0].stretch,
+            material=material,
+            labels=["k", "C10", "C20", "C30"],
         ),
         hyperelastic.lab.Simulation(
-            bx, experiments[1].stretch, material=material, labels=["C10", "C20", "C30"]
+            bx,
+            experiments[1].stretch,
+            material=material,
+            labels=["k", "C10", "C20", "C30"],
         ),
     ]
 
     optimize = hyperelastic.lab.Optimize(
         experiments=experiments,
         simulations=simulations,
-        parameters=np.ones(3),
+        parameters=np.ones(4),
         mask=[
             np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
-            # np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
-            np.zeros_like(displacement, dtype=bool),  # deactivate biaxial loadcase
+            np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
+            # np.zeros_like(displacement, dtype=bool),  # deactivate biaxial loadcase
         ],
     )
 
     parameters, pcov = optimize.curve_fit(method="lm")
-    fig, ax = optimize.plot(title="Yeoh")
+    fig, ax = optimize.plot(title="Yeoh (Generalized Strain)")
 
-    assert np.allclose(parameters, [5.28491948e-01, 9.05298609e-03, 8.32226589e-05])
+    assert np.allclose(parameters, [1.36430662, 1.49676211, 0.27328351, 0.02754018])
 
 
 if __name__ == "__main__":

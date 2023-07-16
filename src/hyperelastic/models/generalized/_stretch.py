@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def strain(stretch, exponent):
     "Seth-Hill strain as a function of the stretch (with first and second derivatives)."
 

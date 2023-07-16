@@ -92,6 +92,12 @@ def test_lab():
     # print(parameters)
 
     assert np.allclose(parameters, [0.56391278, 0.01298499, 0.00233807, 1.54438747])
+    
+    fig, ax = experiments[0].plot_force_displacement()
+    fig, ax = experiments[1].plot_force_displacement(ax=ax)
+    
+    fig, ax = experiments[0].plot_stress_stretch()
+    fig, ax = experiments[1].plot_stress_stretch(ax=ax)
 
 
 if __name__ == "__main__":

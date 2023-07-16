@@ -50,8 +50,8 @@ def test_lab():
         ),
         hyperelastic.lab.Experiment(
             label="Biaxial Tension",
-            displacement=displacement / 2,
-            force=force * 2 / 3,
+            displacement=displacement[::2] / 2,
+            force=force[::2] * 2 / 3,
             area=area,
             length=length,
         ),
@@ -79,25 +79,27 @@ def test_lab():
         experiments=experiments,
         simulations=simulations,
         parameters=np.ones(4),
-        mask=[
-            np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
-            np.diff(displacement, prepend=0) >= 0,  # consider only uploading path
-            # np.zeros_like(displacement, dtype=bool),  # deactivate biaxial loadcase
+        mask=[  # consider only uploading path
+            np.diff(experiments[0].displacement, prepend=0) >= 0,
+            np.diff(experiments[1].displacement, prepend=0) >= 0,
+            # np.zeros_like(displacement, dtype=bool),
         ],
     )
 
     parameters, pcov = optimize.curve_fit(method="lm")
-    fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
 
-    # print(parameters)
+    print(parameters)
 
-    assert np.allclose(parameters, [0.56391278, 0.01298499, 0.00233807, 1.54438747])
-    
+    assert np.allclose(parameters, [0.61332567, 0.00939938, 0.00232252, 1.55141313])
+
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)
-    
+
     fig, ax = experiments[0].plot_stress_stretch()
     fig, ax = experiments[1].plot_stress_stretch(ax=ax)
+
+    fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
+    ax.set_xlim(None, 1.1 * ax.get_xlim()[1])
 
 
 if __name__ == "__main__":

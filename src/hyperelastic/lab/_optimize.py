@@ -13,7 +13,7 @@ class Optimize:
         self.take = None
 
         if self.mask is None:
-            self.mask = [None] * len(self.experiments)
+            self.mask = [slice(None)] * len(self.experiments)
 
     def init(self, *args, **kwargs):
         self.f = [simulation.stress_curve_fit for simulation in self.simulations]

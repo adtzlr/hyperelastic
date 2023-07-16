@@ -3,7 +3,7 @@ from ._plotting import LabPlotter
 
 class Experiment(LabPlotter):
     def __init__(
-        self, label, displacement, force, area, length, time=None, temperature=None
+        self, label, displacement, force, area=1, length=1, time=None, temperature=None
     ):
         "The results of an experiment along with methods to convert and plot the data."
         self.label = label

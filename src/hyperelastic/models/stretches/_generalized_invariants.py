@@ -137,12 +137,11 @@ class GeneralizedInvariantsModel:
             \right)
             \frac{\partial^2 E_\alpha}{\partial \lambda_\alpha \partial \lambda_\alpha}
 
-
     """
 
     def __init__(self, material, fun, **kwargs):
-        """Initialize the generalized invariant-based isotropic
-        hyperelastic material formulation."""
+        """Initialize the generalized invariant-based isotropic hyperelastic material
+        formulation."""
 
         self.material = material
         self.strain = fun

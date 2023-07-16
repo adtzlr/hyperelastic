@@ -62,55 +62,81 @@ class GeneralizedInvariantsModel:
 
     Furthermore, the second partial derivatives of the strain energy density w.r.t. the
     principal stretches, necessary for the principal components of the elastic tangent
-    moduli, are carried out.
+    moduli, are carried out. This is done in two steps: first, the second partial
+    derivatives w.r.t. the principal strain components are carried out, followed by the
+    projection to the derivatives w.r.t. the principal stretches.
 
     ..  math::
 
-        \frac{\partial^2 \psi}{\partial \lambda_\alpha~\partial \lambda_\beta} &=
+        \frac{\partial^2 \psi}{\partial E_\alpha~\partial E_\beta} &=
             \frac{\partial^2 \psi}{\partial I_1~\partial I_1}
-            \frac{\partial I_1}{\partial \lambda_\alpha}
-            \frac{\partial I_1}{\partial \lambda_\beta}
+            \frac{\partial I_1}{\partial E_\alpha}
+            \frac{\partial I_1}{\partial E_\beta}
             +
-            \frac{\partial^2 \psi}{\partial I_1~\partial I_2}
-            \frac{\partial I_2}{\partial \lambda_\alpha}
-            \frac{\partial I_2}{\partial \lambda_\beta}
+            \frac{\partial^2 \psi}{\partial I_2~\partial I_2}
+            \frac{\partial I_2}{\partial E_\alpha}
+            \frac{\partial I_2}{\partial E_\beta}
             +
             \frac{\partial^2 \psi}{\partial I_3~\partial I_3}
-            \frac{\partial I_3}{\partial \lambda_\alpha}
-            \frac{\partial I_3}{\partial \lambda_\beta}
+            \frac{\partial I_3}{\partial E_\alpha}
+            \frac{\partial I_3}{\partial E_\beta}
 
             &+
-            2 \frac{\partial^2 \psi}{\partial I_1~\partial I_2}
-            \frac{\partial I_1}{\partial \lambda_\alpha}
-            \frac{\partial I_2}{\partial \lambda_\beta}
-            +
-            2 \frac{\partial^2 \psi}{\partial I_2~\partial I_3}
-            \frac{\partial I_2}{\partial \lambda_\alpha}
-            \frac{\partial I_3}{\partial \lambda_\beta}
-            +
-            2 \frac{\partial^2 \psi}{\partial I_1~\partial I_3}
-            \frac{\partial I_1}{\partial \lambda_\alpha}
-            \frac{\partial I_3}{\partial \lambda_\beta}
+            \frac{\partial^2 \psi}{\partial I_1~\partial I_2}
+            \left(
+                \frac{\partial I_1}{\partial E_\alpha}
+                \frac{\partial I_2}{\partial E_\beta}
+                +
+                \frac{\partial I_2}{\partial E_\alpha}
+                \frac{\partial I_1}{\partial E_\beta}
+            \right)
+
+            &+
+            \frac{\partial^2 \psi}{\partial I_2~\partial I_3}
+            \left(
+                \frac{\partial I_2}{\partial E_\alpha}
+                \frac{\partial I_3}{\partial E_\beta}
+                +
+                \frac{\partial I_3}{\partial E_\alpha}
+                \frac{\partial I_2}{\partial E_\beta}
+            \right)
+
+            &+
+            \frac{\partial^2 \psi}{\partial I_1~\partial I_3}
+            \left(
+                \frac{\partial I_1}{\partial E_\alpha}
+                \frac{\partial I_3}{\partial E_\beta}
+                +
+                \frac{\partial I_3}{\partial E_\alpha}
+                \frac{\partial I_1}{\partial E_\beta}
+            \right)
 
             &+
             \frac{\partial \psi}{\partial I_1}
-            \frac{\partial^2 I_1}{\partial \lambda_\alpha~\partial \lambda_\beta}
+            \frac{\partial^2 I_1}{\partial E_\alpha~\partial E_\beta}
             +
             \frac{\partial \psi}{\partial I_2}
-            \frac{\partial^2 I_2}{\partial \lambda_\alpha~\partial \lambda_\beta}
+            \frac{\partial^2 I_1}{\partial E_\alpha~\partial E_\beta}
             +
             \frac{\partial \psi}{\partial I_3}
-            \frac{\partial^2 I_3}{\partial \lambda_\alpha~\partial \lambda_\beta}
+            \frac{\partial^2 I_1}{\partial E_\alpha~\partial E_\beta}
 
-            &+
+    ..  math::
+
+        \frac{\partial^2 \psi}{\partial \lambda_\alpha~\partial \lambda_\beta} =
+            \frac{\partial E_\alpha}{\partial \lambda_\alpha}
+            \frac{\partial^2 \psi}{\partial E_\alpha~\partial E_\beta}
+            \frac{\partial E_\beta} {\partial \lambda_\beta}
+            +
+            \left(
             \frac{\partial \psi}{\partial I_1} \frac{\partial I_1}{\partial E_\alpha}
-            \frac{\partial^2 E_\alpha}{\partial \lambda_\alpha \partial \lambda_\alpha}
             +
             \frac{\partial \psi}{\partial I_2} \frac{\partial I_2}{\partial E_\alpha}
-            \frac{\partial^2 E_\alpha}{\partial \lambda_\alpha \partial \lambda_\alpha}
             +
             \frac{\partial \psi}{\partial I_3} \frac{\partial I_3}{\partial E_\alpha}
+            \right)
             \frac{\partial^2 E_\alpha}{\partial \lambda_\alpha \partial \lambda_\alpha}
+
 
     """
 
@@ -179,47 +205,54 @@ class GeneralizedInvariantsModel:
         dEdλ = self.dEdλ
         d2Edλdλ = self.d2Edλdλ
 
-        Eγ = [None, None, None, 2, 0, 1]
+        Eγ = [2, 0, 1]
 
-        d2Wdλαdλβ = np.zeros((6, *dWdλα.shape[1:]))
-        idx = [(0, 0), (1, 1), (2, 2), (0, 1), (1, 2), (0, 2)]
+        d2WdEαdEβ = np.zeros((6, *dWdλα.shape[1:]))
 
-        for m, (α, β) in enumerate(idx):
-            if d2WdI1dI1 is not None:
-                d2Wdλαdλβ[m] += d2WdI1dI1 * dI1dE[α] * dEdλ[α] * dI1dE[β] * dEdλ[β]
+        α = [0, 1, 2, 0, 1, 0]
+        β = [0, 1, 2, 1, 2, 2]
 
-            if d2WdI2dI2 is not None:
-                d2Wdλαdλβ[m] += d2WdI2dI2 * dI2dE[α] * dEdλ[α] * dI2dE[β] * dEdλ[β]
+        if d2WdI1dI1 is not None:
+            d2WdEαdEβ += d2WdI1dI1 * dI1dE[α] * dI1dE[β]
 
-            if d2WdI3dI3 is not None:
-                d2Wdλαdλβ[m] += d2WdI3dI3 * dI3dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
+        if d2WdI2dI2 is not None:
+            d2WdEαdEβ += d2WdI2dI2 * dI2dE[α] * dI2dE[β]
 
-            if d2WdI1dI2 is not None:
-                d2Wdλαdλβ[m] += 2 * d2WdI1dI2 * dI1dE[α] * dEdλ[α] * dI2dE[β] * dEdλ[β]
+        if d2WdI3dI3 is not None:
+            d2WdEαdEβ += d2WdI3dI3 * dI3dE[α] * dI3dE[β]
 
-            if d2WdI2dI3 is not None:
-                d2Wdλαdλβ[m] += 2 * d2WdI2dI3 * dI2dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
+        if d2WdI1dI2 is not None:
+            d2WdEαdEβ += d2WdI1dI2 * (dI1dE[α] * dI2dE[β] + dI2dE[α] * dI1dE[β])
 
-            if d2WdI1dI3 is not None:
-                d2Wdλαdλβ[m] += 2 * d2WdI1dI3 * dI1dE[α] * dEdλ[α] * dI3dE[β] * dEdλ[β]
+        if d2WdI2dI3 is not None:
+            d2WdEαdEβ += d2WdI2dI3 * (dI2dE[α] * dI3dE[β] + dI3dE[α] * dI2dE[β])
 
-            if α != β:
-                if self.dWdI2 is not None:
-                    d2I2dEdE = 1
-                    d2Wdλαdλβ[m] += self.dWdI2 * d2I2dEdE * dEdλ[α] * dEdλ[β]
+        if d2WdI1dI3 is not None:
+            d2WdEαdEβ += d2WdI1dI3 * (dI1dE[α] * dI3dE[β] + dI3dE[α] * dI1dE[β])
 
-                if self.dWdI3 is not None:
-                    d2I3dEdE = Eγ[m]
-                    d2Wdλαdλβ[m] += self.dWdI3 * d2I3dEdE * dEdλ[α] * dEdλ[β]
+        # if self.dWdI1 is not None:
+        #     d2I1dEαdEβ = 0
+        #     d2WdEαdEβ[3:] += self.dWdI2 * d2I1dEαdEβ
 
-            if α == β:
-                if self.dWdI1 is not None:
-                    d2Wdλαdλβ[m] += self.dWdI1 * dI1dE[α] * d2Edλdλ[α]
+        if self.dWdI2 is not None:
+            d2I2dEαdEβ = 1
+            d2WdEαdEβ[3:] += self.dWdI2 * d2I2dEαdEβ
 
-                if self.dWdI2 is not None:
-                    d2Wdλαdλβ[m] += self.dWdI2 * dI2dE[α] * d2Edλdλ[α]
+        if self.dWdI3 is not None:
+            d2I3dEαdEβ = Eγ
+            d2WdEαdEβ[3:] += self.dWdI3 * d2I3dEαdEβ
 
-                if self.dWdI3 is not None:
-                    d2Wdλαdλβ[m] += self.dWdI3 * dI3dE[α] * d2Edλdλ[α]
+        # in-place modification (avoid the creation of a new array)
+        d2Wdλαdλβ = d2WdEαdEβ
+        d2Wdλαdλβ *= dEdλ[α] * dEdλ[β]
+
+        if self.dWdI1 is not None:
+            d2Wdλαdλβ[:3] += self.dWdI1 * dI1dE * d2Edλdλ
+
+        if self.dWdI2 is not None:
+            d2Wdλαdλβ[:3] += self.dWdI2 * dI2dE * d2Edλdλ
+
+        if self.dWdI3 is not None:
+            d2Wdλαdλβ[:3] += self.dWdI3 * dI3dE * d2Edλdλ
 
         return d2Wdλαdλβ

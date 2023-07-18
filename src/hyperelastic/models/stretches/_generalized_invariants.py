@@ -147,18 +147,27 @@ class GeneralizedInvariantsModel:
         self.strain = fun
         self.kwargs = kwargs
 
+        E, dEdλ, d2Edλdλ, d2Edλdλ0 = self.strain(1, **self.kwargs)
+
+        # normalize invariants
+        self.c1 = d2Edλdλ0 / (3 / 2 * (d2Edλdλ + dEdλ))
+        self.c2 = (d2Edλdλ0 / 3) / (E * (d2Edλdλ + dEdλ) - dEdλ**2 / 2)
+
     def gradient(self, stretches, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the principal stretches."""
 
         # principal strains
-        self.E, self.dEdλ, self.d2Edλdλ = self.strain(stretches, **self.kwargs)
+        self.E, self.dEdλ, self.d2Edλdλ = self.strain(stretches, **self.kwargs)[:3]
         E = self.E
 
         # strain invariants
         self.I1 = E[0] + E[1] + E[2]
         self.I2 = E[0] * E[1] + E[1] * [2] + E[2] * E[0]
         self.I3 = E[0] * E[1] * E[2]
+
+        self.I1 *= self.c1
+        self.I2 *= self.c2
 
         self.dWdI1, self.dWdI2, self.dWdI3, statevars_new = self.material.gradient(
             self.I1, self.I2, self.I3, statevars
@@ -167,8 +176,8 @@ class GeneralizedInvariantsModel:
         Eβ = E[[1, 0, 0]]
         Eγ = E[[2, 2, 1]]
 
-        self.dI1dE = np.ones_like(E)
-        self.dI2dE = Eβ + Eγ
+        self.dI1dE = self.c1 * np.ones_like(E)
+        self.dI2dE = self.c2 * (Eβ + Eγ)
         self.dI3dE = Eβ * Eγ
 
         dWdλ = np.zeros_like(stretches)
@@ -234,7 +243,7 @@ class GeneralizedInvariantsModel:
         #     d2WdEαdEβ[3:] += self.dWdI2 * d2I1dEαdEβ
 
         if self.dWdI2 is not None:
-            d2I2dEαdEβ = 1
+            d2I2dEαdEβ = self.c2
             d2WdEαdEβ[3:] += self.dWdI2 * d2I2dEαdEβ
 
         if self.dWdI3 is not None:

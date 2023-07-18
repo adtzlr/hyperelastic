@@ -8,7 +8,9 @@ def strain(stretch, exponent):
     dEdλ = λ ** (k - 1)
     d2Edλdλ = (k - 1) * λ ** (k - 2)
 
-    return E, dEdλ, d2Edλdλ
+    d2Edλdλ0 = 3
+
+    return E, dEdλ, d2Edλdλ, d2Edλdλ0
 
 
 def deformation(stretch, exponent):
@@ -18,8 +20,10 @@ def deformation(stretch, exponent):
     k = exponent
     λ = stretch
 
-    Ck = 2 / k * λ**k
-    dCkdλ = 2 * λ ** (k - 1)
-    d2Ckdλdλ = 2 * (k - 1) * λ ** (k - 2)
+    Ck = λ**k
+    dCkdλ = k * λ ** (k - 1)
+    d2Ckdλdλ = k * (k - 1) * λ ** (k - 2)
 
-    return Ck, dCkdλ, d2Ckdλdλ
+    d2Cdλdλ0 = 6
+
+    return Ck, dCkdλ, d2Ckdλdλ, d2Cdλdλ0

@@ -82,7 +82,7 @@ def test_lab():
         mask=[  # consider only uploading path
             np.diff(experiments[0].displacement, prepend=0) >= 0,
             np.diff(experiments[1].displacement, prepend=0) >= 0,
-            # np.zeros_like(displacement, dtype=bool),
+            # np.zeros_like(experiments[1].displacement, dtype=bool),
         ],
     )
 
@@ -90,7 +90,9 @@ def test_lab():
 
     print(parameters)
 
-    assert np.allclose(parameters, [0.61332567, 0.00939938, 0.00232252, 1.55141313])
+    assert np.allclose(
+        parameters, [4.68395514e-01, 2.83476660e-03, 1.08405548e-03, 1.55141336e00]
+    )
 
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)

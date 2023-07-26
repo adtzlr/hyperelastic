@@ -16,6 +16,7 @@ def concatenate_curve_fit(
     ``scipy.optimize.curve_fit()``."""
 
     def concatenate_f(x, *p):
+        "Evaluate and return a concatenated array for a list of functions."
         return np.concatenate([fi(xi, *p) for fi, xi in zip(f, xdata)])
 
     return curve_fit(

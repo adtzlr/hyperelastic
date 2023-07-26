@@ -19,6 +19,7 @@ This package provides the essential building blocks for constitutive hyperelasti
    hyperelastic/frameworks
    hyperelastic/models
    hyperelastic/math
+   hyperelastic/lab
 
 Indices and Tables
 ------------------

@@ -1,10 +1,12 @@
+import matplotlib.pyplot as plt
 import numpy as np
+
 import hyperelastic
 
 
 def test_generalized():
     ϵ = np.sqrt(np.finfo(np.float64).eps)
-    λ = np.linspace(1, 1 + ϵ, 2)
+    λ = np.append(1, np.linspace(1, 2, 21) + ϵ)
     z = np.zeros_like(λ)
 
     # uniaxial incompressible deformation
@@ -13,26 +15,22 @@ def test_generalized():
     # loop over strain exponents
     for k in [-0.5, 0.001, 2.0, 4.2]:
         tod = hyperelastic.models.invariants.ThirdOrderDeformation(
-            strain=False, C10=0.3, C01=0.2, C30=0.0
+            strain=False, C10=0.3, C01=0.2, C20=-0.1, C30=0.05, C11=0.1
         )
         fun = hyperelastic.models.generalized.deformation
         fwg = hyperelastic.GeneralizedInvariantsFramework(tod, fun=fun, exponent=k)
-        fwi = hyperelastic.InvariantsFramework(tod)
 
-        umat1 = hyperelastic.DistortionalSpace(fwg)
-        umat2 = hyperelastic.DistortionalSpace(fwi)
+        umat = hyperelastic.DeformationSpace(fwg)
+        P = umat.gradient([defgrad, None])[0]
 
-        P1 = umat1.gradient([defgrad, None])[0]
-        P2 = umat2.gradient([defgrad, None])[0]
+        force = P[0, 0] - P[2, 2] * 1 / (λ * np.sqrt(λ))
+        dforce = np.diff(force)[0] / ϵ
 
-        force1 = P1[0, 0] - P2[2, 2] * λ ** (-3 / 2)
-        force2 = P2[0, 0] - P2[2, 2] * λ ** (-3 / 2)
+        plt.plot(λ, force, label=f"k={k}")
+        plt.ylim(0, 5)
+        plt.legend()
 
-        dforce1 = np.diff(force1) / ϵ
-        dforce2 = np.diff(force2) / ϵ
-
-        print(k, dforce1, dforce2)
-        #assert np.allclose(dforce1, dforce2)
+        assert np.isclose(dforce, 3)
 
 
 if __name__ == "__main__":

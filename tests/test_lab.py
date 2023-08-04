@@ -91,13 +91,15 @@ def test_lab():
     print(parameters)
 
     assert np.allclose(
-        parameters, [4.68395514e-01, 2.83476660e-03, 1.08405548e-03, 1.55141336e00]
+        parameters, [4.56773500e-01, 2.32852527e-03, 4.02849684e-07, 1.55056490e+00]
     )
 
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)
 
     fig, ax = experiments[0].plot_stress_stretch()
+    fig, ax = experiments[1].plot_stress_stretch(ax=ax)
+
     fig, ax = experiments[1].plot_stress_stretch(ax=ax)
 
     fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")

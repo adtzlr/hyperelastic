@@ -49,6 +49,13 @@ def test_lab():
             length=length,
         ),
         hyperelastic.lab.Experiment(
+            label="Planar Tension",
+            displacement=displacement[::2],
+            force=force[::2] * 8 / 7,
+            area=area,
+            length=length,
+        ),
+        hyperelastic.lab.Experiment(
             label="Biaxial Tension",
             displacement=displacement[::2] / 2,
             force=force[::2] * 2 / 3,
@@ -59,6 +66,7 @@ def test_lab():
 
     ux = hyperelastic.lab.Uniaxial()
     bx = hyperelastic.lab.Biaxial()
+    ps = hyperelastic.lab.Planar()
 
     simulations = [
         hyperelastic.lab.Simulation(
@@ -68,8 +76,14 @@ def test_lab():
             labels=["C10", "C20", "C30", "k"],
         ),
         hyperelastic.lab.Simulation(
-            bx,
+            ps,
             experiments[1].stretch,
+            material=material,
+            labels=["C10", "C20", "C30", "k"],
+        ),
+        hyperelastic.lab.Simulation(
+            bx,
+            experiments[2].stretch,
             material=material,
             labels=["C10", "C20", "C30", "k"],
         ),
@@ -82,7 +96,8 @@ def test_lab():
         mask=[  # consider only uploading path
             np.diff(experiments[0].displacement, prepend=0) >= 0,
             np.diff(experiments[1].displacement, prepend=0) >= 0,
-            # np.zeros_like(experiments[1].displacement, dtype=bool),
+            np.diff(experiments[2].displacement, prepend=0) >= 0,
+            # np.zeros_like(experiments[1].displacement, dtype=bool), # deactivate
         ],
     )
 
@@ -91,16 +106,16 @@ def test_lab():
     print(parameters)
 
     assert np.allclose(
-        parameters, [4.92477300e-01, 9.29251248e-03, 1.08406266e-03, 1.55141229e00]
+        parameters, [5.22901342e-01, 6.60281220e-03, 1.21021751e-03, 1.54827834e00]
     )
 
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)
+    fig, ax = experiments[2].plot_force_displacement(ax=ax)
 
     fig, ax = experiments[0].plot_stress_stretch()
     fig, ax = experiments[1].plot_stress_stretch(ax=ax)
-
-    fig, ax = experiments[1].plot_stress_stretch(ax=ax)
+    fig, ax = experiments[2].plot_stress_stretch(ax=ax)
 
     fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
     ax.set_xlim(None, 1.1 * ax.get_xlim()[1])

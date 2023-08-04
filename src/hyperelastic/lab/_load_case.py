@@ -1,33 +1,101 @@
 import numpy as np
 
 
-class Uniaxial:
-    "Incompressible uniaxial tensions/compression load case."
+class IncompressibleHomogeneousStretch:
+    """An incompressible homogeneous stretch load case with a longitudinal stretch and
+    perpendicular transverse stretches in principal directions."""
+
+    def stress(self, F, P, axis=0, traction_free=-1):
+        r"""Normal force per undeformed area for a given deformation gradient of an
+        incompressible deformation and the first Piola-Kirchhoff stress tensor.
+
+        Notes
+        -----
+        The Cauchy stress for an incompressible material is given by
+
+        ..  math::
+            \boldsymbol{\sigma} = \boldsymbol{\sigma}' + p \boldsymbol{I}
+
+        where the Cauchy stress is converted to the first Piola-Kirchhoff stress tensor.
+
+        ..  math::
+            \boldsymbol{P} = J \boldsymbol{\sigma} \boldsymbol{F}^{-T}
+
+        The deformation gradient and its determinant are evaluated for the
+        homogeneous incompressible deformation.
+
+        ..  math::
+            \boldsymbol{F} &= \text{diag} \begin{bmatrix}
+            \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix}
+
+            J &= 1
+
+        This enables the evaluation of the normal force per undeformed area.
+
+        ..  math::
+            \frac{N_i}{A_i} = P_{(ii)} - P_{(jj)} \frac{\lambda_j}{\lambda_i}
+
+        Parameters
+        ----------
+        F : ndarray
+            The deformation gradient.
+        P : np.darray
+            The first Piola-Kirchhoff stress tensor.
+        axis : int, optional
+            The primary axis where the longitudinal stretch is applied on (default is
+            0).
+        traction_free : int, optional
+            The secondary axis where the traction-free transverse stretch results from
+            the constraint of incompressibility (default is -1).
+
+        Returns
+        -------
+        ndarray
+            The one-dimensional normal force per undeformed area.
+
+        """
+
+        i = axis
+        j = traction_free
+
+        return P[i, i] - P[j, j] * F[j, j] / F[i, i]
+
+
+class Uniaxial(IncompressibleHomogeneousStretch):
+    "Incompressible uniaxial tension/compression load case."
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
+
         x = stretch
         y = 1 / np.sqrt(stretch)
         z = np.zeros_like(stretch)
+
         return np.array([[x, z, z], [z, y, z], [z, z, y]])
 
-    def stress(self, F, P):
-        """Normal force per undeformed area for given deformation gradient and first
-        Piola-Kirchhoff stress tensor."""
-        return P[0, 0] - P[2, 2] * F[2, 2] / F[0, 0]
 
-
-class Biaxial:
-    "Incompressible Biaxial tensions/compression load case."
+class Biaxial(IncompressibleHomogeneousStretch):
+    "Incompressible Biaxial tension/compression load case."
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
+
         x = stretch
         y = 1 / stretch**2
         z = np.zeros_like(stretch)
+
         return np.array([[x, z, z], [z, x, z], [z, z, y]])
 
-    def stress(self, F, P):
-        """Normal force per undeformed area for given deformation gradient and first
-        Piola-Kirchhoff stress tensor."""
-        return P[0, 0] - P[2, 2] * F[2, 2] / F[0, 0]
+
+class Planar(IncompressibleHomogeneousStretch):
+    "Incompressible Planar (shear) tension/compression load case."
+
+    def defgrad(self, stretch):
+        "Return the Deformation Gradient tensor from given stretches."
+
+        x = stretch
+        y = 1 / stretch
+        o = np.ones_like(stretch)
+        z = np.zeros_like(stretch)
+
+        return np.array([[x, z, z], [z, o, z], [z, z, y]])

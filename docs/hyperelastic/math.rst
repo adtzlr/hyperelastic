@@ -6,7 +6,7 @@ Math
 
 ..  admonition:: Symmetric properties of dyadic products
 
-    The minor **and** major-symmetric property indices whether the fourth-order tensor as a result of a dyadic product of two symmetric second-order tensors may be stored in reduced matrix storage. Special cases of minor but not major-symmetry and vice versa exist but are not shown here.
+    The minor **and** major-symmetric property indicates whether the fourth-order tensor as a result of a dyadic product of two symmetric second-order tensors may be transferred into a reduced matrix storage. Special cases of minor but not major-symmetry and vice versa exist but are not shown here.
 
     +------------------+-------------------------------------------+-----------------------------------------+
     |     Function     | :math:`\boldsymbol{A} \ne \boldsymbol{B}` | :math:`\boldsymbol{A} = \boldsymbol{B}` |

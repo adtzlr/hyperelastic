@@ -875,8 +875,9 @@ def cdya(A, B, out=None):
             A_{ik}~B_{jl} + A_{il}~B_{kj} + B_{ik}~A_{jl} + B_{il}~A_{kj}
         \right)
 
-    The technical implementation is based on an answer of Jérôme Richard (see
-    `stackoverflow <https://stackoverflow.com/questions/76640596>`).
+    ..  note::
+        The technical implementation is based on an answer of Jérôme Richard (see
+        `stackoverflow <https://stackoverflow.com/questions/76640596>`).
 
     Examples
     --------

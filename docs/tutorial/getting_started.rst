@@ -111,7 +111,7 @@ A minimal template for a principal stretch-based material formulation applied on
 Lab
 ~~~
 
-By using `matadi's <https://github.com/adtzlr/matadi>`_ `matadi.LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed. Ensure to have `matadi <https://github.com/adtzlr/matadi>`_ installed - run `pip install matadi` in your terminal.
+By using `matadi <https://github.com/adtzlr/matadi>`_'s `matadi.LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed. Ensure to have `matadi <https://github.com/adtzlr/matadi>`_ installed - run `pip install matadi` in your terminal.
 
 ..  code-block:: python
 

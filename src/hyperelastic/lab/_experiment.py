@@ -18,8 +18,10 @@ class Experiment(LabPlotter):
         The undeformed reference length used to evaluate the stretch.
     time : array_like or None
         The timetrack of the measurement.
-    temperature : array_like or None, optional
+    temperature : array_like or None
         The measured or applied temperature data.
+    stretch : array_like
+        The stretch as the calculated ratio of the deformed vs. the undeformed length.
 
     """
 

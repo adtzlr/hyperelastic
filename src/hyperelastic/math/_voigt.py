@@ -877,7 +877,7 @@ def cdya(A, B, out=None):
 
     ..  note::
         The technical implementation is based on an answer of Jérôme Richard (see
-        `stackoverflow <https://stackoverflow.com/questions/76640596>`).
+        `stackoverflow <https://stackoverflow.com/questions/76640596>`_).
 
     Examples
     --------

@@ -25,8 +25,8 @@ class IncompressibleHomogeneousStretch:
         homogeneous incompressible deformation.
 
         ..  math::
-            \boldsymbol{F} &= \text{diag} \begin{bmatrix}
-            \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix}
+            \boldsymbol{F} &= \text{diag} \left(\begin{bmatrix}
+            \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix} \right)
 
             J &= 1
 
@@ -62,7 +62,14 @@ class IncompressibleHomogeneousStretch:
 
 
 class Uniaxial(IncompressibleHomogeneousStretch):
-    "Incompressible uniaxial tension/compression load case."
+    r"""Incompressible uniaxial tension/compression load case.
+
+    ..  math::
+        \boldsymbol{F} = \text{diag} \left(\begin{bmatrix}
+            \lambda & \frac{1}{\sqrt{\lambda}} & \frac{1}{\sqrt{\lambda}} \end{bmatrix}
+            \right)
+
+    """
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
@@ -75,7 +82,14 @@ class Uniaxial(IncompressibleHomogeneousStretch):
 
 
 class Biaxial(IncompressibleHomogeneousStretch):
-    "Incompressible Biaxial tension/compression load case."
+    r"""Incompressible biaxial tension/compression load case.
+
+    ..  math::
+        \boldsymbol{F} = \text{diag} \left(\begin{bmatrix}
+            \lambda & \lambda & \frac{1}{\lambda^2} \end{bmatrix}
+            \right)
+
+    """
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
@@ -88,7 +102,14 @@ class Biaxial(IncompressibleHomogeneousStretch):
 
 
 class Planar(IncompressibleHomogeneousStretch):
-    "Incompressible Planar (shear) tension/compression load case."
+    r"""Incompressible planar (shear) tension/compression load case.
+
+    ..  math::
+        \boldsymbol{F} = \text{diag} \left(\begin{bmatrix}
+            \lambda & 1 & \frac{1}{\lambda} \end{bmatrix}
+            \right)
+
+    """
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."

@@ -2,38 +2,40 @@ import numpy as np
 
 
 class IncompressibleHomogeneousStretch:
-    """An incompressible homogeneous stretch load case with a longitudinal stretch and
-    perpendicular transverse stretches in principal directions."""
+    r"""An incompressible homogeneous stretch load case with a longitudinal stretch and
+    perpendicular transverse stretches in principal directions.
+
+    Notes
+    -----
+    The Cauchy stress for an incompressible material is given by
+
+    ..  math::
+        \boldsymbol{\sigma} = \boldsymbol{\sigma}' + p \boldsymbol{I}
+
+    where the Cauchy stress is converted to the first Piola-Kirchhoff stress tensor.
+
+    ..  math::
+        \boldsymbol{P} = J \boldsymbol{\sigma} \boldsymbol{F}^{-T}
+
+    The deformation gradient and its determinant are evaluated for the
+    homogeneous incompressible deformation.
+
+    ..  math::
+        \boldsymbol{F} &= \text{diag} \left(\begin{bmatrix}
+        \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix} \right)
+
+        J &= 1
+
+    This enables the evaluation of the normal force per undeformed area.
+
+    ..  math::
+        \frac{N_i}{A_i} = P_{(ii)} - P_{(jj)} \frac{\lambda_j}{\lambda_i}
+
+    """
 
     def stress(self, F, P, axis=0, traction_free=-1):
         r"""Normal force per undeformed area for a given deformation gradient of an
         incompressible deformation and the first Piola-Kirchhoff stress tensor.
-
-        Notes
-        -----
-        The Cauchy stress for an incompressible material is given by
-
-        ..  math::
-            \boldsymbol{\sigma} = \boldsymbol{\sigma}' + p \boldsymbol{I}
-
-        where the Cauchy stress is converted to the first Piola-Kirchhoff stress tensor.
-
-        ..  math::
-            \boldsymbol{P} = J \boldsymbol{\sigma} \boldsymbol{F}^{-T}
-
-        The deformation gradient and its determinant are evaluated for the
-        homogeneous incompressible deformation.
-
-        ..  math::
-            \boldsymbol{F} &= \text{diag} \left(\begin{bmatrix}
-            \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix} \right)
-
-            J &= 1
-
-        This enables the evaluation of the normal force per undeformed area.
-
-        ..  math::
-            \frac{N_i}{A_i} = P_{(ii)} - P_{(jj)} \frac{\lambda_j}{\lambda_i}
 
         Parameters
         ----------

@@ -2,10 +2,59 @@ from ._plotting import LabPlotter
 
 
 class Experiment(LabPlotter):
+    """Results of an experiment along with methods to convert and plot the data.
+
+    Attributes
+    ----------
+    label : str
+        The title of the experiment.
+    displacement : array_like
+        The measured or applied displacement data.
+    force : array_like
+        The measured or applied force data.
+    area : float
+        The undeformed reference cross-sectional area used to evaluate the stress.
+    length : float
+        The undeformed reference length used to evaluate the stretch.
+    time : array_like or None
+        The timetrack of the measurement.
+    temperature : array_like or None, optional
+        The measured or applied temperature data.
+
+    """
+
     def __init__(
-        self, label, displacement, force, area=1, length=1, time=None, temperature=None
+        self,
+        label,
+        displacement,
+        force,
+        area=1.0,
+        length=1.0,
+        time=None,
+        temperature=None,
     ):
-        "The results of an experiment along with methods to convert and plot the data."
+        """Initialize the results of an experiment.
+
+        Parameters
+        ----------
+        label : str
+            The title of the experiment.
+        displacement : array_like
+            The measured or applied displacement data.
+        force : array_like
+            The measured or applied force data.
+        area : float, optional
+            The undeformed reference cross-sectional area used to evaluate the stress
+            (default is 1.0).
+        length : float, optional
+            The undeformed reference length used to evaluate the stretch (default is
+            1.0).
+        time : array_like or None, optional
+            The timetrack of the measurement (default is None).
+        temperature : array_like or None, optional
+            The measured or applied temperature data (default is None).
+
+        """
 
         self.label = label
         self.displacement = displacement

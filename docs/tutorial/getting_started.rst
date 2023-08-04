@@ -115,9 +115,9 @@ By using `matadi's <https://github.com/adtzlr/matadi>`_ `matadi.LabIncompressibl
 
 ..  code-block:: python
 
-    mooney_rivlin = hel.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)
-    framework = hel.InvariantsFramework(mooney_rivlin)
-    umat = hel.DistortionalSpace(framework)
+    mooney_rivlin = hyperelastic.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)
+    framework = hyperelastic.InvariantsFramework(mooney_rivlin)
+    umat = hyperelastic.DistortionalSpace(framework)
 
     import matadi
 

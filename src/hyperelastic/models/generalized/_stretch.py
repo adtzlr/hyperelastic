@@ -4,9 +4,9 @@ def strain(stretch, exponent):
     k = exponent
     λ = stretch
 
-    E = lambda λ, k: (λ**k - 1) / k
-    dEdλ = lambda λ, k: λ ** (k - 1)
-    d2Edλdλ = lambda λ, k: (k - 1) * λ ** (k - 2)
+    E = lambda λ, k: (λ**k - 1) / k  # noqa: E731
+    dEdλ = lambda λ, k: λ ** (k - 1)  # noqa: E731
+    d2Edλdλ = lambda λ, k: (k - 1) * λ ** (k - 2)  # noqa: E731
 
     d2Edλdλ0 = 3 / 2 * (d2Edλdλ(λ=1, k=2) + dEdλ(λ=1, k=2))
 
@@ -20,9 +20,9 @@ def deformation(stretch, exponent):
     k = exponent
     λ = stretch
 
-    Ck = lambda λ, k: λ**k
-    dCkdλ = lambda λ, k: k * λ ** (k - 1)
-    d2Ckdλdλ = lambda λ, k: k * (k - 1) * λ ** (k - 2)
+    Ck = lambda λ, k: λ**k  # noqa: E731
+    dCkdλ = lambda λ, k: k * λ ** (k - 1)  # noqa: E731
+    d2Ckdλdλ = lambda λ, k: k * (k - 1) * λ ** (k - 2)  # noqa: E731
 
     d2Cdλdλ0 = 3 / 2 * (d2Ckdλdλ(λ=1, k=2) + dCkdλ(λ=1, k=2))
 

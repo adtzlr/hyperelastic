@@ -6,6 +6,7 @@ class Experiment(LabPlotter):
         self, label, displacement, force, area=1, length=1, time=None, temperature=None
     ):
         "The results of an experiment along with methods to convert and plot the data."
+
         self.label = label
         self.displacement = displacement
         self.force = force
@@ -17,4 +18,6 @@ class Experiment(LabPlotter):
         self.stretch = 1 + self.displacement / self.length
 
     def stress(self):
+        "Evaluate the stress as force per undeformed area."
+
         return self.force / self.area

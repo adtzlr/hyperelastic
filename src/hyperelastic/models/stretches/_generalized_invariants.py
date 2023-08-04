@@ -150,8 +150,12 @@ class GeneralizedInvariantsModel:
         E, dEdλ, d2Edλdλ, d2Edλdλ0 = self.strain(1, **self.kwargs)
 
         # normalize invariants
-        self.c1 = d2Edλdλ0 / (3 / 2 * (d2Edλdλ + dEdλ))
-        self.c2 = (d2Edλdλ0 / 3) / (E * (d2Edλdλ + dEdλ) - dEdλ**2 / 2)
+        self.c1 = (d2Edλdλ0 / 3) / ((d2Edλdλ + dEdλ) / 2)
+        self.c2 = (d2Edλdλ0 / 3) / ((d2Edλdλ + dEdλ) * E - dEdλ**2 / 2)
+
+        self.I10 = 3 * E
+        self.I20 = 3 * E**2
+        self.I30 = E**3
 
     def gradient(self, stretches, statevars):
         """The gradient as the partial derivative of the strain energy function w.r.t.
@@ -162,12 +166,13 @@ class GeneralizedInvariantsModel:
         E = self.E
 
         # strain invariants
-        self.I1 = E[0] + E[1] + E[2]
-        self.I2 = E[0] * E[1] + E[1] * [2] + E[2] * E[0]
-        self.I3 = E[0] * E[1] * E[2]
+        I1 = E[0] + E[1] + E[2]
+        I2 = E[0] * E[1] + E[1] * E[2] + E[2] * E[0]
+        I3 = E[0] * E[1] * E[2]
 
-        self.I1 *= self.c1
-        self.I2 *= self.c2
+        self.I1 = self.c1 * I1 - self.I10 * (self.c1 - 1)
+        self.I2 = self.c2 * I2 - self.I20 * (self.c2 - 1)
+        self.I3 = I3
 
         self.dWdI1, self.dWdI2, self.dWdI3, statevars_new = self.material.gradient(
             self.I1, self.I2, self.I3, statevars

@@ -111,7 +111,7 @@ class Optimize:
     >>> ]
 
     Both the list of experiments and the list of simulations are passed to
-    :class:`Optimization <.lab.Optimization>`, where its curve-fit method acts as a
+    :class:`Optimize <.lab.Optimize>`, where its curve-fit method acts as a
     simple wrapper for :class:`scipy.optimize.curve_fit`. The initial material
     parameters are all set to one.
 

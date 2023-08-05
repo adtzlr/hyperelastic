@@ -28,7 +28,7 @@ class LabPlotter:
         ylabel=r"Force per undeformed area $F/A$",
         **kwargs,
     ):
-        "Create a strss-stretch plot."
+        "Create a stress-stretch plot."
 
         if ax is None:
             fig, ax = plt.subplots()

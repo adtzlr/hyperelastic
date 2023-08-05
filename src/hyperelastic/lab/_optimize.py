@@ -5,17 +5,20 @@ from ._curve_fit import concatenate_curve_fit
 
 
 class Optimize:
+    """Take lists of experiments and simulations and find material parameters
+    for the simulation model to obtain a best possible representation of the experiments
+    in the simulations."""
+
     def __init__(self, experiments, simulations, parameters, mask=None):
         self.experiments = experiments
         self.simulations = simulations
         self.parameters = parameters
         self.mask = mask
-        self.take = None
 
         if self.mask is None:
             self.mask = [slice(None)] * len(self.experiments)
 
-    def init(self, *args, **kwargs):
+    def init_curve_fit(self, *args, **kwargs):
         self.f = [simulation.stress_curve_fit for simulation in self.simulations]
         self.x = [
             experiment.stretch[mask]
@@ -51,7 +54,9 @@ class Optimize:
         return np.linalg.norm(self.residuals)
 
     def curve_fit(self, *args, **kwargs):
-        p0 = self.init(*args, **kwargs)
+        "Use non-linear least squares to fit a list of functions to a list of data."
+
+        p0 = self.init_curve_fit(*args, **kwargs)
 
         popt, pcov = concatenate_curve_fit(self.f, self.x, self.y, p0, *args, **kwargs)
         fopt = np.concatenate([fi(xi, *popt) for fi, xi in zip(self.f, self.x)])

@@ -10,14 +10,15 @@ class Simulation(LabPlotter):
     ----------
     loadcase : class
         A class with methods for evaluating the deformation gradient and the stress
-        as normal force per undeformed area, e.g. :class:`hyperelastic.lab.Uniaxial`.
+        as normal force per undeformed area, e.g. :class:`Uniaxial <.lab.Uniaxial>`.
     stretch : ndarray
         The stretch as the ratio of the deformed vs. the undeformed length.
     labels : list of str
         A list of the material parameter labels.
     material : class
         A class with a method for evaluating the gradient of the strain energy function
-        w.r.t. the deformation gradient, e.g. :class:`hyperelastic.DistortionalSpace`.
+        w.r.t. the deformation gradient, e.g.
+        :class:`DistortionalSpace <.DistortionalSpace>`.
     parameters : array_like
         The material parameters.
 

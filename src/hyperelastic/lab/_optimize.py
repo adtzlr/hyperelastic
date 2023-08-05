@@ -25,8 +25,8 @@ class Optimize:
     Three different test specimens are subjected to displacement-controlled uniaxial,
     planar and biaxial tension. The applied displacement and reaction force data is
     used to create the :class:`Experiments <.lab.Experiment>`. The test specimen for the
-    uniaxial load case has a cross-sectrional area of :math:`A=25 \text{mm}^2` and a
-    length of :math:`L=100 \text{mm}`.
+    uniaxial load case has a cross-sectrional area of :math:`A=25~\text{mm}^2` and a
+    length of :math:`L=100~\text{mm}`.
 
     >>> area = 25
     >>> length = 100

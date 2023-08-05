@@ -5,7 +5,7 @@ from ._curve_fit import concatenate_curve_fit
 
 
 class Optimize:
-    """Take lists of experiments and simulations and find material parameters
+    r"""Take lists of experiments and simulations and find material parameters
     for the simulation model to obtain a best possible representation of the experiments
     by the simulations.
 

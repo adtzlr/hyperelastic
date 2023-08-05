@@ -41,6 +41,9 @@ class Optimize:
     >>> force = (stretch - 1 / stretch ** 2 + (stretch - 1)**5 / 10) * area
 
     With this reference experimental data at hand, the list of experiments is created.
+    In this example, the displacement and force data as well as the cross-sectional area
+    are scaled from the synthetic uniaxial experimental data to the other (synthetic)
+    experiments.
 
     >>> from hyperelastic import lab
 

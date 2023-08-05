@@ -41,7 +41,7 @@ class IncompressibleHomogeneousStretch:
         ----------
         F : ndarray
             The deformation gradient.
-        P : np.darray
+        P : ndarray
             The first Piola-Kirchhoff stress tensor.
         axis : int, optional
             The primary axis where the longitudinal stretch is applied on (default is

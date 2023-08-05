@@ -3,7 +3,10 @@ import numpy as np
 
 class IncompressibleHomogeneousStretch:
     r"""An incompressible homogeneous stretch load case with a longitudinal stretch and
-    perpendicular transverse stretches in principal directions.
+    perpendicular transverse stretches in principal directions. This class is intended
+    to be subclassed by another class with a `.defgrad()` method for the evaluation of
+    the deformation gradient as utilized by the :class:`Uniaxial <.lab.Uniaxial>`,
+    :class:`Planar <.lab.Planar>` and :class:`Biaxial <.lab.Biaxial>` load cases.
 
     Notes
     -----

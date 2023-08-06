@@ -103,8 +103,6 @@ def test_lab():
 
     parameters, pcov = optimize.curve_fit(method="lm")
 
-    print(parameters)
-
     assert np.allclose(
         parameters, [5.22901342e-01, 6.60281220e-03, 1.21021751e-03, 1.54827834e00]
     )
@@ -112,14 +110,25 @@ def test_lab():
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)
     fig, ax = experiments[2].plot_force_displacement(ax=ax)
+    ax.legend()
 
     fig, ax = experiments[0].plot_stress_stretch()
     fig, ax = experiments[1].plot_stress_stretch(ax=ax)
     fig, ax = experiments[2].plot_stress_stretch(ax=ax)
+    ax.legend()
+
+    fig, ax = simulations[0].plot_stress_stretch()
+    fig, ax = simulations[1].plot_stress_stretch(ax=ax)
+    fig, ax = simulations[2].plot_stress_stretch(ax=ax)
+    ax.legend()
+    ax.set_title("Yeoh (Generalized Invariants Framework)")
 
     fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
     ax.set_xlim(None, 1.1 * ax.get_xlim()[1])
 
+    return parameters
+
 
 if __name__ == "__main__":
-    test_lab()
+    parameters = test_lab()
+    print(parameters)

@@ -58,6 +58,8 @@ class Experiment(LabPlotter):
 
         """
 
+        super().__init__()
+
         self.label = label
         self.displacement = displacement
         self.force = force

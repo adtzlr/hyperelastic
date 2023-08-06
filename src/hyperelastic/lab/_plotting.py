@@ -4,8 +4,17 @@ import matplotlib.pyplot as plt
 class LabPlotter:
     "Class with methods for generating plots of experiments and simulations."
 
+    def __init__(self):
+        self.label = None
+
     def plot_force_displacement(
-        self, *args, xlabel=r"Displacement $d$", ylabel=r"Force $F$", ax=None, **kwargs
+        self,
+        *args,
+        xlabel=r"Displacement $d$",
+        ylabel=r"Force $F$",
+        ax=None,
+        label=None,
+        **kwargs,
     ):
         "Create a force-displacement plot."
 
@@ -14,7 +23,10 @@ class LabPlotter:
         else:
             fig = ax.get_figure()
 
-        ax.plot(self.displacement, self.force, *args, **kwargs)
+        if label is None:
+            label = self.label
+
+        ax.plot(self.displacement, self.force, *args, label=label, **kwargs)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
 
@@ -26,6 +38,7 @@ class LabPlotter:
         ax=None,
         xlabel=r"Stretch $l/L$",
         ylabel=r"Force per undeformed area $F/A$",
+        label=None,
         **kwargs,
     ):
         "Create a stress-stretch plot."
@@ -35,7 +48,10 @@ class LabPlotter:
         else:
             fig = ax.get_figure()
 
-        ax.plot(self.stretch, self.stress(), *args, **kwargs)
+        if label is None:
+            label = self.label
+
+        ax.plot(self.stretch, self.stress(), *args, label=label, **kwargs)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
 

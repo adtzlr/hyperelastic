@@ -73,12 +73,11 @@ def test_lab_simple():
 
     parameters, pcov = optimize.curve_fit(method="lm")
     fig, ax = optimize.plot(title="Third-Order Deformation")
-    fig.savefig("../docs/hyperelastic/images/fig_optimize-tod.png")
 
-    print(parameters)
-
-    return parameters
+    return fig, parameters
 
 
 if __name__ == "__main__":
-    parameters = test_lab_simple()
+    fig, parameters = test_lab_simple()
+    print(parameters)
+    fig.savefig("../docs/hyperelastic/images/fig_optimize-tod.png")

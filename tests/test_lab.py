@@ -112,10 +112,18 @@ def test_lab():
     fig, ax = experiments[0].plot_force_displacement()
     fig, ax = experiments[1].plot_force_displacement(ax=ax)
     fig, ax = experiments[2].plot_force_displacement(ax=ax)
+    ax.legend()
 
     fig, ax = experiments[0].plot_stress_stretch()
     fig, ax = experiments[1].plot_stress_stretch(ax=ax)
     fig, ax = experiments[2].plot_stress_stretch(ax=ax)
+    ax.legend()
+
+    fig, ax = simulations[0].plot_stress_stretch()
+    fig, ax = simulations[1].plot_stress_stretch(ax=ax)
+    fig, ax = simulations[2].plot_stress_stretch(ax=ax)
+    ax.legend()
+    ax.set_title("Yeoh (Generalized Invariants Framework)")
 
     fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
     ax.set_xlim(None, 1.1 * ax.get_xlim()[1])

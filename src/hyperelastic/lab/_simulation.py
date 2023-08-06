@@ -90,6 +90,8 @@ class Simulation(LabPlotter):
 
         """
 
+        super().__init__()
+
         self.loadcase = loadcase
         self.stretch = stretch
         self.labels = labels

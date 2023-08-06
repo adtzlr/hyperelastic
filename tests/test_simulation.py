@@ -27,10 +27,9 @@ def test_simulation():
     ax.legend()
     ax.set_title("Third-Order Deformation")
 
-    fig.savefig("../docs/hyperelastic/images/fig_simulation-tod.png")
-
-    return
+    return fig
 
 
 if __name__ == "__main__":
-    test_simulation()
+    fig = test_simulation()
+    fig.savefig("../docs/hyperelastic/images/fig_simulation-tod.png")

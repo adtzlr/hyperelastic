@@ -103,8 +103,6 @@ def test_lab():
 
     parameters, pcov = optimize.curve_fit(method="lm")
 
-    print(parameters)
-
     assert np.allclose(
         parameters, [5.22901342e-01, 6.60281220e-03, 1.21021751e-03, 1.54827834e00]
     )
@@ -128,6 +126,9 @@ def test_lab():
     fig, ax = optimize.plot(title="Yeoh (Generalized Invariants Framework)")
     ax.set_xlim(None, 1.1 * ax.get_xlim()[1])
 
+    return parameters
+
 
 if __name__ == "__main__":
-    test_lab()
+    parameters = test_lab()
+    print(parameters)

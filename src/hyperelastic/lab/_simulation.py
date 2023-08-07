@@ -22,6 +22,50 @@ class Simulation(LabPlotter):
     parameters : array_like
         The material parameters.
 
+
+    Examples
+    --------
+    A test specimen is subjected to uniaxial tension. The stretch and force per
+    undeformed area data are used to create the :class:`Simulation <.lab.Simulation>`.
+
+    >>> import numpy as np
+    >>> import hyperelastic
+    >>> from hyperelastic import lab
+    >>>
+    >>> stretch = np.linspace(0.7, 2.5, 181)
+
+    A function which takes the material parameters and returns the hyperelastic
+    constitutive material formulation has to be provided for the simulation objects.
+    Here, we use an isotropic invariant-based
+    :class:`third-order deformation <.models.invariants.ThirdOrderDeformation>`
+    material formulation.
+
+    >>> def material(**kwargs):
+    >>>     "A third-order deformation material formulation."
+    >>>
+    >>>     tod = hyperelastic.models.invariants.ThirdOrderDeformation(**kwargs)
+    >>>     framework = hyperelastic.InvariantsFramework(tod)
+    >>>
+    >>>     return hyperelastic.DeformationSpace(framework)
+
+    The list of labels is used to apply the parameter values to the material
+    parameters.
+
+    >>> simulation = lab.Simulation(
+    >>>     loadcase=lab.Uniaxial(),
+    >>>     stretch=stretch,
+    >>>     material=material,
+    >>>     labels=["C10", "C01", "C11", "C20", "C30"],
+    >>>     parameters=[0.4, 0.1, 0.02, -0.04, 0.01],
+    >>> )
+
+    >>> fig, ax = simulation.plot_stress_stretch()
+    >>>
+    >>> ax.legend()
+    >>> ax.set_title("Third-Order Deformation")
+
+    ..  image:: images/fig_simulation-tod.png
+
     """
 
     def __init__(self, loadcase, stretch, labels, material, parameters=None):
@@ -43,50 +87,6 @@ class Simulation(LabPlotter):
             :class:`DistortionalSpace <.DistortionalSpace>`.
         parameters : array_like or None, optional
             The material parameters (default is None).
-
-        Examples
-        --------
-        A test specimen is subjected to uniaxial tension. The stretch and force per
-        undeformed area data are used to create the
-        :class:`Simulation <.lab.Simulation>`.
-
-        >>> import numpy as np
-        >>> import hyperelastic
-        >>> from hyperelastic import lab
-        >>>
-        >>> stretch = np.linspace(0.7, 2.5, 181)
-
-        A function which takes the material parameters and returns the hyperelastic
-        constitutive material formulation has to be provided for the simulation objects.
-        Here, we use an isotropic invariant-based
-        :class:`third-order deformation <.models.invariants.ThirdOrderDeformation>`
-        material formulation.
-
-        >>> def material(**kwargs):
-        >>>     "A third-order deformation material formulation."
-        >>>
-        >>>     tod = hyperelastic.models.invariants.ThirdOrderDeformation(**kwargs)
-        >>>     framework = hyperelastic.InvariantsFramework(tod)
-        >>>
-        >>>     return hyperelastic.DeformationSpace(framework)
-
-        The list of labels is used to apply the parameter values to the material
-        parameters.
-
-        >>> simulation = lab.Simulation(
-        >>>     loadcase=lab.Uniaxial(),
-        >>>     stretch=stretch,
-        >>>     material=material,
-        >>>     labels=["C10", "C01", "C11", "C20", "C30"],
-        >>>     parameters=[0.4, 0.1, 0.02, -0.04, 0.01],
-        >>> )
-
-        >>> fig, ax = simulation.plot_stress_stretch()
-        >>>
-        >>> ax.legend()
-        >>> ax.set_title("Third-Order Deformation")
-
-        ..  image:: images/fig_simulation-tod.png
 
         """
 

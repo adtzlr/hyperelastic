@@ -11,9 +11,9 @@ class Optimize:
 
     Attributes
     ----------
-    experiments : list of experiments
+    experiments : list
         A list of :class:`Experiment <.lab.Experiment>`.
-    simulations : list of :class:`hyperelastic.lab.Simulations`
+    simulations : list
         A list of :class:`Simulation <.lab.Simulation>`.
     parameters : array_like
         The material parameters.

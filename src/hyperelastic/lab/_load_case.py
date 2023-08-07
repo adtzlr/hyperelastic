@@ -80,7 +80,8 @@ class Uniaxial(IncompressibleHomogeneousStretch):
 
     def __init__(self, label=None):
         if label is None:
-            self.label = "Uniaxial Tension"
+            label = "Uniaxial Tension"
+        self.label = label
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
@@ -104,7 +105,8 @@ class Biaxial(IncompressibleHomogeneousStretch):
 
     def __init__(self, label=None):
         if label is None:
-            self.label = "Biaxial Tension"
+            label = "Biaxial Tension"
+        self.label = label
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."
@@ -128,7 +130,8 @@ class Planar(IncompressibleHomogeneousStretch):
 
     def __init__(self, label=None):
         if label is None:
-            self.label = "Planar Tension"
+            label = "Planar Tension"
+        self.label = label
 
     def defgrad(self, stretch):
         "Return the Deformation Gradient tensor from given stretches."

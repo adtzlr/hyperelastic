@@ -29,10 +29,12 @@ class IncompressibleHomogeneousStretch:
 
         J &= 1
 
-    This enables the evaluation of the normal force per undeformed area.
+    This enables the evaluation of the normal force per undeformed area, where
+    quantities in the traction-free transverse direction are denoted with a subscript
+    :math:`(\bullet)_t`.
 
     ..  math::
-        \frac{N_i}{A_i} = P_{(ii)} - P_{(jj)} \frac{\lambda_j}{\lambda_i}
+        \frac{N}{A} = P - P_t \frac{\lambda_t}{\lambda}
 
     """
 

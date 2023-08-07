@@ -49,8 +49,8 @@ class Simulation(LabPlotter):
     >>>
     >>>     return hyperelastic.DeformationSpace(framework)
 
-    The list of labels is used to apply the parameter values to the material
-    parameters.
+    A list of (string) labels is used to apply the list or array of parameter values to
+    the material formulation.
 
     >>> simulation = lab.Simulation(
     >>>     loadcase=lab.Uniaxial(),
@@ -59,6 +59,9 @@ class Simulation(LabPlotter):
     >>>     labels=["C10", "C01", "C11", "C20", "C30"],
     >>>     parameters=[0.4, 0.1, 0.02, -0.04, 0.01],
     >>> )
+    
+    The stress-stretch plot returns a figure which visualizes the force per undeformed
+    area vs. the ratio of the undeformed and deformed length.
 
     >>> fig, ax = simulation.plot_stress_stretch()
     >>>

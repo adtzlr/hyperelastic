@@ -25,7 +25,7 @@ class Simulation(LabPlotter):
 
     Examples
     --------
-    The material model response behaviour of a hyperelastic material model formulation 
+    The material model response behaviour of a hyperelastic material model formulation
     is evaluated for a :class:`uniaxial tension <.lab.Uniaxial>` load case. A given
     stretch data is used to create the :class:`Simulation <.lab.Simulation>` object.
 
@@ -59,7 +59,7 @@ class Simulation(LabPlotter):
     >>>     labels=["C10", "C01", "C11", "C20", "C30"],
     >>>     parameters=[0.4, 0.1, 0.02, -0.04, 0.01],
     >>> )
-    
+
     The stress-stretch plot returns a figure which visualizes the force per undeformed
     area vs. the ratio of the undeformed and deformed length.
 

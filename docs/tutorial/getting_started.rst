@@ -111,24 +111,50 @@ A minimal template for a principal stretch-based material formulation applied on
 Lab
 ~~~
 
-By using `matadi <https://github.com/adtzlr/matadi>`_'s `matadi.LabIncompressible`, numeric experiments on homogeneous incompressible loadcases on hyperelastic material formulations are performed. Ensure to have `matadi <https://github.com/adtzlr/matadi>`_ installed - run `pip install matadi` in your terminal.
+In the :mod:`Lab <.lab>`, :class:`Simulations <.lab.Simulation>` on homogeneous load cases provide a visualization of the material response behaviour.
 
 ..  code-block:: python
 
-    mooney_rivlin = hyperelastic.models.invariants.ThirdOrderDeformation(C10=0.3, C01=0.2)
-    framework = hyperelastic.InvariantsFramework(mooney_rivlin)
-    umat = hyperelastic.DistortionalSpace(framework)
+    import numpy as np
+    import hyperelastic
 
-    import matadi
+    stretch = np.linspace(0.7, 2.5, 181)
+    parameters = {"C10": 0.3, "C01": 0.2}
 
-    lab = matadi.LabIncompressible(umat, title="Mooney Rivlin")
-    data = lab.run(
-        ux=True,
-        bx=True,
-        ps=True,
-        stretch_min=0.7,
-        stretch_max=2.5,
+    def material(C10, C01):
+        tod = hyperelastic.models.invariants.ThirdOrderDeformation(C10=C10, C01=C01)
+        framework = hyperelastic.InvariantsFramework(tod)
+        return hyperelastic.DeformationSpace(framework)
+    
+    ux = hyperelastic.lab.Simulation(
+        loadcase=hyperelastic.lab.Uniaxial(label="uniaxial"),
+        stretch=np.linspace(0.7, 2.5),
+        material=material,
+        labels=parameters.keys(),
+        parameters=parameters.values(),
     )
-    fig, ax = lab.plot(data, stability=True)
 
-..  image::  images/lab-mr.png
+    ps = hyperelastic.lab.Simulation(
+        loadcase=hyperelastic.lab.Planar(label="planar"),
+        stretch=np.linspace(1.0, 2.5),
+        material=material,
+        labels=parameters.keys(),
+        parameters=parameters.values(),
+    )
+
+    bx = hyperelastic.lab.Simulation(
+        loadcase=hyperelastic.lab.Biaxial(label="biaxial"),
+        stretch=np.linspace(1.0, 1.75),
+        material=material,
+        labels=parameters.keys(),
+        parameters=parameters.values(),
+    )
+
+    fig, ax = ux.plot_stress_stretch(lw=2)
+    fig, ax = ps.plot_stress_stretch(ax=ax, lw=2)
+    fig, ax = bx.plot_stress_stretch(ax=ax, lw=2)
+
+    ax.legend()
+    ax.set_title(rf"Mooney-Rivlin (C10={parameters['C10']}, C01={parameters['C01']})")
+
+..  image::  images/fig_lab-mr.png

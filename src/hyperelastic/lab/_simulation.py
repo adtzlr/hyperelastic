@@ -25,8 +25,9 @@ class Simulation(LabPlotter):
 
     Examples
     --------
-    A test specimen is subjected to uniaxial tension. The stretch and force per
-    undeformed area data are used to create the :class:`Simulation <.lab.Simulation>`.
+    The material model response behaviour of a hyperelastic material model formulation 
+    is evaluated for a :class:`uniaxial tension <.lab.Uniaxial>` load case. A given
+    stretch data is used to create the :class:`Simulation <.lab.Simulation>` object.
 
     >>> import numpy as np
     >>> import hyperelastic

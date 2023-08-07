@@ -25,9 +25,9 @@ class IncompressibleHomogeneousStretch:
 
     ..  math::
         \boldsymbol{F} &= \text{diag} \left(\begin{bmatrix}
-        \lambda_1 & \lambda_2 & \frac{1}{\lambda_1 \lambda_2} \end{bmatrix} \right)
+            \lambda_1 & \lambda_2 & \lambda_3 \end{bmatrix} \right)
 
-        J &= 1
+        J &= \lambda_1 \lambda_2 \lambda_3 = 1
 
     This enables the evaluation of the normal force per undeformed area, where
     quantities in the traction-free transverse direction are denoted with a subscript

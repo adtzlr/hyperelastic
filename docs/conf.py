@@ -99,6 +99,7 @@ html_theme_options = {
         # "image_dark": "_static/logo-dark.png",
         "text": "Hyperelastic",
     },
+    "header_links_before_dropdown": 6,
     # "switcher": {
     #     "json_url": json_url,
     #     "version_match": version_match,

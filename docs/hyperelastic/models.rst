@@ -1,5 +1,5 @@
-Model Formulations
-~~~~~~~~~~~~~~~~~~
+Models
+~~~~~~
 
 .. automodule:: hyperelastic.models
    :members:

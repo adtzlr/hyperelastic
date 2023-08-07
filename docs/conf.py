@@ -106,3 +106,6 @@ html_theme_options = {
     # },
     # "navbar_start": ["navbar-logo", "version-switcher"],
 }
+
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True

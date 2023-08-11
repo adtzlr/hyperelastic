@@ -8,9 +8,9 @@ class GeneralizedInvariantsModel:
     ..  math::
 
         \psi = \psi \left(
-            I_1\left( E_1(\lambda_1) \right),
-            I_2\left( E_2(\lambda_2) \right),
-            I_3\left( E_3(\lambda_3) \right) \right)
+            I_1\left( E_1, E_2, E_3 \right),
+            I_2\left( E_1, E_2, E_3 \right),
+            I_3\left( E_1, E_2, E_3 \right) \right)
 
     The three principal invariants
 

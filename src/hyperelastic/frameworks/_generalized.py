@@ -4,17 +4,26 @@ from ._stretches import Stretches
 
 class GeneralizedInvariants(Stretches):
     r"""Generalized-invariants isotropic hyperelastic material formulation based on the
-    principal stretches. The generalized invariants
+    principal stretches.
 
     ..  math::
 
-        I_1 &= E_1 + E_2 + E_3
+        \psi = \psi \left(
+            I_1\left( E_1, E_2, E_3 \right),
+            I_2\left( E_1, E_2, E_3 \right),
+            I_3\left( E_1, E_2, E_3 \right) \right)
 
-        I_2 &= E_1 E_2 + E_2 E_3 + E_1 E_3
+    The three principal invariants
 
-        I_3 &= E_1 E_2 E_3
+    ..  math::
 
-    are related to a one-dimensional strain-stretch relation.
+        J_1 &= E_1 + E_2 + E_3
+
+        J_2 &= E_1 E_2 + E_2 E_3 + E_1 E_3
+
+        J_3 &= E_1 E_2 E_3
+
+    are formulated on a one-dimensional strain-stretch relation.
 
     ..  math::
 
@@ -25,6 +34,33 @@ class GeneralizedInvariants(Stretches):
 
         E''_\alpha &= f''(\lambda_\alpha) = \frac{\partial^2 f(\lambda_\alpha)}
             {\partial \lambda_\alpha~\partial \lambda_\alpha}
+
+    To be consistent with linear elasticity, the invariants are scaled by deformation-
+    independent coefficients of normalization.
+
+    ..  math::
+
+        I_1 &= c_1 J_1(E_\alpha(\lambda_\alpha))
+             - J_1(E_\alpha(\lambda_\alpha=1)) (c_1 - 1)
+
+        I_2 &= c_2 J_2(E_\alpha(\lambda_\alpha))
+             - J_2(E_\alpha(\lambda_\alpha=1)) (c_2 - 1)
+
+        I_3 &= J_3
+
+    Note that they are only applied to the first and second invariant, as the third
+    invariant does not contribute to the strain energy function at the undeformed state.
+    The second partial derivative of the strain w.r.t. the stretch must be provided for
+    a reference strain (at the undeformed state).
+
+    ..  math::
+
+        c_1 &= \frac{E''_{ref}(\lambda=1) / 3}{
+            \left( E''(\lambda=1) + E'(\lambda=1) \right) / 2}
+
+        c_2 &= \frac{E''_{ref}(\lambda=1, k=2) / 3}{
+            \left( E''(\lambda=1) + E'(\lambda=1) \right) E(\lambda=1)
+            - E'^2(\lambda=1) / 2}
 
     The first partial derivatives of the strain energy function w.r.t. the invariants
 
@@ -41,9 +77,9 @@ class GeneralizedInvariants(Stretches):
 
     ..  math::
 
-        \frac{\partial I_1}{\partial E_\alpha} &= 1
+        \frac{\partial I_1}{\partial E_\alpha} &= c_1
 
-        \frac{\partial I_2}{\partial E_\alpha} &= E_\beta + E_\gamma
+        \frac{\partial I_2}{\partial E_\alpha} &= c_2 \left( E_\beta + E_\gamma \right)
 
         \frac{\partial I_3}{\partial E_\alpha} &= E_\beta E_\gamma
 

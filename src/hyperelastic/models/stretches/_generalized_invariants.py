@@ -40,10 +40,10 @@ class GeneralizedInvariantsModel:
     ..  math::
 
         I_1 &= c_1 J_1(E_\alpha(\lambda_\alpha))
-             - I_1(E_\alpha(\lambda_\alpha=1)) (c_1 - 1)
+             - J_1(E_\alpha(\lambda_\alpha=1)) (c_1 - 1)
 
         I_2 &= c_2 J_2(E_\alpha(\lambda_\alpha))
-             - I_2(E_\alpha(\lambda_\alpha=1)) (c_2 - 1)
+             - J_2(E_\alpha(\lambda_\alpha=1)) (c_2 - 1)
 
         I_3 &= J_3
 

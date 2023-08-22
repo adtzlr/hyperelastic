@@ -46,24 +46,11 @@ class MyInvariantsModel:
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the invariants of the right Cauchy-Green deformation tensor."""
 
-        # user code
-        dWdI1 = None
-        dWdI2 = None
-        dWdI3 = None
-
         return dWdI1, dWdI2, dWdI3, statevars
 
     def hessian(self, I1, I2, I3, statevars_old):
         """The hessian as the second partial derivatives of the strain energy function
         w.r.t. the invariants of the right Cauchy-Green deformation tensor."""
-
-        # user code
-        d2WdI1I1 = None
-        d2WdI2I2 = None
-        d2WdI3I3 = None
-        d2WdI1I2 = None
-        d2WdI2I3 = None
-        d2WdI1I3 = None
 
         return d2WdI1I1, d2WdI2I2, d2WdI3I3, d2WdI1I2, d2WdI2I3, d2WdI1I3
 
@@ -87,22 +74,11 @@ class MyStretchesModel:
         """The gradient as the partial derivative of the strain energy function w.r.t.
         the principal stretches."""
 
-        # user code
-        dWdλ1, dWdλ2, dWdλ3 = 0 * λ
-
         return [dWdλ1, dWdλ2, dWdλ3], statevars
 
     def hessian(self, λ, statevars_old):
         """The hessian as the second partial derivatives of the strain energy function
         w.r.t. the principal stretches."""
-
-        # user code
-        d2Wdλ1dλ1 = None
-        d2Wdλ2dλ2 = None
-        d2Wdλ3dλ3 = None
-        d2Wdλ1dλ2 = None
-        d2Wdλ2dλ3 = None
-        d2Wdλ1dλ3 = None
 
         return d2Wdλ1dλ1, d2Wdλ2dλ2, d2Wdλ3dλ3, d2Wdλ1dλ2, d2Wdλ2dλ3, d2Wdλ1dλ3
 

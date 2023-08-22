@@ -34,32 +34,55 @@ class GeneralizedInvariantsModel:
         E''_\alpha &= f''(\lambda_\alpha) = \frac{\partial^2 f(\lambda_\alpha)}
             {\partial \lambda_\alpha~\partial \lambda_\alpha}
 
-    To be consistent with linear elasticity, the invariants are scaled by deformation-
-    independent coefficients of normalization.
+    Depending on the strain-stretch relation, the invariants contain deformation-
+    independent values.
 
     ..  math::
 
-        I_1 &= c_1 J_1(E_\alpha(\lambda_\alpha))
-             - J_1(E_\alpha(\lambda_\alpha=1)) (c_1 - 1)
+        J_{1,0} &= J_1(E_\alpha(\lambda_\alpha=1))
 
-        I_2 &= c_2 J_2(E_\alpha(\lambda_\alpha))
-             - J_2(E_\alpha(\lambda_\alpha=1)) (c_2 - 1)
+        J_{2,0} &= J_2(E_\alpha(\lambda_\alpha=1))
+
+        J_{3,0} &= J_3(E_\alpha(\lambda_\alpha=1))
+
+    The deformation-dependent parts of the invariants are scaled by deformation-
+    independent coefficients of normalization. The deformation-independent parts are
+    re-added after the scaling.
+
+    ..  math::
+
+        I_1 &= c_1 (J_1 - J_{1,0}) + J_{1,0}
+
+        I_2 &= c_2 (J_2 - J_{2,0}) + J_{2,0}
 
         I_3 &= J_3
 
-    Note that they are only applied to the first and second invariant, as the third
-    invariant does not contribute to the strain energy function at the undeformed state.
-    The second partial derivative of the strain w.r.t. the stretch must be provided for
-    a reference strain (at the undeformed state).
+    Note that the scaling is only applied to the first and second invariant, as the
+    third invariant does not contribute to the strain energy function at the undeformed
+    state.
+    
+    ..  math::
+        
+        E_0 &= E(\lambda=1)
+        
+        E'_0 &= E'(\lambda=1)
+        
+        E''_0 &= E''(\lambda=1)
+
+        E''_{ref,0} &= E''_{ref}(\lambda=1)
+    
+    The second partial derivative of the strain w.r.t. the stretch must be
+    provided for a reference strain, e.g. the Green-Lagrange strain measure (at the
+    undeformed state).
 
     ..  math::
 
-        c_1 &= \frac{E''_{ref}(\lambda=1) / 3}{
-            \left( E''(\lambda=1) + E'(\lambda=1) \right) / 2}
+        c_1 &= \frac{E''_{ref,0} / 3}{
+            \left( E''_0 + E'_0 \right) / 2}
 
-        c_2 &= \frac{E''_{ref}(\lambda=1, k=2) / 3}{
-            \left( E''(\lambda=1) + E'(\lambda=1) \right) E(\lambda=1)
-            - E'^2(\lambda=1) / 2}
+        c_2 &= \frac{E''_{ref,0} / 3}{
+            \left( E''_0 + E'_0 \right) E_0
+            - E'^2_0 / 2}
 
     The first partial derivatives of the strain energy function w.r.t. the invariants
 
@@ -72,7 +95,8 @@ class GeneralizedInvariantsModel:
         \psi_{,3} &= \frac{\partial \psi}{\partial I_3}
 
     and the partial derivatives of the invariants w.r.t. the principal stretches are
-    defined.
+    defined. From here on, this is consistent with any invariant-based hyperelastic 
+    material formulation, except for the factors of normalization.
 
     ..  math::
 

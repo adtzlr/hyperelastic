@@ -61,29 +61,30 @@ class GeneralizedInvariants(Stretches):
     Note that the scaling is only applied to the first and second invariant, as the
     third invariant does not contribute to the strain energy function at the undeformed
     state.
-    
+
     ..  math::
-        
+
         E_0 &= E(\lambda=1)
-        
+
         E'_0 &= E'(\lambda=1)
-        
+
         E''_0 &= E''(\lambda=1)
 
-        E''_{ref,0} &= E''_{ref}(\lambda=1)
-    
     The second partial derivative of the strain w.r.t. the stretch must be
     provided for a reference strain, e.g. the Green-Lagrange strain measure (at the
     undeformed state).
 
     ..  math::
 
-        c_1 &= \frac{E''_{ref,0} / 3}{
-            \left( E''_0 + E'_0 \right) / 2}
+        J''_{1,0} &= \frac{3}{2} \left( E''_0 + E'_0 \right)
 
-        c_2 &= \frac{E''_{ref,0} / 3}{
-            \left( E''_0 + E'_0 \right) E_0
-            - E'^2_0 / 2}
+        J''_{2,0} &= \frac{3}{2} \left( (2 E_0 (E''_0 + E'_0)) - E'^2_0 \right)
+
+    ..  math::
+
+        c_1 &= \frac{J''_{1,0,ref}}{J''_{1,0}}
+
+        c_2 &= \frac{J''_{2,0,ref}}{J''_{2,0}}
 
     The first partial derivatives of the strain energy function w.r.t. the invariants
 
@@ -96,7 +97,7 @@ class GeneralizedInvariants(Stretches):
         \psi_{,3} &= \frac{\partial \psi}{\partial I_3}
 
     and the partial derivatives of the invariants w.r.t. the principal stretches are
-    defined. From here on, this is consistent with any invariant-based hyperelastic 
+    defined. From here on, this is consistent with any invariant-based hyperelastic
     material formulation, except for the factors of normalization.
 
     ..  math::

@@ -60,29 +60,30 @@ class GeneralizedInvariantsModel:
     Note that the scaling is only applied to the first and second invariant, as the
     third invariant does not contribute to the strain energy function at the undeformed
     state.
-    
+
     ..  math::
-        
+
         E_0 &= E(\lambda=1)
-        
+
         E'_0 &= E'(\lambda=1)
-        
+
         E''_0 &= E''(\lambda=1)
 
-        E''_{ref,0} &= E''_{ref}(\lambda=1)
-    
     The second partial derivative of the strain w.r.t. the stretch must be
     provided for a reference strain, e.g. the Green-Lagrange strain measure (at the
     undeformed state).
 
     ..  math::
 
-        c_1 &= \frac{E''_{ref,0} / 3}{
-            \left( E''_0 + E'_0 \right) / 2}
+        J''_{1,0} &= \frac{3}{2} \left( E''_0 + E'_0 \right)
 
-        c_2 &= \frac{E''_{ref,0} / 3}{
-            \left( E''_0 + E'_0 \right) E_0
-            - E'^2_0 / 2}
+        J''_{2,0} &= \frac{3}{2} \left( (2 E_0 (E''_0 + E'_0)) - E'^2_0 \right)
+
+    ..  math::
+
+        c_1 &= \frac{J''_{1,0,ref}}{J''_{1,0}}
+
+        c_2 &= \frac{J''_{2,0,ref}}{J''_{2,0}}
 
     The first partial derivatives of the strain energy function w.r.t. the invariants
 
@@ -95,7 +96,7 @@ class GeneralizedInvariantsModel:
         \psi_{,3} &= \frac{\partial \psi}{\partial I_3}
 
     and the partial derivatives of the invariants w.r.t. the principal stretches are
-    defined. From here on, this is consistent with any invariant-based hyperelastic 
+    defined. From here on, this is consistent with any invariant-based hyperelastic
     material formulation, except for the factors of normalization.
 
     ..  math::
@@ -207,11 +208,17 @@ class GeneralizedInvariantsModel:
         self.strain = fun
         self.kwargs = kwargs
 
-        E, dEdλ, d2Edλdλ, d2Edλdλ0 = self.strain(1, **self.kwargs)
+        E, dEdλ, d2Edλdλ, E0, dEdλ0, d2Edλdλ0 = self.strain(1, **self.kwargs)
 
         # normalize invariants
-        self.c1 = (d2Edλdλ0 / 3) / ((d2Edλdλ + dEdλ) / 2)
-        self.c2 = (d2Edλdλ0 / 3) / ((d2Edλdλ + dEdλ) * E - dEdλ**2 / 2)
+        c1_upper = 3 / 2 * (d2Edλdλ0 + dEdλ0)
+        c1_lower = 3 / 2 * (d2Edλdλ + dEdλ)
+
+        c2_upper = 3 * (d2Edλdλ0 + dEdλ0) * E0 - 3 / 2 * dEdλ0**2
+        c2_lower = 3 * (d2Edλdλ + dEdλ) * E - 3 / 2 * dEdλ**2
+
+        self.c1 = c1_upper / c1_lower
+        self.c2 = c2_upper / c2_lower
 
         self.I10 = 3 * E
         self.I20 = 3 * E**2

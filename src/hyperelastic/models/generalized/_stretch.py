@@ -8,9 +8,11 @@ def strain(stretch, exponent):
     dEdλ = lambda λ, k: λ ** (k - 1)  # noqa: E731
     d2Edλdλ = lambda λ, k: (k - 1) * λ ** (k - 2)  # noqa: E731
 
-    d2Edλdλ0 = 3 / 2 * (d2Edλdλ(λ=1, k=2) + dEdλ(λ=1, k=2))
+    E0 = E(λ=1, k=2)
+    dEdλ0 = dEdλ(λ=1, k=2)
+    d2Edλdλ0 = d2Edλdλ(λ=1, k=2)
 
-    return E(λ, k), dEdλ(λ, k), d2Edλdλ(λ, k), d2Edλdλ0
+    return E(λ, k), dEdλ(λ, k), d2Edλdλ(λ, k), E0, dEdλ0, d2Edλdλ0
 
 
 def deformation(stretch, exponent):
@@ -24,6 +26,8 @@ def deformation(stretch, exponent):
     dCkdλ = lambda λ, k: k * λ ** (k - 1)  # noqa: E731
     d2Ckdλdλ = lambda λ, k: k * (k - 1) * λ ** (k - 2)  # noqa: E731
 
-    d2Cdλdλ0 = 3 / 2 * (d2Ckdλdλ(λ=1, k=2) + dCkdλ(λ=1, k=2))
+    C0 = Ck(λ=1, k=2)
+    dCdλ0 = dCkdλ(λ=1, k=2)
+    d2Cdλdλ0 = d2Ckdλdλ(λ=1, k=2)
 
-    return Ck(λ, k), dCkdλ(λ, k), d2Ckdλdλ(λ, k), d2Cdλdλ0
+    return Ck(λ, k), dCkdλ(λ, k), d2Ckdλdλ(λ, k), C0, dCdλ0, d2Cdλdλ0

@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
+import felupe as fem
 import numpy as np
+import torch
 
 import hyperelastic
 
@@ -46,11 +47,8 @@ def test_torch():
     assert np.allclose(x, y)
 
 
-def test_torch_felupe():
-    import felupe as fem
-    import torch
-
-    torch.set_default_dtype(torch.float64)
+def run_felupe(dtype):
+    torch.set_default_dtype(dtype)
 
     mesh = fem.Cube(n=3)
     region = fem.RegionHexahedron(mesh)
@@ -70,9 +68,18 @@ def test_torch_felupe():
     )
 
     job = fem.CharacteristicCurve(steps=[step], boundary=boundaries["move"])
-    job.evaluate()
+    job.evaluate(tol=np.sqrt(torch.finfo(dtype).eps))
+
+
+def test_torch_felupe_single_precision():
+    run_felupe(dtype=torch.float32)
+
+
+def test_torch_felupe_double_precision():
+    run_felupe(dtype=torch.float64)
 
 
 if __name__ == "__main__":
     test_torch()
-    test_torch_felupe()
+    test_torch_felupe_single_precision()
+    test_torch_felupe_double_precision()

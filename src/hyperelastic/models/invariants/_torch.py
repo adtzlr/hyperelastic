@@ -9,8 +9,9 @@ class TorchModel:
 
     ..  note::
         PyTorch uses single-precision by default. This must be considered in numeric
-        simulations, i.e. the error tolerance must not exceed ``tol=1e-8``. For double-
-        precision, set ``torch.float64`` as default.
+        simulations, i.e. the error tolerance should not exceed
+        ``np.sqrt(torch.finfo(torch.float).eps)`` (approx. ``tol=5e-4``). For double-
+        precision, enable ``torch.float64`` as default.
 
         ..  code-block:: python
 
@@ -81,7 +82,7 @@ class TorchModel:
         f = self.fun(I1, I2, I3, **self.kwargs)
         kwargs = dict(numpy=numpy, create_graph=create_graph, retain_graph=retain_graph)
 
-        return *[self._grad(f, x, **kwargs) for x in [I1, I2, I3]], statevars
+        return (*[self._grad(f, x, **kwargs) for x in [I1, I2, I3]], statevars)
 
     def hessian(self, I1, I2, I3, statevars, numpy=True):
         """The hessian as the second partial derivatives of the strain energy function

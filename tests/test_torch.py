@@ -4,11 +4,12 @@ import numpy as np
 import hyperelastic
 
 
-def test_torch():
-    def yeoh(I1, I2, I3, C10, C20, C30):
-        "Yeoh isotropic hyperelastic material formulation."
-        return C10 * (I1 - 3) + C20 * (I1 - 3) ** 2 + C30 * (I1 - 3) ** 3
+def yeoh(I1, I2, I3, C10, C20, C30):
+    "Yeoh isotropic hyperelastic material formulation."
+    return C10 * (I1 - 3) + C20 * (I1 - 3) ** 2 + C30 * (I1 - 3) ** 3
 
+
+def test_torch():
     model1 = hyperelastic.models.invariants.TorchModel(
         yeoh, C10=0.5, C20=-0.05, C30=0.02
     )
@@ -45,5 +46,33 @@ def test_torch():
     assert np.allclose(x, y)
 
 
+def test_torch_felupe():
+    import felupe as fem
+    import torch
+
+    torch.set_default_dtype(torch.float64)
+
+    mesh = fem.Cube(n=3)
+    region = fem.RegionHexahedron(mesh)
+    field = fem.FieldContainer([fem.Field(region, dim=3)])
+    boundaries, loadcase = fem.dof.uniaxial(field, clamped=True)
+
+    model = hyperelastic.models.invariants.TorchModel(
+        yeoh, C10=0.5, C20=-0.05, C30=0.02
+    )
+    framework = hyperelastic.InvariantsFramework(model)
+    umat = hyperelastic.DistortionalSpace(framework)
+    solid = fem.SolidBodyNearlyIncompressible(umat, field, bulk=5000)
+
+    move = fem.math.linsteps([0, 1], num=5)
+    step = fem.Step(
+        items=[solid], ramp={boundaries["move"]: move}, boundaries=boundaries
+    )
+
+    job = fem.CharacteristicCurve(steps=[step], boundary=boundaries["move"])
+    job.evaluate()
+
+
 if __name__ == "__main__":
     test_torch()
+    test_torch_felupe()

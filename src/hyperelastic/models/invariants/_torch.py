@@ -1,6 +1,3 @@
-import torch
-
-
 class TorchModel:
     r"""Isotropic hyperelastic material formulation based on a given strain energy
     density function ``fun(I1, I2, I3, **kwargs)`` per unit undeformed volume. The
@@ -44,6 +41,8 @@ class TorchModel:
     def _grad(self, fun, x, numpy=False, allow_unused=True, **kwargs):
         "Return the gradient of a sum of a tensor ``fun`` w.r.t. ``x``."
 
+        import torch
+
         out = None
         if hasattr(fun, "grad_fn"):
             out = torch.autograd.grad(
@@ -56,6 +55,8 @@ class TorchModel:
 
     def _astensors(self, *args):
         "Convert a list/tuple of arrays to torch-tensors."
+
+        import torch
 
         tensors = [torch.Tensor(arg) for arg in args]
         [tensor.requires_grad_(True) for tensor in tensors]

@@ -25,11 +25,11 @@ class TorchModel:
     --------
 
     >>> import hyperelastic
-    >>>
+
     >>> def yeoh(I1, I2, I3, C10, C20, C30):
     >>>     "Yeoh isotropic hyperelastic material formulation."
     >>>     return C10 * (I1 - 3) + C20 * (I1 - 3) ** 2 + C30 * (I1 - 3) ** 3
-    >>>
+
     >>> model = hyperelastic.models.invariants.TorchModel(
     >>>     yeoh, C10=0.5, C20=-0.05, C30=0.02
     >>> )

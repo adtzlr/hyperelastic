@@ -65,7 +65,9 @@ The typical polynomial-based material formulations ([Neo-Hooke](https://en.wikip
 
 - [Third-Order-Deformation (James-Green-Simpson)](https://onlinelibrary.wiley.com/doi/abs/10.1002/app.1975.070190723) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/invariants/_third_order_deformation.py))
 
-- ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white) [TorchModel](https://pytorch.org/docs/stable/autograd.html) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/invariants/_torch.py))
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
+
+- [TorchModel](https://pytorch.org/docs/stable/autograd.html) ([code](https://github.com/adtzlr/hyperelastic/blob/main/src/hyperelastic/models/invariants/_torch.py))
 
 ## Principal stretch-based material formulations
 A minimal template for a principal stretch-based material formulation applied on the distortional space:

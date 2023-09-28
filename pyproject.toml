@@ -50,6 +50,7 @@ dependencies = [
 test = [
     "felupe",
     "sympy",
+    "torch",
 ]
 
 [tool.setuptools.dynamic]

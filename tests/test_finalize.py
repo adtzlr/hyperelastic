@@ -20,6 +20,12 @@ def test_finalize():
     for force in [0, None]:
         for area in [0, None]:
             umat = hyperelastic.DistortionalSpace(framework, force=force, area=area)
+            umat = hyperelastic.DeformationSpace(
+                framework,
+                force=force,
+                area=area,
+                parallel=True,
+            )
 
             # uniaxial incompressible deformation
             stretch = np.linspace(0.7, 2.5, 181)
@@ -32,6 +38,20 @@ def test_finalize():
                 parameters=[],
             )
             simulation.plot_stress_stretch()
+
+            mesh = fem.Cube(n=3)
+            region = fem.RegionHexahedron(mesh)
+            field = fem.FieldContainer([fem.Field(region, dim=3)])
+            boundaries, loadcase = fem.dof.uniaxial(field, clamped=True)
+            solid = fem.SolidBodyNearlyIncompressible(umat, field, bulk=5000)
+
+            move = fem.math.linsteps([0.1], num=0)
+            step = fem.Step(
+                items=[solid], ramp={boundaries["move"]: move}, boundaries=boundaries
+            )
+
+            job = fem.CharacteristicCurve(steps=[step], boundary=boundaries["move"])
+            job.evaluate(tol=1)
 
 
 if __name__ == "__main__":

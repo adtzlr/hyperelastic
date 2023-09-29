@@ -1,9 +1,10 @@
 import numpy as np
 
 from ..math import astensor, asvoigt, cdya_ik, eye
+from ._space import Space
 
 
-class Deformation:
+class Deformation(Space):
     r"""The deformation space.
 
     This class takes a Total-Lagrange material formulation and applies it on the
@@ -56,20 +57,14 @@ class Deformation:
 
     """
 
-    def __init__(self, material, parallel=False):
-        self.parallel = parallel
+    def __init__(self, material, parallel=False, finalize=True, force=None, area=0):
         self.material = material
-
-        if self.parallel:
-            from einsumt import einsumt
-
-            self.einsum = einsumt
-        else:
-            self.einsum = np.einsum
 
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
+
+        super().__init__(parallel=parallel, finalize=finalize, force=force, area=area)
 
     def gradient(self, x):
         """The gradient as the partial derivative of the strain energy function w.r.t.
@@ -82,7 +77,7 @@ class Deformation:
 
         self.S = 2 * dWdC
 
-        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
+        return [self.piola(F=F, S=self.S), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivative of the strain energy function
@@ -91,18 +86,6 @@ class Deformation:
         F, statevars = x[0], x[-1]
 
         dWdF, statevars_new = self.gradient(x)
-        I = eye(self.C)
-
         d2WdCdC = self.material.hessian(self.C, statevars)
-        C4 = 4 * d2WdCdC
 
-        if self.parallel:
-            from einsumt import einsumt
-
-            einsum = einsumt
-        else:
-            einsum = np.einsum
-
-        A4 = einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
-
-        return [A4 + cdya_ik(I, self.S)]
+        return [self.piola(F=F, S=self.S, C4=4 * d2WdCdC)]

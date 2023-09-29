@@ -1,23 +1,18 @@
 import numpy as np
 
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, trace
+from ._space import Space
 
 
-class Dilatational:
-    def __init__(self, material, parallel=False):
-        self.parallel = parallel
+class Dilatational(Space):
+    def __init__(self, material, parallel=False, finalize=True, force=None, area=0):
         self.material = material
-
-        if self.parallel:
-            from einsumt import einsumt
-
-            self.einsum = einsumt
-        else:
-            self.einsum = np.einsum
 
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
+
+        super().__init__(parallel=parallel, finalize=finalize, force=force, area=area)
 
     def gradient(self, x):
         F, statevars = x[0], x[-1]
@@ -32,7 +27,7 @@ class Dilatational:
         self.invC = inv(self.C, determinant=self.I3)
 
         self.S = self.tr_Sb / 3 * self.invC
-        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
+        return [self.piola(F=F, S=self.S, detF=np.sqrt(self.I3)), statevars_new]
 
     def hessian(self, x):
         F, statevars = x[0], x[-1]
@@ -50,6 +45,4 @@ class Dilatational:
             self.invC, self.invC
         ) / 9 - 2 / 3 * self.tr_Sb * I4
 
-        A4 = self.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
-
-        return [A4 + cdya_ik(I, self.S)]
+        return [self.piola(F=F, S=self.S, detF=np.sqrt(self.I3), C4=C4, invC=self.invC)]

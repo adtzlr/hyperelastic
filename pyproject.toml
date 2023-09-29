@@ -51,6 +51,7 @@ test = [
     "felupe",
     "sympy",
     "torch",
+    "einsumt",
 ]
 
 [tool.setuptools.dynamic]

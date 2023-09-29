@@ -1,9 +1,10 @@
 import numpy as np
 
 from ..math import astensor, asvoigt, cdya, cdya_ik, ddot, det, dya, eye, inv, transpose
+from ._space import Space
 
 
-class Distortional:
+class Distortional(Space):
     r"""The distortional (part of the deformation) space is a partial deformation with
     constant volume. For a given deformation map :math:`\boldsymbol{x}(\boldsymbol{X})`
     and its deformation gradient :math:`\boldsymbol{F}`, the distortional part of the
@@ -141,20 +142,14 @@ class Distortional:
 
     """
 
-    def __init__(self, material, parallel=False):
-        self.parallel = parallel
+    def __init__(self, material, parallel=False, finalize=True, force=None, area=0):
         self.material = material
-
-        if self.parallel:
-            from einsumt import einsumt
-
-            self.einsum = einsumt
-        else:
-            self.einsum = np.einsum
 
         # initial variables for calling
         # ``self.gradient(self.x)`` and ``self.hessian(self.x)``
         self.x = [material.x[0], material.x[-1]]
+
+        super().__init__(parallel=parallel, finalize=finalize, force=force, area=area)
 
     def gradient(self, x):
         """The gradient as the partial derivative of the strain energy function w.r.t.
@@ -173,7 +168,7 @@ class Distortional:
 
         self.S = Sb - SbC / 3 * invC
 
-        return [self.einsum("iK...,KJ...->iJ...", F, astensor(self.S)), statevars_new]
+        return [self.piola(F=F, S=self.S, detF=np.sqrt(self.I3)), statevars_new]
 
     def hessian(self, x):
         """The hessian as the second partial derivative of the strain energy function
@@ -199,6 +194,4 @@ class Distortional:
         if not np.allclose(C4b, 0):
             C4 += ddot(ddot(P4, C4b, mode=(4, 4)), transpose(P4), mode=(4, 4))
 
-        A4 = self.einsum("iI...,kK...,IJKL...->iJkL...", F, F, astensor(C4, 4))
-
-        return [A4 + cdya_ik(I, self.S)]
+        return [self.piola(F=F, S=self.S, detF=np.sqrt(self.I3), C4=C4, invC=self.invC)]

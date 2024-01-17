@@ -10,7 +10,7 @@
 # import hyperelastic
 
 project = "Hyperelastic"
-copyright = "2023, Andreas Dutzler"
+copyright = "2024, Andreas Dutzler"
 author = "Andreas Dutzler"
 
 # -- General configuration ---------------------------------------------------

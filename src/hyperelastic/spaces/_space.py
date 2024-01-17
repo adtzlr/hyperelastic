@@ -58,6 +58,13 @@ class Space:
 
                 # force --> deformed configuration
                 if self.force is None:
+                    # check if destination array stress must be broadcasted
+                    new_shape = np.broadcast_shapes(F.shape, stress.shape)
+
+                    if not np.allclose(new_shape, stress.shape):
+                        # broadcast stress and make a writable contiguous copy
+                        stress = np.broadcast_to(stress, new_shape).copy()
+
                     stress = self.einsum("iI...,IJ...->iJ...", F, stress, out=stress)
 
                 # area --> deformed configuration
@@ -83,6 +90,13 @@ class Space:
 
                 # force --> deformed configuration
                 if self.force is None:
+                    # check if destination array elasticity must be broadcasted
+                    new_shape = np.broadcast_shapes((3, 3, *F.shape), elasticity.shape)
+
+                    if not np.allclose(new_shape, elasticity.shape):
+                        # broadcast elasticity and make a writable contiguous copy
+                        elasticity = np.broadcast_to(elasticity, new_shape).copy()
+
                     elasticity = self.einsum(
                         "iI...,kK...,IJKL...->iJkL...", F, F, elasticity, out=elasticity
                     )

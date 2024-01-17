@@ -66,10 +66,19 @@ def test_deformation_invariants():
     fea(umat).evaluate(verbose=2)
 
 
+def test_deformation_invariants_broadcast():
+    model = hel.models.invariants.ThirdOrderDeformation(
+        C10=0.5
+    )
+    umat = hel.DeformationSpace(hel.InvariantsFramework(model))
+    fea(umat).evaluate(verbose=2)
+
+
 if __name__ == "__main__":
     test_distortional_stretches()
     test_distortional_invariants()
     test_dilatational_invariants()
     test_deformation_invariants()
+    test_deformation_invariants_broadcast()
     test_distortional_generalized_strain_invariants()
     test_distortional_generalized_deformation_invariants()

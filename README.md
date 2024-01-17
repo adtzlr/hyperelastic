@@ -145,7 +145,7 @@ ax.set_title(rf"Mooney-Rivlin (C10={parameters['C10']}, C01={parameters['C01']})
 ![fig_lab-mr](https://github.com/adtzlr/hyperelastic/assets/5793153/1d4bb29b-885f-46d4-80dd-56e255b239eb)
 
 # License
-Hyperelastic - Constitutive hyperelastic material formulations for FElupe (C) 2023 Andreas Dutzler, Graz (Austria).
+Hyperelastic - Constitutive hyperelastic material formulations for FElupe (C) 2024 Andreas Dutzler, Graz (Austria).
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

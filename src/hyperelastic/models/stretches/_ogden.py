@@ -18,7 +18,7 @@ class Ogden:
 
     ..  math::
 
-        \frac{\partial \psi}{\partial \lambda_\alpha} = \sum_\alpha
+        \frac{\partial \psi}{\partial \lambda_\alpha} =
             \frac{2 \mu}{k} \lambda_\alpha^{k - 1}
 
     Furthermore, the second partial derivatives of the strain energy density w.r.t. the
@@ -28,7 +28,7 @@ class Ogden:
     ..  math::
 
         \frac{\partial^2 \psi}{\partial \lambda_\alpha~\partial \lambda_\alpha} =
-            \sum_\alpha \frac{2 \mu (k-1)}{k} \lambda_\alpha^{k - 2}
+            \frac{2 \mu (k-1)}{k} \lambda_\alpha^{k - 2}
 
     """
 

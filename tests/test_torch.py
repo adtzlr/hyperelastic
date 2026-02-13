@@ -53,7 +53,7 @@ def run_felupe(dtype):
     mesh = fem.Cube(n=3)
     region = fem.RegionHexahedron(mesh)
     field = fem.FieldContainer([fem.Field(region, dim=3)])
-    boundaries, loadcase = fem.dof.uniaxial(field, clamped=True)
+    boundaries = fem.dof.uniaxial(field, clamped=True, return_loadcase=False)
 
     model = hyperelastic.models.invariants.TorchModel(
         yeoh, C10=0.5, C20=-0.05, C30=0.02

@@ -42,7 +42,7 @@ def test_finalize():
             mesh = fem.Cube(n=3)
             region = fem.RegionHexahedron(mesh)
             field = fem.FieldContainer([fem.Field(region, dim=3)])
-            boundaries, loadcase = fem.dof.uniaxial(field, clamped=True)
+            boundaries = fem.dof.uniaxial(field, clamped=True, return_loadcase=False)
             solid = fem.SolidBodyNearlyIncompressible(umat, field, bulk=5000)
 
             move = fem.math.linsteps([0.1], num=0)
